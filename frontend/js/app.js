@@ -1,12 +1,29 @@
-//const API='http://localhost:3000';
-const API='https://agri-mbsb.onrender.com';
+const API =
+
+location.hostname==='127.0.0.1' ||
+
+location.hostname==='localhost'
+
+?
+
+'http://localhost:3000'
+
+:
+
+'https://agri-mbsb.onrender.com';
+
+console.log(
+'USING API:',
+API
+);
+
 const inputBody =
 document.getElementById('inputBody');
 
 const dashboardBody =
 document.getElementById('dashboardBody');
 
-
+let workOptions=[];
 
 // ---------- TODAY DATE ----------
 
@@ -18,6 +35,46 @@ return new Date()
 
 }
 
+async function loadWorkOptions(){
+
+try{
+
+const res=
+
+await fetch(
+
+API+
+'/records/work-options'
+
+);
+
+if(!res.ok){
+
+throw new Error(
+'API FAILED'
+);
+
+}
+
+workOptions=
+await res.json();
+
+console.log(
+'WORK OPTIONS:',
+workOptions
+);
+
+}
+catch(err){
+
+console.error(
+'LOAD ERROR:',
+err
+);
+
+}
+
+}
 
 
 // ---------- OPEN DIALOG ----------
@@ -82,81 +139,97 @@ document
 
 function createRow(){
 
+console.log(
+'createRow OPTIONS:',
+workOptions
+);
+
 return `
 
 <tr>
 
 <td>
-
 <input
 type="date"
 class="tableInput date"
 value="${getToday()}">
-
 </td>
 
 <td>
 
-<input
-type="text"
-class="tableInput work">
+<select
+class="tableInput workSelect">
+
+<option value="">
+
+SELECT WORK
+
+</option>
+
+${workOptions.map(
+
+w=>`
+
+<option
+
+value="${w.work_name}"
+
+data-price="${w.work_price}"
+
+>
+
+${w.work_name}
+
+</option>
+
+`
+
+).join('')}
+
+</select>
 
 </td>
 
 <td>
-
 <input
 type="text"
 class="tableInput block">
-
 </td>
 
 <td>
-
 <input
 type="number"
 class="tableInput ha">
-
 </td>
 
 <td>
-
 <input
 type="number"
 class="tableInput bag">
-
 </td>
 
 <td>
-
 <input
 type="number"
 class="tableInput acre">
-
 </td>
 
 <td>
-
 <input
 type="number"
 class="tableInput unit_price">
-
 </td>
 
 <td>
-
 <input
 type="number"
 class="tableInput total">
-
 </td>
 
 <td>
-
 <input
 type="text"
 class="tableInput by_person">
-
 </td>
 
 <td>
@@ -175,19 +248,6 @@ DELETE
 `;
 
 }
-
-
-
-// ---------- DEFAULT ROW ----------
-
-inputBody
-.insertAdjacentHTML(
-
-'beforeend',
-
-createRow()
-
-);
 
 
 
@@ -248,6 +308,56 @@ e.target
 
 );
 
+inputBody
+.addEventListener(
+
+'change',
+
+(e)=>{
+
+if(
+
+e.target.classList
+.contains(
+'workSelect'
+)
+
+){
+
+const selected=
+
+e.target
+.options[
+e.target.selectedIndex
+];
+
+const price=
+
+selected.dataset.price
+|| '';
+
+
+
+const row=
+
+e.target.closest(
+'tr'
+);
+
+
+
+row.querySelector(
+'.unit_price'
+).value=
+
+price;
+
+}
+
+}
+
+);
+
 
 
 // ---------- SAVE ALL ----------
@@ -298,7 +408,7 @@ work:
 
 row
 .querySelector(
-'.work'
+'.workSelect'
 )
 .value,
 
@@ -476,7 +586,6 @@ document
 // RELOAD DASHBOARD
 
 loadDashboard(filterDate);
-
 }
 
 catch(err){
@@ -818,7 +927,6 @@ ha,
 bag,
 acre,
 unit_price,
-total,
 by_person
 
 ){
@@ -852,9 +960,6 @@ formattedDate=
 }
 
 
-
-editId.value=id;
-
 editDate.value=
 formattedDate;
 
@@ -875,9 +980,6 @@ acre;
 
 editUnitPrice.value=
 unit_price;
-
-editTotal.value=
-total;
 
 editByPerson.value=
 by_person;
@@ -1040,4 +1142,29 @@ currentMonth;
 
 // ---------- INITIAL LOAD ----------
 
-loadDashboard(currentMonth);
+(async()=>{
+	
+const filterDate =
+
+document
+.getElementById(
+'monthFilter'
+)
+.value;
+
+await loadWorkOptions();
+
+inputBody.innerHTML='';
+
+inputBody
+.insertAdjacentHTML(
+
+'beforeend',
+
+createRow()
+
+);
+
+loadDashboard(filterDate);
+
+})();

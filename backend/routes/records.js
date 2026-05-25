@@ -20,9 +20,15 @@ controller.getRecords
 );
 
 router.get(
+'/work-options',
+controller.getWorkOptions
+);
+
+router.get(
 '/export',
 controller.exportExcel
 );
+
 
 
 // BULK INSERT
@@ -31,6 +37,7 @@ router.post(
 '/bulk',
 controller.bulkInsert
 );
+
 
 
 

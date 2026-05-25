@@ -129,6 +129,52 @@ err.message
 
 };
 
+exports.getWorkOptions =
+async(req,res)=>{
+
+try{
+
+const result=
+
+await pool.query(
+
+`
+
+SELECT
+
+work_id,
+work_code,
+work_name,
+work_price
+
+FROM work_details
+
+ORDER BY work_id ASC
+
+`
+
+);
+
+res.json(
+result.rows
+);
+
+}
+catch(err){
+
+console.error(err);
+
+res.status(500)
+.json({
+
+error:
+err.message
+
+});
+
+}
+
+};
 
 
 // BULK INSERT
