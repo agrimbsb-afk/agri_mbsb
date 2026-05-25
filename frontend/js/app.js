@@ -811,7 +811,6 @@ loadDashboard(filterDate);
 
 function openEdit(
 
-id,
 date,
 work,
 block,
