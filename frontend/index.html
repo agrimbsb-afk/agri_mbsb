@@ -208,6 +208,8 @@ SAVE ALL
 
 <!-- EDIT MODAL -->
 
+<!-- EDIT MODAL -->
+
 <div
 id="editModal"
 class="modal hidden">
@@ -215,9 +217,7 @@ class="modal hidden">
 <div class="modal-content">
 
 <h2>
-
 EDIT RECORD
-
 </h2>
 
 <input
@@ -229,9 +229,22 @@ type="date"
 id="editDate">
 
 <input
-type="text"
+
 id="editWork"
-placeholder="WORK">
+
+class="modalInput"
+
+list="editWorkList"
+
+placeholder="SEARCH WORK"
+
+autocomplete="off"
+
+>
+
+<datalist
+id="editWorkList">
+</datalist>
 
 <input
 type="text"
@@ -256,7 +269,22 @@ placeholder="ACRE">
 <input
 type="number"
 id="editUnitPrice"
-placeholder="UNIT PRICE">
+placeholder="UNIT PRICE"
+readonly
+style="
+background:#f3f4f6;
+cursor:not-allowed;
+">
+
+<input
+type="number"
+id="editTotal"
+placeholder="TOTAL"
+readonly
+style="
+background:#f3f4f6;
+cursor:not-allowed;
+">
 
 <input
 type="text"
@@ -266,15 +294,11 @@ placeholder="BY PERSON">
 <div class="modal-buttons">
 
 <button id="updateBtn">
-
 UPDATE
-
 </button>
 
 <button id="closeModalBtn">
-
 CLOSE
-
 </button>
 
 </div>
@@ -288,8 +312,7 @@ CLOSE
 <!-- SHEETJS -->
 
 <script
-<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js">
-
+src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js">
 </script>
 
 
@@ -298,6 +321,8 @@ CLOSE
 src="./js/app.js">
 
 </script>
-
+<datalist
+id="workList">
+</datalist>
 </body>
 </html>

@@ -48,29 +48,57 @@ API+
 
 );
 
-if(!res.ok){
-
-throw new Error(
-'API FAILED'
-);
-
-}
-
 workOptions=
 await res.json();
 
-console.log(
-'WORK OPTIONS:',
-workOptions
-);
+
+
+// GLOBAL LIST
+
+document
+.getElementById(
+'workList'
+)
+.innerHTML=
+
+workOptions.map(
+
+w=>`
+
+<option
+value="${w.work_name}">
+</option>
+
+`
+
+).join('');
+
+
+
+// EDIT LIST
+
+document
+.getElementById(
+'editWorkList'
+)
+.innerHTML=
+
+workOptions.map(
+
+w=>`
+
+<option
+value="${w.work_name}">
+</option>
+
+`
+
+).join('');
 
 }
 catch(err){
 
-console.error(
-'LOAD ERROR:',
-err
-);
+console.error(err);
 
 }
 
@@ -157,36 +185,32 @@ value="${getToday()}">
 
 <td>
 
-<select
-class="tableInput workSelect">
+<input
 
-<option value="">
+class="tableInput workSelect"
 
-SELECT WORK
+list="workList"
 
-</option>
+placeholder="SEARCH WORK"
+
+autocomplete="off"
+
+>
+
+<datalist id="workList">
 
 ${workOptions.map(
 
 w=>`
 
 <option
-
-value="${w.work_name}"
-
-data-price="${w.work_price}"
-
->
-
-${w.work_name}
-
-</option>
+value="${w.work_name}">
 
 `
 
 ).join('')}
 
-</select>
+</datalist>
 
 </td>
 
@@ -308,12 +332,32 @@ e.target
 
 );
 
-inputBody
-.addEventListener(
+inputBody.addEventListener(
 
-'change',
+'input',
 
 (e)=>{
+
+const row=
+e.target.closest('tr');
+
+if(!row)return;
+
+const ha=
+row.querySelector('.ha');
+
+const bag=
+row.querySelector('.bag');
+
+const unit=
+row.querySelector('.unit_price');
+
+const total=
+row.querySelector('.total');
+
+
+
+// ---------- WORK SEARCH ----------
 
 if(
 
@@ -326,37 +370,101 @@ e.target.classList
 
 const selected=
 
-e.target
-.options[
-e.target.selectedIndex
-];
+workOptions.find(
+
+w=>
+
+w.work_name
+.toLowerCase()
+
+===
+
+e.target.value
+.toLowerCase()
+
+);
+
+if(selected){
+
+unit.value=
+selected.work_price;
+
+}
+
+}
+
+
+
+// ---------- HA LOCK ----------
+
+if(ha.value!==''){
+
+bag.value='';
+
+bag.disabled=true;
+
+}else{
+
+bag.disabled=false;
+
+}
+
+
+
+// ---------- BAG LOCK ----------
+
+if(bag.value!==''){
+
+ha.value='';
+
+ha.disabled=true;
+
+}else{
+
+ha.disabled=false;
+
+}
+
+
+
+// ---------- TOTAL AUTO CALC ----------
+
+const qty=
+
+Number(
+
+ha.value ||
+
+bag.value ||
+
+0
+
+);
 
 const price=
 
-selected.dataset.price
-|| '';
+Number(
 
+unit.value ||
 
-
-const row=
-
-e.target.closest(
-'tr'
-);
-
-
-
-row.querySelector(
-'.unit_price'
-).value=
-
-price;
-
-}
-
-}
+0
 
 );
+
+total.value=
+
+qty && price
+
+?
+
+(qty*price)
+.toFixed(2)
+
+:
+
+'';
+
+});
 
 
 
@@ -712,7 +820,7 @@ dashboardBody
 <button
 class="editBtn action-btn"
 onclick="openEdit(
-
+'${r.id}',
 
 '${r.date || ''}',
 
@@ -915,11 +1023,10 @@ loadDashboard(filterDate);
 }
 
 
-
 // ---------- OPEN EDIT ----------
 
 function openEdit(
-
+id,
 date,
 work,
 block,
@@ -931,6 +1038,44 @@ by_person
 
 ){
 
+let workDropdown='';
+
+workOptions.forEach(
+
+w=>{
+
+workDropdown+=`
+
+<option
+
+value="${w.work_name}"
+
+data-price="${w.work_price}"
+
+${
+
+w.work_name===work
+
+?
+
+'selected'
+
+:
+
+''
+
+}
+
+>
+
+${w.work_name}
+
+</option>
+
+`;
+
+});
+
 document
 .getElementById(
 'editModal'
@@ -941,7 +1086,7 @@ document
 'hidden'
 );
 
-
+editId.value=id;
 
 // DD-MM-YYYY -> YYYY-MM-DD
 
@@ -950,7 +1095,6 @@ let formattedDate='';
 if(date){
 
 const parts=
-
 date.split('-');
 
 formattedDate=
@@ -959,33 +1103,33 @@ formattedDate=
 
 }
 
-
 editDate.value=
 formattedDate;
 
-editWork.value=
-work;
+editWork.value =
+work || '';
 
 editBlock.value=
-block;
+block || '';
 
 editHa.value=
-ha;
+ha || '';
 
 editBag.value=
-bag;
+bag || '';
 
 editAcre.value=
-acre;
+acre || '';
 
 editUnitPrice.value=
-unit_price;
+unit_price || '';
 
 editByPerson.value=
-by_person;
+by_person || '';
+
+editCalc();
 
 }
-
 
 
 // ---------- UPDATE ----------
@@ -1011,6 +1155,8 @@ document
 
 const id=
 editId.value;
+
+
 
 const payload={
 
@@ -1042,6 +1188,8 @@ by_person:
 editByPerson.value
 
 };
+
+
 
 const res=
 
@@ -1094,6 +1242,8 @@ loadDashboard(filterDate);
 
 
 
+
+
 // ---------- CLOSE EDIT ----------
 
 function closeModal(){
@@ -1139,6 +1289,159 @@ document
 )
 .value =
 currentMonth;
+
+// ---------- Auto Calc + HA/BAG Lock ----------
+
+function editCalc(){
+
+const ha=editHa;
+const bag=editBag;
+const unit=editUnitPrice;
+const total=editTotal;
+
+if(ha.value!==''){
+
+bag.value='';
+bag.disabled=true;
+
+}else{
+
+bag.disabled=false;
+
+}
+
+if(bag.value!==''){
+
+ha.value='';
+ha.disabled=true;
+
+}else{
+
+ha.disabled=false;
+
+}
+
+const qty=
+
+Number(
+ha.value||
+bag.value||
+0
+);
+
+const price=
+
+Number(
+unit.value||
+0
+);
+
+total.value=
+
+qty&&price
+
+?
+
+(qty*price)
+.toFixed(2)
+
+:
+
+'';
+
+}
+
+
+
+// ---------- EDIT EVENT LISTENER ----------
+
+[
+
+editHa,
+editBag,
+editUnitPrice
+
+]
+
+.forEach(
+
+el=>{
+
+el.addEventListener(
+
+'input',
+
+editCalc
+
+);
+
+});
+
+
+
+// ---------- EDIT WORK DROPDOWN ----------
+
+editWork
+.addEventListener(
+
+'input',
+
+()=>{
+
+const selected=
+
+workOptions.find(
+
+w=>
+
+w.work_name
+.toLowerCase()
+
+===
+
+editWork.value
+.toLowerCase()
+
+);
+
+if(selected){
+
+editUnitPrice.value=
+
+selected.work_price;
+
+}
+
+editCalc();
+
+});
+
+// ---------- ALL INPUT UPPERCASE ----------
+
+document.addEventListener(
+
+'input',
+
+(e)=>{
+
+if(
+
+e.target.matches(
+
+'input[type="text"], input[list]'
+
+)
+
+){
+
+e.target.value =
+
+e.target.value
+.toUpperCase();
+
+}
+
+});
 
 // ---------- INITIAL LOAD ----------
 
