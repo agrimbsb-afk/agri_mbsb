@@ -1,9 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
 <meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>AGRI MBSB</title>
 
@@ -15,85 +19,290 @@ href="./styles/style.css">
 
 <body>
 
-<h1>AGRI MBSB WORK RECORD</h1>
+<div class="container">
 
-<form id="recordForm">
+<h1>
 
-<input type="date" id="date">
+AGRI MBSB WORK RECORD SYSTEM
 
-<input
-type="text"
-id="work"
-placeholder="WORK">
+</h1>
 
-<input
-type="text"
-id="block"
-placeholder="BLOCK">
 
-<input
-type="number"
-id="ha"
-placeholder="HA">
 
-<input
-type="number"
-id="bag"
-placeholder="BAG">
+<!-- TOP BAR -->
 
-<input
-type="number"
-id="acre"
-placeholder="ACRE">
+<div class="topbar">
 
-<input
-type="number"
-id="unit_price"
-placeholder="UNIT PRICE">
+<button id="openDialogBtn">
 
-<input
-type="number"
-id="total"
-placeholder="TOTAL">
-
-<input
-type="text"
-id="by_person"
-placeholder="BY">
-
-<button type="submit">
-
-SAVE
++ ADD RECORD
 
 </button>
 
-</form>
 
-<table>
+<input
+type="month"
+id="monthFilter">
+
+
+<button id="clearFilterBtn">
+
+CLEAR
+
+</button>
+
+
+<button id="exportBtn">
+
+EXPORT EXCEL
+
+</button>
+
+</div>
+
+
+<!-- DASHBOARD -->
+
+<div class="card">
+
+<h2>
+
+DATABASE RECORDS
+
+</h2>
+
+<table
+id="dashboardTable">
 
 <thead>
 
 <tr>
 
 <th>DATE</th>
+
 <th>WORK</th>
+
 <th>BLOCK</th>
+
 <th>HA</th>
+
 <th>BAG</th>
-<th>TOTAL</th>
-<th>BY</th>
+
+<th>ACRE</th>
+
+<th>UNIT PRICE</th>
+
+<th>BY PERSON</th>
+
+<th>ACTION</th>
 
 </tr>
 
 </thead>
 
-<tbody id="tableBody">
+<tbody
+id="dashboardBody">
 
 </tbody>
 
 </table>
 
-<script src="./js/app.js"></script>
+</div>
+
+</div>
+
+
+
+<!-- ADD RECORD MODAL -->
+
+<div
+id="inputModal"
+class="modal hidden">
+
+<div
+class="modal-content modal-large">
+
+<div class="modal-header">
+
+<h2>
+
+ADD WORK RECORD
+
+</h2>
+
+<button
+id="closeDialogBtn">
+
+✕
+
+</button>
+
+</div>
+
+
+
+<div class="modal-toolbar">
+
+<button id="addRowBtn">
+
++ ADD ROW
+
+</button>
+
+
+</div>
+
+
+
+<table
+id="inputTable">
+
+<thead>
+
+<tr>
+
+<th>DATE *</th>
+
+<th>WORK *</th>
+
+<th>BLOCK</th>
+
+<th>HA</th>
+
+<th>BAG</th>
+
+<th>ACRE</th>
+
+<th>UNIT PRICE</th>
+
+<th>TOTAL</th>
+
+<th>BY PERSON *</th>
+
+<th>ACTION</th>
+
+</tr>
+
+</thead>
+
+<tbody
+id="inputBody">
+
+</tbody>
+
+</table>
+<div class="modal-toolbar">
+
+<button id="saveAllBtn">
+
+SAVE ALL
+
+</button>
+
+</div>
+</div>
+
+</div>
+
+
+
+<!-- EDIT MODAL -->
+
+<div
+id="editModal"
+class="modal hidden">
+
+<div class="modal-content">
+
+<h2>
+
+EDIT RECORD
+
+</h2>
+
+<input
+type="hidden"
+id="editId">
+
+<input
+type="date"
+id="editDate">
+
+<input
+type="text"
+id="editWork"
+placeholder="WORK">
+
+<input
+type="text"
+id="editBlock"
+placeholder="BLOCK">
+
+<input
+type="number"
+id="editHa"
+placeholder="HA">
+
+<input
+type="number"
+id="editBag"
+placeholder="BAG">
+
+<input
+type="number"
+id="editAcre"
+placeholder="ACRE">
+
+<input
+type="number"
+id="editUnitPrice"
+placeholder="UNIT PRICE">
+
+<input
+type="number"
+id="editTotal"
+placeholder="TOTAL">
+
+<input
+type="text"
+id="editByPerson"
+placeholder="BY PERSON">
+
+<div class="modal-buttons">
+
+<button id="updateBtn">
+
+UPDATE
+
+</button>
+
+<button id="closeModalBtn">
+
+CLOSE
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- SHEETJS -->
+
+<script
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js">
+
+</script>
+
+
+
+<script
+src="./js/app.js">
+
+</script>
 
 </body>
 </html>
