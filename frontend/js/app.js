@@ -1,5 +1,5 @@
-const API='http://localhost:3000';
-
+//const API='http://localhost:3000';
+const API='https://agri-mbsb.onrender.com';
 const inputBody =
 document.getElementById('inputBody');
 
