@@ -290,7 +290,7 @@ qty===''
 ? null
 :Number(qty),
 
-work_unit || null
+work_unit || null,
 
 unit_price===''
 ? null

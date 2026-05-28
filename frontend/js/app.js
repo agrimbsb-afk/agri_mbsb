@@ -365,6 +365,9 @@ e.target
 
 );
 
+
+
+// ---------- INPUT EventListener ----------
 inputBody.addEventListener(
 
 'input',
@@ -376,23 +379,17 @@ e.target.closest('tr');
 
 if(!row)return;
 
+inputCalc(
+row
+);
 
+});
 
-const qtyInput=
-row.querySelector('.qty');
+inputBody.addEventListener(
 
-const unitPriceInput=
-row.querySelector('.unit_price');
+'mousedown',
 
-const workUnitInput=
-row.querySelector('.work_unit');
-
-const totalInput=
-row.querySelector('.total');
-
-
-
-// WORK AUTO PRICE + WORK UNIT
+(e)=>{
 
 if(
 
@@ -403,73 +400,15 @@ e.target.classList
 
 ){
 
-const selected=
+e.preventDefault();
 
-workOptions.find(
+e.target.focus();
 
-w=>
-
-w.work_name
-.toLowerCase()
-
-===
-
-e.target.value
-.toLowerCase()
-
-);
-
-if(selected){
-
-// UNIT PRICE
-
-unitPriceInput.value=
-
-selected.work_price || '';
-
-
-
-// WORK UNIT
-
-workUnitInput.value=
-
-selected.work_unit || '';
+e.target.showPicker?.();
 
 }
-
-}
-
-
-
-// TOTAL
-
-const qty=
-
-Number(
-qtyInput.value || 0
-);
-
-const price=
-
-Number(
-unitPriceInput.value || 0
-);
-
-totalInput.value=
-
-qty && price
-
-?
-
-(qty*price)
-.toFixed(2)
-
-:
-
-'';
 
 });
-
 
 
 
@@ -1220,7 +1159,7 @@ block || '';
 editQty.value=
 qty || '';
 
-editwork_unit.value=
+editWorkUnit.value=
 work_unit || '';
 
 editUnitPrice.value=
@@ -1229,12 +1168,9 @@ unit_price || '';
 editByPerson.value=
 by_person || '';
 
-editCalc();
+
 
 }
-
-
-// ---------- UPDATE ----------
 
 // ---------- UPDATE ----------
 
@@ -1432,7 +1368,7 @@ qty:
 editQty.value,
 
 work_unit:
-editwork_unit.value,
+editWorkUnit.value,
 
 unit_price:
 editUnitPrice.value,
@@ -1552,29 +1488,160 @@ document
 .value =
 currentMonth;
 
-// ---------- Auto Calc + QTY Lock ----------
+// ---------- INPUT Auto Calc ----------
 
-function editCalc(){
+function inputCalc(row){
 
-const qty=editQty;
-const unit=editUnitPrice;
-const total=editTotal;
+const workInput=
+row.querySelector('.workSelect');
+
+const qtyInput=
+row.querySelector('.qty');
+
+const unitInput=
+row.querySelector('.work_unit');
+
+const unitPriceInput=
+row.querySelector('.unit_price');
+
+const totalInput=
+row.querySelector('.total');
+
+
+// selected work
+
+const selected=
+
+workOptions.find(
+
+w=>
+
+w.work_name
+.toLowerCase()
+
+===
+
+(workInput.value||'')
+.toLowerCase()
+
+);
+
+
+// auto unit + price
+
+if(selected){
+
+unitInput.value=
+selected.work_unit || '';
+
+unitPriceInput.value=
+selected.work_price || '';
+
+}else{
+
+unitInput.value='';
+
+unitPriceInput.value='';
+
+}
+
+
+// total calc
+
+const qty=
 
 Number(
-qty.value||
-0
+qtyInput.value || 0
 );
 
 const price=
 
 Number(
-unit.value||
-0
+unitPriceInput.value || 0
 );
 
-total.value=
+totalInput.value=
 
-qty&&price
+qty && price
+
+?
+
+(qty*price)
+.toFixed(2)
+
+:
+
+'';
+
+}
+
+// ---------- EDIT CALC ----------
+
+function editCalc(){
+
+// SELECTED WORK
+
+const selected=
+
+workOptions.find(
+
+w=>
+
+w.work_name
+.toLowerCase()
+
+===
+
+(editWork.value||'')
+.toLowerCase()
+
+);
+
+
+
+// AUTO UNIT + PRICE
+
+if(selected){
+
+editWorkUnit.value=
+
+selected.work_unit
+|| '';
+
+editUnitPrice.value=
+
+selected.work_price
+|| '';
+
+}
+
+else{
+
+editWorkUnit.value='';
+
+editUnitPrice.value='';
+
+}
+
+
+
+// TOTAL
+
+const qty=
+
+Number(
+editQty.value || 0
+);
+
+const price=
+
+Number(
+editUnitPrice.value || 0
+);
+
+editTotal.value=
+
+qty && price
 
 ?
 
@@ -1589,7 +1656,7 @@ qty&&price
 
 
 
-// ---------- EDIT EVENT LISTENER ----------
+/* ---------- EDIT EVENT LISTENER ----------
 
 [
 
@@ -1610,44 +1677,44 @@ editCalc
 
 );
 
+});*/
+
+
+// ---------- EDIT INPUT LISTENER ----------
+
+[
+
+editWork,
+editQty
+
+]
+
+.forEach(
+
+el=>{
+
+el.addEventListener(
+
+'input',
+
+editCalc
+
+);
+
 });
-
-
-
-// ---------- EDIT WORK DROPDOWN ----------
 
 editWork
 .addEventListener(
 
-'input',
+'mousedown',
 
-()=>{
+(e)=>{
 
-const selected=
+e.preventDefault();
 
-workOptions.find(
+editWork.focus();
 
-w=>
-
-w.work_name
-.toLowerCase()
-
-===
-
-editWork.value
-.toLowerCase()
-
-);
-
-if(selected){
-
-editUnitPrice.value=
-
-selected.work_price;
-
-}
-
-editCalc();
+editWork.showPicker?.();
 
 });
 
