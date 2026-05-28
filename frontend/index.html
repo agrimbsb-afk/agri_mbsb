@@ -90,8 +90,6 @@ id="dashboardTable">
 
 <th>UNIT PRICE</th>
 
-<th>TOTAL</th>
-
 <th>BY PERSON</th>
 
 <th>ACTION</th>
@@ -290,10 +288,25 @@ background:#d2d3d6;
 cursor:not-allowed;
 ">
 
+<td>
+
 <input
-type="text"
+
 id="editByPerson"
-placeholder="BY PERSON">
+
+list="editWorkerList"
+
+placeholder="SELECT WORKER"
+
+autocomplete="off"
+
+>
+
+<datalist
+id="editWorkerList">
+</datalist>
+
+</td>
 
 <div class="modal-buttons">
 
@@ -327,6 +340,10 @@ src="./js/app.js">
 </script>
 <datalist
 id="workList">
+</datalist>
+
+<datalist id="workerList">
+
 </datalist>
 </body>
 </html>

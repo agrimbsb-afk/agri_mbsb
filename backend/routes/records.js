@@ -25,6 +25,11 @@ controller.getWorkOptions
 );
 
 router.get(
+'/workers',
+controller.getWorkers
+);
+
+router.get(
 '/export',
 controller.exportExcel
 );

@@ -175,6 +175,44 @@ err.message
 
 };
 
+//load staff
+exports.getWorkers = async(req,res)=>{
+
+try{
+
+const result=
+
+await pool.query(
+
+`
+SELECT worker_name
+FROM work_staff
+ORDER BY worker_name ASC
+`
+
+);
+
+res.json(
+result.rows
+);
+
+}
+catch(err){
+
+console.error(err);
+
+res.status(500)
+.json({
+
+error:
+'Server Error'
+
+});
+
+}
+
+};
+
 
 // BULK INSERT
 
@@ -633,16 +671,14 @@ workbook.addWorksheet(
 
 sheet.addRow([
 
-'ID',
 'DATE',
 'WORK',
 'BLOCK',
 'QTY',
-'work_unit',
+'UNIT',
 'UNIT PRICE',
 'TOTAL',
 'BY PERSON',
-'INSERTED AT'
 
 ]);
 
@@ -656,7 +692,6 @@ r=>{
 
 sheet.addRow([
 
-r.id,
 r.date,
 r.work,
 r.block,
@@ -664,8 +699,7 @@ r.qty,
 r.work_unit,
 r.unit_price,
 r.total,
-r.by_person,
-r.created_at
+r.by_person
 
 ]);
 
@@ -798,7 +832,6 @@ horizontal:'left'
 
 sheet.columns=[
 
-{width:10},
 {width:15},
 {width:25},
 {width:18},
@@ -807,8 +840,7 @@ sheet.columns=[
 {width:10},
 {width:15},
 {width:15},
-{width:20},
-{width:25}
+{width:20}
 
 ];
 

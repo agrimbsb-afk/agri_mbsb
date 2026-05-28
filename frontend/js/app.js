@@ -35,6 +35,76 @@ return new Date()
 
 }
 
+async function loadWorkers(){
+
+try{
+
+const res=
+
+await fetch(
+
+API+
+'/records/workers'
+
+);
+
+workerOptions=
+
+await res.json();
+
+
+
+document
+.getElementById(
+'workerList'
+)
+.innerHTML=
+
+workerOptions.map(
+
+w=>`
+
+<option
+
+value="${w.worker_name}"
+
+>
+
+`
+
+).join('');
+
+
+
+document
+.getElementById(
+'editWorkerList'
+)
+.innerHTML=
+
+workerOptions.map(
+
+w=>`
+
+<option
+
+value="${w.worker_name}"
+
+>
+
+`
+
+).join('');
+
+}
+catch(err){
+
+console.error(err);
+
+}
+
+}
+
 async function loadWorkOptions(){
 
 try{
@@ -51,7 +121,7 @@ API+
 workOptions=
 await res.json();
 
-
+let workerOptions=[];
 
 // GLOBAL LIST
 
@@ -103,7 +173,7 @@ console.error(err);
 }
 
 }
-
+loadWorkers();
 
 // ---------- OPEN DIALOG ----------
 
@@ -288,9 +358,19 @@ pointer-events:none;
 </td>
 
 <td>
+
 <input
-type="text"
-class="tableInput by_person">
+
+class="tableInput by_person"
+
+list="workerList"
+
+placeholder="SELECT WORKER"
+
+autocomplete="off"
+
+>
+
 </td>
 
 <td>
@@ -980,8 +1060,6 @@ r=>`
 <td>${r.work_unit||''}</td>
 
 <td>${r.unit_price||''}</td>
-
-<td>${r.total||''}</td>
 
 <td>${r.by_person||''}</td>
 
