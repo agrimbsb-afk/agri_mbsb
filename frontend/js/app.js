@@ -849,7 +849,7 @@ dashboardBody
 `
 
 <tr>
-
+<td>${r.id || ''}</td>
 
 <td>${r.date || ''}</td>
 
@@ -863,6 +863,8 @@ dashboardBody
 
 <td>${r.unit_price || ''}</td>
 
+<td>${r.total || ''}</td>
+
 <td>${r.by_person || ''}</td>
 
 <td>
@@ -870,7 +872,8 @@ dashboardBody
 <button
 class="editBtn action-btn"
 onclick="openEdit(
-'${r.id}',
+
+'${r.id || ''}',
 
 '${r.date || ''}',
 
@@ -883,6 +886,8 @@ onclick="openEdit(
 '${r.work_unit || ''}',
 
 '${r.unit_price || ''}',
+
+'${r.total || ''}',
 
 '${r.by_person || ''}'
 
@@ -976,6 +981,8 @@ r=>`
 
 <td>${r.unit_price||''}</td>
 
+<td>${r.total||''}</td>
+
 <td>${r.by_person||''}</td>
 
 <td>
@@ -989,6 +996,7 @@ onclick="openEdit(
 '${r.qty}',
 '${r.work_unit}',
 '${r.unit_price}',
+'${r.total}',
 '${r.by_person}'
 )">
 
@@ -1248,6 +1256,7 @@ block,
 qty,
 work_unit,
 unit_price,
+total,
 by_person
 
 ){
@@ -1336,6 +1345,9 @@ work_unit || '';
 
 editUnitPrice.value=
 unit_price || '';
+
+editTotal.value=
+total || '';
 
 editByPerson.value=
 by_person || '';
@@ -1622,13 +1634,57 @@ document
 .getElementById(
 'editModal'
 )
-
 .classList
 .add(
 'hidden'
 );
 
 document.body.style.overflow='';
+
+
+
+/* CLEAR EDIT FORM */
+
+editId.value='';
+
+editDate.value='';
+
+editWork.value='';
+
+editBlock.value='';
+
+editQty.value='';
+
+editWorkUnit.value='';
+
+editUnitPrice.value='';
+
+editTotal.value='';
+
+editByPerson.value='';
+
+
+
+/* REMOVE WARNING STYLE */
+
+document
+
+.querySelectorAll(
+
+'#editModal .inputError'
+
+)
+
+.forEach(
+
+el=>{
+
+el.classList
+.remove(
+'inputError'
+);
+
+});
 
 }
 
