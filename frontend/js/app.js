@@ -128,6 +128,8 @@ document
 'hidden'
 );
 
+document.body.style.overflow='hidden';
+
 }
 
 );
@@ -156,6 +158,8 @@ document
 .add(
 'hidden'
 );
+
+document.body.style.overflow='';
 
 }
 
@@ -827,11 +831,10 @@ url +=
 const res=
 await fetch(url);
 
-const data=
+allRecords=
 await res.json();
 
-dashboardBody.innerHTML='';
-
+renderDashboard();
 
 
 data.forEach(
@@ -918,6 +921,173 @@ catch(err){
 console.error(err);
 
 }
+
+}
+
+// ---------- RENDER DASHBOARD ----------
+
+function renderDashboard(){
+
+const dashboardBody=
+
+document.getElementById(
+'dashboardBody'
+);
+
+
+
+const start=
+
+(currentPage-1)
+*rowsPerPage;
+
+const end=
+
+start+rowsPerPage;
+
+
+
+const pageData=
+
+allRecords.slice(
+start,
+end
+);
+
+
+
+dashboardBody.innerHTML=
+
+pageData.map(
+
+r=>`
+
+<tr>
+
+<td>${r.date||''}</td>
+
+<td>${r.work||''}</td>
+
+<td>${r.block||''}</td>
+
+<td>${r.qty||''}</td>
+
+<td>${r.work_unit||''}</td>
+
+<td>${r.unit_price||''}</td>
+
+<td>${r.by_person||''}</td>
+
+<td>
+
+<button
+onclick="openEdit(
+'${r.id}',
+'${r.date}',
+'${r.work}',
+'${r.block}',
+'${r.qty}',
+'${r.work_unit}',
+'${r.unit_price}',
+'${r.by_person}'
+)">
+
+EDIT
+
+</button>
+
+<button
+
+class="action-btn deleteBtn"
+
+onclick="deleteRecord(
+
+'${r.id}'
+
+)"
+
+>
+
+DELETE
+
+</button>
+
+</td>
+
+</tr>
+
+`
+
+).join('');
+
+
+
+renderPagination();
+
+}
+
+// ---------- PAGINATION BUTTON ----------
+
+function renderPagination(){
+
+const totalPages=
+
+Math.ceil(
+
+allRecords.length
+/
+rowsPerPage
+
+);
+
+
+
+let html='';
+
+
+
+for(
+
+let i=1;
+i<=totalPages;
+i++
+
+){
+
+html+=`
+
+<button
+
+class="${
+i===currentPage
+?'activePage'
+:''
+}"
+
+onclick="
+currentPage=${i};
+renderDashboard();
+"
+
+>
+
+${i}
+
+</button>
+
+`;
+
+}
+
+
+
+document
+.getElementById(
+'pagination'
+)
+.innerHTML=
+
+html;
 
 }
 
@@ -1129,6 +1299,8 @@ document
 .remove(
 'hidden'
 );
+
+document.body.style.overflow='hidden';
 
 editId.value=id;
 
@@ -1456,6 +1628,8 @@ document
 'hidden'
 );
 
+document.body.style.overflow='';
+
 }
 
 
@@ -1744,6 +1918,15 @@ e.target.value
 }
 
 });
+
+
+// ---------- PAGINATION ----------
+
+let currentPage=1;
+
+const rowsPerPage=10;
+
+let allRecords=[];
 
 // ---------- INITIAL LOAD ----------
 
