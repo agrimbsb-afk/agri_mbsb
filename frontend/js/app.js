@@ -223,31 +223,64 @@ class="tableInput block">
 <td>
 <input
 type="number"
-class="tableInput ha">
+class="tableInput qty">
+</td>
+
+
+<td>
+<input
+type="text"
+class="tableInput work_unit"
+
+readonly
+
+tabindex="-1"
+
+style="
+background:#d2d3d6;
+cursor:not-allowed;
+pointer-events:none;
+">
 </td>
 
 <td>
 <input
+
 type="number"
-class="tableInput bag">
+
+class="tableInput unit_price"
+
+readonly
+
+tabindex="-1"
+
+style="
+background:#d2d3d6;
+cursor:not-allowed;
+pointer-events:none;
+"
+
+>
 </td>
 
 <td>
 <input
-type="number"
-class="tableInput acre">
-</td>
 
-<td>
-<input
 type="number"
-class="tableInput unit_price">
-</td>
 
-<td>
-<input
-type="number"
-class="tableInput total">
+class="tableInput total"
+
+readonly
+
+tabindex="-1"
+
+style="
+background:#d2d3d6;
+cursor:not-allowed;
+pointer-events:none;
+"
+
+>
 </td>
 
 <td>
@@ -343,21 +376,23 @@ e.target.closest('tr');
 
 if(!row)return;
 
-const ha=
-row.querySelector('.ha');
 
-const bag=
-row.querySelector('.bag');
 
-const unit=
+const qtyInput=
+row.querySelector('.qty');
+
+const unitPriceInput=
 row.querySelector('.unit_price');
 
-const total=
+const workUnitInput=
+row.querySelector('.work_unit');
+
+const totalInput=
 row.querySelector('.total');
 
 
 
-// ---------- WORK SEARCH ----------
+// WORK AUTO PRICE + WORK UNIT
 
 if(
 
@@ -386,8 +421,19 @@ e.target.value
 
 if(selected){
 
-unit.value=
-selected.work_price;
+// UNIT PRICE
+
+unitPriceInput.value=
+
+selected.work_price || '';
+
+
+
+// WORK UNIT
+
+workUnitInput.value=
+
+selected.work_unit || '';
 
 }
 
@@ -395,63 +441,21 @@ selected.work_price;
 
 
 
-// ---------- HA LOCK ----------
-
-if(ha.value!==''){
-
-bag.value='';
-
-bag.disabled=true;
-
-}else{
-
-bag.disabled=false;
-
-}
-
-
-
-// ---------- BAG LOCK ----------
-
-if(bag.value!==''){
-
-ha.value='';
-
-ha.disabled=true;
-
-}else{
-
-ha.disabled=false;
-
-}
-
-
-
-// ---------- TOTAL AUTO CALC ----------
+// TOTAL
 
 const qty=
 
 Number(
-
-ha.value ||
-
-bag.value ||
-
-0
-
+qtyInput.value || 0
 );
 
 const price=
 
 Number(
-
-unit.value ||
-
-0
-
+unitPriceInput.value || 0
 );
 
-total.value=
+totalInput.value=
 
 qty && price
 
@@ -465,6 +469,7 @@ qty && price
 '';
 
 });
+
 
 
 
@@ -528,27 +533,19 @@ row
 )
 .value,
 
-ha:
+qty:
 
 row
 .querySelector(
-'.ha'
+'.qty'
 )
 .value,
 
-bag:
+work_unit:
 
 row
 .querySelector(
-'.bag'
-)
-.value,
-
-acre:
-
-row
-.querySelector(
-'.acre'
+'.work_unit'
 )
 .value,
 
@@ -578,23 +575,136 @@ row
 
 };
 
+// ---------- VALIDATION ----------
+
+row.querySelectorAll(
+'input'
+).forEach(
+
+input=>{
+
+input.classList.remove(
+'inputError'
+);
+
+if(
+
+input.dataset.originalPlaceholder
+
+){
+
+input.placeholder=
+
+input.dataset
+.originalPlaceholder;
+
+}
+
+}
+
+);
+
+let hasError=false;
+
+
+
+function showError(
+
+selector,
+message
+
+){
+
+const input=
+
+row.querySelector(
+selector
+);
+
+if(!input)return;
+
+
+
+input.classList.add(
+'inputError'
+);
+
 
 
 if(
 
-!obj.date ||
-
-!obj.work ||
-
-!obj.by_person
+!input.dataset
+.originalPlaceholder
 
 ){
 
-alert(
+input.dataset
+.originalPlaceholder=
 
-'DATE / WORK / BY PERSON required.'
+input.placeholder;
 
+}
+
+
+
+input.value='';
+
+input.placeholder=
+message;
+
+hasError=true;
+
+}
+
+
+
+// REQUIRED
+
+if(!obj.date){
+
+showError(
+'.date',
+'DATE REQUIRED'
 );
+
+}
+
+if(!obj.work){
+
+showError(
+'.workSelect',
+'WORK REQUIRED'
+);
+
+}
+
+if(
+
+obj.qty==='' ||
+
+obj.qty===null ||
+
+obj.qty===undefined
+
+){
+
+showError(
+'.qty',
+'QTY REQUIRED'
+);
+
+}
+
+if(!obj.by_person){
+
+showError(
+'.by_person',
+'BY PERSON REQUIRED'
+);
+
+}
+
+if(hasError){
 
 return;
 
@@ -805,11 +915,9 @@ dashboardBody
 
 <td>${r.block || ''}</td>
 
-<td>${r.ha || ''}</td>
+<td>${r.qty || ''}</td>
 
-<td>${r.bag || ''}</td>
-
-<td>${r.acre || ''}</td>
+<td>${r.work_unit || ''}</td>
 
 <td>${r.unit_price || ''}</td>
 
@@ -828,11 +936,9 @@ onclick="openEdit(
 
 '${r.block || ''}',
 
-'${r.ha || ''}',
+'${r.qty || ''}',
 
-'${r.bag || ''}',
-
-'${r.acre || ''}',
+'${r.work_unit || ''}',
 
 '${r.unit_price || ''}',
 
@@ -1030,9 +1136,8 @@ id,
 date,
 work,
 block,
-ha,
-bag,
-acre,
+qty,
+work_unit,
 unit_price,
 by_person
 
@@ -1112,14 +1217,11 @@ work || '';
 editBlock.value=
 block || '';
 
-editHa.value=
-ha || '';
+editQty.value=
+qty || '';
 
-editBag.value=
-bag || '';
-
-editAcre.value=
-acre || '';
+editwork_unit.value=
+work_unit || '';
 
 editUnitPrice.value=
 unit_price || '';
@@ -1134,6 +1236,8 @@ editCalc();
 
 // ---------- UPDATE ----------
 
+// ---------- UPDATE ----------
+
 document
 .getElementById(
 'updateBtn'
@@ -1145,13 +1249,168 @@ document
 
 async()=>{
 
-const filterDate =
+const filterDate=
 
 document
 .getElementById(
 'monthFilter'
 )
 .value;
+
+
+
+// ---------- CLEAR OLD WARNING ----------
+
+[
+
+editDate,
+editWork,
+editQty,
+editByPerson
+
+]
+
+.forEach(
+
+input=>{
+
+input.classList.remove(
+'inputError'
+);
+
+if(
+
+input.dataset
+.originalPlaceholder
+
+){
+
+input.placeholder=
+
+input.dataset
+.originalPlaceholder;
+
+}
+
+}
+
+);
+
+
+
+let hasError=false;
+
+
+
+function showError(
+
+input,
+message
+
+){
+
+input.classList.add(
+'inputError'
+);
+
+if(
+
+!input.dataset
+.originalPlaceholder
+
+){
+
+input.dataset
+.originalPlaceholder=
+
+input.placeholder;
+
+}
+
+input.value='';
+
+input.placeholder=
+message;
+
+hasError=true;
+
+}
+
+
+
+// ---------- VALIDATION ----------
+
+if(!editDate.value){
+
+showError(
+
+editDate,
+
+'DATE REQUIRED'
+
+);
+
+}
+
+
+
+if(!editWork.value){
+
+showError(
+
+editWork,
+
+'WORK REQUIRED'
+
+);
+
+}
+
+
+
+if(
+
+editQty.value==='' ||
+
+editQty.value===null ||
+
+editQty.value===undefined
+
+){
+
+showError(
+
+editQty,
+
+'QTY REQUIRED'
+
+);
+
+}
+
+
+
+if(!editByPerson.value){
+
+showError(
+
+editByPerson,
+
+'BY PERSON REQUIRED'
+
+);
+
+}
+
+
+
+if(hasError){
+
+return;
+
+}
+
+
 
 const id=
 editId.value;
@@ -1169,14 +1428,11 @@ editWork.value,
 block:
 editBlock.value,
 
-ha:
-editHa.value,
+qty:
+editQty.value,
 
-bag:
-editBag.value,
-
-acre:
-editAcre.value,
+work_unit:
+editwork_unit.value,
 
 unit_price:
 editUnitPrice.value,
@@ -1218,6 +1474,8 @@ payload
 
 );
 
+
+
 if(!res.ok){
 
 alert(
@@ -1228,13 +1486,17 @@ return;
 
 }
 
+
+
 alert(
 'Updated Successfully'
 );
 
 closeModal();
 
-loadDashboard(filterDate);
+loadDashboard(
+filterDate
+);
 
 }
 
@@ -1290,42 +1552,16 @@ document
 .value =
 currentMonth;
 
-// ---------- Auto Calc + HA/BAG Lock ----------
+// ---------- Auto Calc + QTY Lock ----------
 
 function editCalc(){
 
-const ha=editHa;
-const bag=editBag;
+const qty=editQty;
 const unit=editUnitPrice;
 const total=editTotal;
 
-if(ha.value!==''){
-
-bag.value='';
-bag.disabled=true;
-
-}else{
-
-bag.disabled=false;
-
-}
-
-if(bag.value!==''){
-
-ha.value='';
-ha.disabled=true;
-
-}else{
-
-ha.disabled=false;
-
-}
-
-const qty=
-
 Number(
-ha.value||
-bag.value||
+qty.value||
 0
 );
 
@@ -1357,8 +1593,7 @@ qty&&price
 
 [
 
-editHa,
-editBag,
+editQty,
 editUnitPrice
 
 ]
@@ -1471,3 +1706,39 @@ createRow()
 loadDashboard(filterDate);
 
 })();
+
+document.addEventListener(
+
+'focusin',
+
+(e)=>{
+
+if(
+
+e.target.matches(
+'input'
+)
+
+){
+
+e.target.classList.remove(
+'inputError'
+);
+
+if(
+
+e.target.dataset
+.originalPlaceholder
+
+){
+
+e.target.placeholder=
+
+e.target.dataset
+.originalPlaceholder;
+
+}
+
+}
+
+});

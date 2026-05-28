@@ -392,6 +392,24 @@ cursor:pointer;
 
 }
 
+.inputError{
+
+border:2px solid #ef4444 !important;
+
+background:#fef2f2 !important;
+
+color:#dc2626 !important;
+
+}
+
+.inputError::placeholder{
+
+color:#dc2626;
+
+font-weight:700;
+
+}
+
 /* RESPONSIVE */
 
 @media(max-width:900px){

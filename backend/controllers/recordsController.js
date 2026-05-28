@@ -34,9 +34,8 @@ date,
 
 work,
 block,
-ha,
-bag,
-acre,
+qty,
+work_unit,
 unit_price,
 total,
 by_person,
@@ -78,9 +77,8 @@ date,
 
 work,
 block,
-ha,
-bag,
-acre,
+qty,
+work_unit,
 unit_price,
 total,
 by_person,
@@ -145,7 +143,8 @@ SELECT
 work_id,
 work_code,
 work_name,
-work_price
+work_price,
+work_unit
 
 FROM work_details
 
@@ -211,9 +210,8 @@ const {
 date,
 work,
 block,
-ha,
-bag,
-acre,
+qty,
+work_unit,
 unit_price,
 total,
 by_person
@@ -225,9 +223,10 @@ by_person
 if(
 
 !date ||
-
 !work ||
-
+qty==='' ||
+qty===null ||
+qty===undefined ||
 !by_person
 
 ){
@@ -258,9 +257,8 @@ INSERT INTO work_records
 date,
 work,
 block,
-ha,
-bag,
-acre,
+qty,
+work_unit,
 unit_price,
 total,
 by_person
@@ -272,7 +270,7 @@ VALUES
 (
 
 $1,$2,$3,$4,$5,
-$6,$7,$8,$9
+$6,$7,$8
 
 )
 
@@ -288,17 +286,11 @@ work,
 
 block || null,
 
-ha===''
+qty===''
 ? null
-:Number(ha),
+:Number(qty),
 
-bag===''
-? null
-:Number(bag),
-
-acre===''
-? null
-:Number(acre),
+work_unit || null
 
 unit_price===''
 ? null
@@ -361,9 +353,8 @@ const {
 date,
 work,
 block,
-ha,
-bag,
-acre,
+qty,
+work_unit,
 unit_price,
 total,
 by_person
@@ -375,9 +366,10 @@ by_person
 if(
 
 !date ||
-
 !work ||
-
+qty==='' ||
+qty===null ||
+qty===undefined ||
 !by_person
 
 ){
@@ -408,14 +400,13 @@ SET
 date=$1,
 work=$2,
 block=$3,
-ha=$4,
-bag=$5,
-acre=$6,
-unit_price=$7,
-total=$8,
-by_person=$9
+qty=$4,
+work_unit=$5,
+unit_price=$6,
+total=$7,
+by_person=$8
 
-WHERE id=$10
+WHERE id=$9
 
 RETURNING *
 
@@ -429,11 +420,9 @@ work,
 
 block || null,
 
-ha || null,
+qty || null,
 
-bag || null,
-
-acre || null,
+work_unit || null,
 
 unit_price || null,
 
@@ -557,9 +546,8 @@ date,
 
 work,
 block,
-ha,
-bag,
-acre,
+qty,
+work_unit,
 unit_price,
 total,
 by_person,
@@ -601,9 +589,8 @@ date,
 
 work,
 block,
-ha,
-bag,
-acre,
+qty,
+work_unit,
 unit_price,
 total,
 by_person,
@@ -650,9 +637,8 @@ sheet.addRow([
 'DATE',
 'WORK',
 'BLOCK',
-'HA',
-'BAG',
-'ACRE',
+'QTY',
+'work_unit',
 'UNIT PRICE',
 'TOTAL',
 'BY PERSON',
@@ -674,9 +660,8 @@ r.id,
 r.date,
 r.work,
 r.block,
-r.ha,
-r.bag,
-r.acre,
+r.qty,
+r.work_unit,
 r.unit_price,
 r.total,
 r.by_person,
