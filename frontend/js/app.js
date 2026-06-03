@@ -108,6 +108,15 @@ console.error(err);
 async function loadWorkOptions(){
 
 try{
+	
+console.time('WORK_OPTIONS');
+
+const res =
+await fetch(
+API + '/records/work-options'
+);
+
+console.timeEnd('WORK_OPTIONS');
 
 const res=
 
@@ -2074,7 +2083,13 @@ document
 )
 .value;
 
-await loadWorkOptions();
+await Promise.all([
+
+loadWorkers(),
+
+loadWorkOptions()
+
+]);
 
 inputBody.innerHTML='';
 
