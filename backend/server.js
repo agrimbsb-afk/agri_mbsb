@@ -40,7 +40,9 @@ res.send(
 }
 );
 
-
+console.log(
+'RECORD ROUTES LOADED'
+);
 
 // RECORD ROUTES
 
