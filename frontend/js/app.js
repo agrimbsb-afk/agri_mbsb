@@ -118,15 +118,6 @@ API + '/records/work-options'
 
 console.timeEnd('WORK_OPTIONS');
 
-const res=
-
-await fetch(
-
-API+
-'/records/work-options'
-
-);
-
 workOptions=
 await res.json();
 
