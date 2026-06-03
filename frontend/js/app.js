@@ -793,6 +793,34 @@ alert(
 'Saved Successfully'
 );
 
+// WhatsApp Message
+const msg = `📢 AGRI MBSB WORK RECORD
+
+${payload.map(r =>
+
+`📅 ${r.date}
+🔧 ${r.work}
+📦 Qty : ${r.qty} ${r.work_unit}
+👤 ${r.by_person}`
+
+).join('\n\n')}
+
+`;
+
+// Copy To Clipboard
+await navigator.clipboard.writeText(msg);
+
+// Open WhatsApp Group
+window.open(
+'https://chat.whatsapp.com/F2VelLtwXXHFxw8mmQh2VF',
+'_blank'
+);
+
+alert(
+'WhatsApp message copied.\nPaste into group and Send.'
+);
+
+
 
 
 // CLEAR INPUT
