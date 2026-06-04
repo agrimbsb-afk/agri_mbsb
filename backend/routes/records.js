@@ -34,8 +34,6 @@ router.get(
 controller.exportExcel
 );
 
-
-
 // BULK INSERT
 
 router.post(

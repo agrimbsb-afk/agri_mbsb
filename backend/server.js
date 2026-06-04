@@ -11,6 +11,9 @@ require(
 './routes/records'
 );
 
+const authRoutes =
+require('./routes/auth');
+
 const app =
 express();
 
@@ -51,6 +54,10 @@ app.use(
 recordRoutes
 );
 
+app.use(
+'/auth',
+authRoutes
+);
 
 
 // START SERVER
