@@ -17,9 +17,6 @@ console.log(
 API
 );
 
-const API =
-'https://agri-mbsb.onrender.com';
-
 const res = await fetch(
 
 `${API}/auth/loginUser`,
