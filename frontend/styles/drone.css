@@ -609,10 +609,147 @@ object-fit:contain;
 }
 
 /* ====================================
-   MOBILE
+   MOBILE RESPONSIVE
 ==================================== */
 
 @media(max-width:768px){
+
+    /* Top Form */
+
+    .topbar{
+        grid-template-columns:1fr;
+        gap:10px;
+    }
+
+    .topbar input,
+    .topbar select,
+    .topbar button,
+    .ts-wrapper{
+        width:100%;
+    }
+
+    /* Dashboard Table Scroll */
+
+    .table-container{
+        width:100%;
+        overflow-x:auto;
+        overflow-y:hidden;
+
+        -webkit-overflow-scrolling:touch;
+    }
+
+    .card table{
+        min-width:1100px;
+    }
+
+    .card th,
+    .card td{
+        white-space:nowrap;
+        font-size:12px;
+    }
+
+    /* Dialog */
+
+    .modal-large{
+
+        width:95%;
+        max-width:95%;
+
+        max-height:85vh;
+
+        overflow-y:auto;
+
+        padding:15px;
+    }
+
+    .modal-large table,
+    .modal-large thead,
+    .modal-large tbody,
+    .modal-large th,
+    .modal-large td,
+    .modal-large tr{
+
+        display:block;
+        width:100%;
+    }
+
+    .modal-large thead{
+        display:none;
+    }
+
+    .modal-large tr{
+
+        background:#fff;
+
+        border:1px solid #d7dce5;
+
+        border-radius:12px;
+
+        padding:10px;
+
+        margin-bottom:10px;
+
+        box-shadow:
+        0 2px 8px rgba(
+            0,
+            0,
+            0,
+            .05
+        );
+    }
+
+    .modal-large td{
+
+        display:block;
+
+        border:none;
+
+        padding:4px 0;
+    }
+
+    .modal-large td::before{
+
+        content:attr(data-label);
+
+        display:block;
+
+        font-weight:700;
+
+        color:#183153;
+
+        margin-bottom:4px;
+
+        font-size:13px;
+    }
+
+    .modal-large td input{
+
+        width:100%;
+
+        height:38px;
+
+        padding:8px 10px;
+
+        font-size:14px;
+    }
+
+    .modal-large td button{
+
+        width:100%;
+
+        height:40px;
+    }
+
+    /* Dialog Footer */
+
+    #addDialogRowBtn,
+    #dialogSaveBtn{
+
+        width:100%;
+        height:42px;
+    }
+
+    /* Tom Select */
 
     .ts-control{
 
@@ -620,23 +757,14 @@ object-fit:contain;
         min-height:42px !important;
 
         font-size:14px;
-
     }
 
     .ts-control input{
 
         font-size:14px !important;
-
-    }
-
-    .ts-dropdown .option{
-
-        font-size:14px;
-
     }
 
 }
-
 
 /* ====================================
    SMALL PHONE
@@ -644,32 +772,26 @@ object-fit:contain;
 
 @media(max-width:480px){
 
-h1{
+    .card{
+        padding:10px;
+    }
 
-font-size:22px;
+    .modal-large{
+        width:98%;
+        max-width:98%;
+        padding:12px;
+    }
 
-}
+    .card table{
+        min-width:1200px;
+    }
 
-.card{
-
-padding:10px;
-
-}
-
-input{
-
-font-size:14px;
-
-}
-
-button{
-
-font-size:14px;
+    #saveBtn{
+        width:100%;
+        min-width:unset;
+    }
 
 }
-
-}
-
 /* Dashboard Action Column */
 
 #recordTable td:last-child{
@@ -684,3 +806,4 @@ font-size:14px;
     width:100%;
     gap:8px;
 }
+
