@@ -18,6 +18,7 @@ const droneRoutes =
 require("./routes/droneRoutes");
 
 
+
 const app =
 express();
 
@@ -59,7 +60,7 @@ recordRoutes
 );
 
 app.use(
-'/auth',
+'/api/auth',
 authRoutes
 );
 

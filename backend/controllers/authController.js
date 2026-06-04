@@ -7,6 +7,7 @@ require('jsonwebtoken');
 const pool =
 require('../config/db');
 
+
 exports.loginUser = async (req,res)=>{
 
 try{
@@ -69,7 +70,8 @@ jwt.sign(
 
 {
 id:user.id,
-userId:user.user_Id
+userId:user.user_Id,
+userName:user.user_Name
 },
 
 process.env.JWT_SECRET ||
@@ -77,7 +79,7 @@ process.env.JWT_SECRET ||
 'AGRI_MBSB_SECRET',
 
 {
-expiresIn:'1d'
+expiresIn:'8h'
 }
 
 );

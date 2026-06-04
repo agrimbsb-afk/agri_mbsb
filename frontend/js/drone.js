@@ -1,3 +1,5 @@
+
+
 const API =
 
 location.hostname === '127.0.0.1' ||
@@ -22,6 +24,140 @@ const dialog =
 document.getElementById(
 'itemDialog'
 );
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    async ()=>{
+
+        await validateToken();
+
+    }
+
+);
+
+/* =========================
+   AUTH CHECK
+========================= */
+
+const token = localStorage.getItem("token");
+
+if(!token){
+
+    alert("Please login first.");
+
+    window.location.href = "login.html";
+
+}
+
+async function validateToken(){
+
+    const token =
+    localStorage.getItem("token");
+
+    if(!token){
+
+        window.location.href =
+        "login.html";
+
+        return false;
+
+    }
+
+    try{
+
+        const res = await fetch(
+
+            API + "/api/auth/validate",
+
+            {
+                headers:{
+                    Authorization:
+                    "Bearer " + token
+                }
+            }
+
+        );
+
+        if(!res.ok){
+
+            throw new Error();
+
+        }
+
+        return true;
+
+    }
+    catch(err){
+
+        localStorage.clear();
+
+        alert(
+            "Session expired. Please login again."
+        );
+
+        window.location.href =
+        "login.html";
+
+        return false;
+
+    }
+
+}
+
+document.addEventListener(
+
+"DOMContentLoaded",
+
+async ()=>{
+
+    const ok =
+    await validateToken();
+
+    if(!ok) return;
+
+    const userName =
+    localStorage.getItem(
+        "userName"
+    );
+
+    if(
+        document.getElementById(
+            "loginUser"
+        )
+    ){
+
+        document.getElementById(
+            "loginUser"
+        ).innerText =
+        userName;
+
+    }
+
+});
+
+document
+.getElementById("logoutBtn")
+.addEventListener(
+
+"click",
+
+()=>{
+
+    if(
+        !confirm("Are you sure want to logout?")
+    ){
+        return;
+    }
+
+    localStorage.clear();
+
+    window.location.href =
+    "login.html";
+
+});
+
 
 let workSelect;
 

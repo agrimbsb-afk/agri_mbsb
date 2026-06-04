@@ -41,7 +41,7 @@ try{
 
 const res = await fetch(
 
-`${API}/auth/loginUser`,
+`${API}/api/auth/loginUser` ,
 
 {
 
@@ -121,3 +121,10 @@ alert(
 }
 
 );
+
+document.getElementById("username")
+.addEventListener("input", function(){
+
+    this.value = this.value.toUpperCase();
+
+});
