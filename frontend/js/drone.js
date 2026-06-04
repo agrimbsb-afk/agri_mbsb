@@ -23,6 +23,43 @@ document.getElementById(
 'itemDialog'
 );
 
+let workSelect;
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    workSelect = new TomSelect("#work",{
+
+        create:false,
+
+        persist:false,
+
+        maxOptions:50,
+
+        searchField:["text"],
+
+        sortField:[
+            {
+                field:"$score",
+                direction:"desc"
+            }
+        ],
+
+        placeholder:"Select Work"
+
+    });
+	
+	workSelect.on("item_add", function(){
+
+    this.close();
+
+    this.blur();
+
+});
+
+    await loadWorkOptions();
+
+});
+
 
 
 /* =========================
@@ -171,13 +208,12 @@ tbody.insertAdjacentHTML(
 <td data-label="Item Used">
 
 <input
-
 class="tableInput"
-
 value="${row.item_used}"
-
-oninput="itemRows[${index}].item_used=this.value"
-
+oninput="
+this.value=this.value.toUpperCase();
+itemRows[${index}].item_used=this.value;
+"
 >
 
 </td>
@@ -185,13 +221,12 @@ oninput="itemRows[${index}].item_used=this.value"
 <td data-label="UOM">
 
 <input
-
 class="tableInput"
-
 value="${row.uom}"
-
-oninput="itemRows[${index}].uom=this.value"
-
+oninput="
+this.value=this.value.toUpperCase();
+itemRows[${index}].uom=this.value;
+"
 >
 
 </td>
@@ -215,13 +250,12 @@ oninput="itemRows[${index}].usage=this.value"
 <td data-label="Unit">
 
 <input
-
 class="tableInput"
-
 value="${row.unit}"
-
-oninput="itemRows[${index}].unit=this.value"
-
+oninput="
+this.value=this.value.toUpperCase();
+itemRows[${index}].unit=this.value;
+"
 >
 
 </td>
@@ -229,14 +263,10 @@ oninput="itemRows[${index}].unit=this.value"
 <td data-label="Action">
 
 <button
+class="iconBtn deleteBtn"
+onclick="deleteDialogRow(${index})">
 
-class="deleteBtn"
-
-onclick="deleteDialogRow(${index})"
-
->
-
-DELETE
+    <i class="fa-solid fa-trash"></i>
 
 </button>
 
@@ -341,6 +371,10 @@ ${document.getElementById('block').value}
 </td>
 
 <td>
+${document.getElementById('workArea').value}
+</td>
+
+<td>
 ${document.getElementById('areaSpace').value}
 </td>
 
@@ -360,27 +394,23 @@ ${row.usage}
 ${row.unit}
 </td>
 
-<td>
-${document.getElementById('workArea').value}
-</td>
+<td class="actionCell">
 
-<td>
+<div class="actionBtns">
 
 <button
-class="editBtn"
+class="iconBtn editBtn"
 onclick="editDashboardRow(${index})">
-
-EDIT
-
+<i class="fa-solid fa-pen-to-square"></i>
 </button>
 
 <button
-class="deleteBtn"
+class="iconBtn deleteBtn"
 onclick="deleteDashboardRow(${index})">
-
-DELETE
-
+<i class="fa-solid fa-trash"></i>
 </button>
+
+</div>
 
 </td>
 
@@ -508,14 +538,14 @@ document.getElementById(
 'block'
 ).value,
 
-area_space:
-document.getElementById(
-'areaSpace'
-).value,
-
 work_area:
 document.getElementById(
 'workArea'
+).value,
+
+area_space:
+document.getElementById(
+'areaSpace'
 ).value,
 
 created_by_id:
@@ -577,3 +607,60 @@ document.getElementById(
 ).value =
 
 `${yyyy}-${mm}-${dd}`;
+
+/* input uppercase*/
+
+document.addEventListener("input", function(e) {
+
+    if (
+        e.target.tagName === "INPUT" &&
+        e.target.type !== "number"
+    ) {
+
+        const pos = e.target.selectionStart;
+
+        e.target.value = e.target.value.toUpperCase();
+
+        e.target.setSelectionRange(pos, pos);
+    }
+
+});
+
+async function loadWorkOptions(){
+
+    try{
+
+        const res = await fetch(
+            API + "/api/drone/workoptions"
+        );
+
+        const data = await res.json();
+
+        workSelect.clearOptions();
+
+        data.forEach(work => {
+
+            workSelect.addOption({
+
+                value: work.work_name,
+
+                text:
+                    `${work.work_name}`
+
+            });
+
+        });
+
+        workSelect.refreshOptions(false);
+
+    }
+    catch(err){
+
+        console.error(
+            "LOAD WORK OPTIONS ERROR:",
+            err
+        );
+
+    }
+
+}

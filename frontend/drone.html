@@ -3,6 +3,9 @@
 
 <head>
 
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> 
 <meta charset="UTF-8">
 
 <meta
@@ -47,9 +50,9 @@ DRONE RECORD
 id="workDate"
 type="date">
 
-<input
-id="work"
-placeholder="Work">
+<select id="work">
+    <option value="">Select Work</option>
+</select>
 
 <input
 id="block"
@@ -192,8 +195,13 @@ SAVE
 
 </div>
 
-<script src="./js/drone.js"></script>
+<link
+href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css"
+rel="stylesheet">
 
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+
+<script src="./js/drone.js"></script>
 </body>
 
 </html>

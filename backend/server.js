@@ -14,6 +14,10 @@ require(
 const authRoutes =
 require('./routes/auth');
 
+const droneRoutes =
+require("./routes/droneRoutes");
+
+
 const app =
 express();
 
@@ -59,6 +63,10 @@ app.use(
 authRoutes
 );
 
+app.use(
+    "/api/drone",
+    droneRoutes
+);
 
 // START SERVER
 

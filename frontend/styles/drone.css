@@ -39,15 +39,9 @@ height:42px;
 ==================================== */
 
 .card table{
-
-width:100%;
-
-border-collapse:collapse;
-
-table-layout:fixed;
-
-min-width:unset;
-
+    width:100%;
+    border-collapse:collapse;
+    table-layout:auto;
 }
 
 .card th{
@@ -349,7 +343,6 @@ width:100%;
 
 background:#f39c12;
 
-margin-right:5px;
 
 }
 
@@ -358,6 +351,55 @@ margin-right:5px;
 background:#d68910;
 
 }
+
+.actionCell{
+    width:120px;
+    text-align:center;
+}
+
+.actionBtns{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+}
+
+.iconBtn{
+    width:38px;
+    height:38px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.2s;
+
+    padding:0;
+}
+
+.iconBtn i{
+    margin:0;
+    line-height:1;
+}
+
+.iconBtn:hover{
+    transform:scale(1.08);
+}
+
+.editBtn{
+    background:#2563eb;
+    color:#fff;
+}
+
+.deleteBtn{
+    background:#ef4444;
+    color:#fff;
+}
+
+
 
 /* ==========================
    SAVE BAR
@@ -415,6 +457,186 @@ object-fit:contain;
 
 }
 
+/* ====================================
+   TOM SELECT
+==================================== */
+
+.ts-wrapper{
+    width:100%;
+}
+
+.ts-wrapper.single{
+    width:100%;
+}
+
+.ts-control{
+
+    width:100%;
+
+    height:42px !important;
+    min-height:42px !important;
+
+    border:1px solid #d7dce5 !important;
+    border-radius:10px !important;
+
+    background:#fff !important;
+
+    padding:0 12px !important;
+
+    display:flex;
+    align-items:center;
+
+    box-shadow:none !important;
+
+    font-size:16px;
+
+    cursor:text;
+}
+
+.ts-control input{
+
+    font-size:16px !important;
+
+    line-height:20px !important;
+
+    min-width:1px !important;
+
+}
+
+.ts-control.single .item{
+
+    line-height:20px;
+
+    padding:0;
+
+    margin:0;
+
+}
+
+.ts-control.focus{
+
+    border-color:#183153 !important;
+
+    box-shadow:none !important;
+
+}
+
+.ts-placeholder{
+
+    color:#777 !important;
+
+}
+
+/* ====================================
+   DROPDOWN
+==================================== */
+
+.ts-dropdown{
+
+    z-index:99999 !important;
+
+    border:1px solid #d7dce5;
+
+    border-radius:10px;
+
+    overflow:hidden;
+
+    margin-top:4px;
+
+    background:#fff;
+
+    box-shadow:
+    0 10px 25px rgba(
+        0,
+        0,
+        0,
+        0.15
+    );
+
+}
+
+.ts-dropdown .option{
+
+    padding:10px 12px;
+
+    font-size:14px;
+
+    cursor:pointer;
+
+}
+
+.ts-dropdown .option:hover{
+
+    background:#f3f6fa;
+
+}
+
+.ts-dropdown .active{
+
+    background:#183153 !important;
+
+    color:#fff !important;
+
+}
+
+/* ====================================
+   PREVENT DROPDOWN CLIPPING
+==================================== */
+
+.card{
+    overflow:visible !important;
+}
+
+.topbar{
+    overflow:visible !important;
+}
+
+.ts-wrapper.dropdown-active{
+    z-index:99999;
+}
+
+/* ====================================
+   MATCH OTHER INPUT HEIGHT
+==================================== */
+
+.topbar input,
+.topbar select,
+.ts-control{
+
+    height:42px !important;
+    min-height:42px !important;
+
+}
+
+/* ====================================
+   MOBILE
+==================================== */
+
+@media(max-width:768px){
+
+    .ts-control{
+
+        height:42px !important;
+        min-height:42px !important;
+
+        font-size:14px;
+
+    }
+
+    .ts-control input{
+
+        font-size:14px !important;
+
+    }
+
+    .ts-dropdown .option{
+
+        font-size:14px;
+
+    }
+
+}
+
 
 /* ====================================
    SMALL PHONE
@@ -446,4 +668,19 @@ font-size:14px;
 
 }
 
+}
+
+/* Dashboard Action Column */
+
+#recordTable td:last-child{
+    text-align:center;
+    vertical-align:middle;
+}
+
+#recordTable td:last-child .actionBtns{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:100%;
+    gap:8px;
 }
