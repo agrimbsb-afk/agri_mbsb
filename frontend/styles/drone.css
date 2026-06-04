@@ -291,6 +291,65 @@ overflow-y:auto;
 overflow-x:hidden;
 
 }
+/* ==========================
+   DIALOG FIXED FOOTER
+========================== */
+
+.modal-large{
+
+    display:flex;
+    flex-direction:column;
+
+    overflow:hidden;
+}
+
+/* table content */
+
+.dialog-content{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding-bottom:20px;
+}
+
+/* footer */
+
+.dialog-footer{
+
+    position:sticky;
+
+    bottom:0;
+
+    background:#fff;
+
+    border-top:1px solid #ddd;
+
+    padding:15px;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:12px;
+
+    z-index:999;
+}
+
+/* buttons */
+
+#addDialogRowBtn{
+
+    min-width:100px;
+    height:48px;
+}
+
+#dialogSaveBtn{
+
+    min-width:100px;
+    height:48px;
+}
 
 .modal-large table{
 

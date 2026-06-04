@@ -272,16 +272,40 @@ addDialogRow
 
 function addDialogRow(){
 
-itemRows.push({
+    itemRows.push({
 
-item_used:'',
-uom:'',
-usage:'',
-unit:''
+        item_used:'',
+        uom:'',
+        usage:'',
+        unit:''
 
-});
+    });
 
-renderDialogRows();
+    renderDialogRows();
+
+    setTimeout(()=>{
+
+        const tbody =
+        document.getElementById(
+            'dialogTableBody'
+        );
+
+        const lastRow =
+        tbody.lastElementChild;
+
+        if(lastRow){
+
+            lastRow.scrollIntoView({
+
+                behavior:'smooth',
+
+                block:'nearest'
+
+            });
+
+        }
+
+    },50);
 
 }
 
