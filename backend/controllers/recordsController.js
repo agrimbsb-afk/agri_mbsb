@@ -153,6 +153,7 @@ work_price,
 work_unit
 
 FROM work_details
+WHERE WORK_CAT ='KONG'
 
 ORDER BY work_id ASC
 

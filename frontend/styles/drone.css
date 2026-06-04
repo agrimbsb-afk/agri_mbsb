@@ -359,6 +359,62 @@ background:#d68910;
 
 }
 
+/* ==========================
+   SAVE BAR
+========================== */
+
+.save-bar{
+
+position:sticky;
+
+bottom:0;
+
+background:white;
+
+padding:15px;
+
+border-top:1px solid #ddd;
+
+display:flex;
+
+justify-content:center;
+
+z-index:100;
+
+margin-top:15px;
+
+}
+
+#saveBtn{
+
+min-width:220px;
+
+height:50px;
+
+font-size:16px;
+
+font-weight:700;
+
+}
+
+.login-logo{
+
+text-align:center;
+
+margin-bottom:20px;
+
+}
+
+.login-logo img{
+
+width:100px;
+
+height:100px;
+
+object-fit:contain;
+
+}
+
 
 /* ====================================
    SMALL PHONE
