@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>
+
+Drone Work Record
+
+</title>
+
+<link
+rel="stylesheet"
+href="./styles/style.css">
+
+<link
+rel="stylesheet"
+href="./styles/drone.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>
+
+DRONE WORK RECORD
+
+</h1>
+
+<div class="card">
+
+<div class="topbar">
+
+<input
+id="workDate"
+type="date">
+
+<input
+id="work"
+placeholder="Work">
+
+<input
+id="block"
+placeholder="Block">
+
+<input
+id="areaSpace"
+type="number"
+placeholder="Area Space">
+
+<input
+id="workArea"
+placeholder="Work Area">
+
+<button
+id="addBtn">
+
++ ADD
+
+</button>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Date</th>
+<th>Work</th>
+<th>Block</th>
+<th>Area Space</th>
+<th>Item Used</th>
+<th>UOM</th>
+<th>Usage</th>
+<th>Unit</th>
+<th>Work Area</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="recordTable">
+
+</tbody>
+
+</table>
+
+<div
+style="
+margin-top:15px;
+display:flex;
+justify-content:flex-end;
+">
+
+<button
+id="saveBtn">
+
+SAVE RECORD
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- DIALOG -->
+
+<div
+id="itemDialog"
+class="modal hidden">
+
+<div
+class="modal-content modal-large">
+
+<div
+class="modal-header">
+
+<h2>
+
+DRONE ITEMS
+
+</h2>
+
+<button
+id="closeDialogBtn">
+
+X
+
+</button>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Item Used</th>
+<th>UOM</th>
+<th>Usage</th>
+<th>Unit</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody
+id="dialogTableBody">
+
+</tbody>
+
+</table>
+
+<div
+style="
+display:flex;
+gap:10px;
+margin-top:15px;
+">
+
+<button
+id="addDialogRowBtn">
+
++ ADD ROW
+
+</button>
+
+<button
+id="dialogSaveBtn">
+
+SAVE
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script src="./js/drone.js"></script>
+
+</body>
+
+</html>
