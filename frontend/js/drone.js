@@ -1313,7 +1313,11 @@ document
 
                     "|" +
 
-                    record.work_area;
+                    record.work_area+
+
+                    "|" +
+					
+					record.area_ha;
 
                 if(
                     !groups[key]
