@@ -1359,9 +1359,10 @@ User : ${localStorage.getItem("userName")}
                 message +=
 
 					`📅 ${displayDate}
-					Work : ${first.work}
-					Block : ${first.block}
-					Area : ${first.work_area}
+					Work	: ${first.work}
+					Block	: ${first.block}
+					Area	: ${first.work_area}
+					HA		: ${first.area_ha}
 
 					Item :
 					`;
