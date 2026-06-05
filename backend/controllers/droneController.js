@@ -10,14 +10,8 @@ exports.getDroneWorkOptions = async (req,res)=>{
 
         const result = await pool.query(`
             SELECT
-                work_id,
-                work_code,
-                work_name,
-                work_price,
-                work_unit,
-                work_cat
-            FROM work_details
-            WHERE work_cat='DRONE'
+                work_name
+            FROM work_category
             ORDER BY work_name ASC
         `);
 

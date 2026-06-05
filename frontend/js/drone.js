@@ -344,27 +344,48 @@ function renderLoadedRecords(records){
 
 document
 .getElementById(
-'addBtn'
+    'addBtn'
 )
 .addEventListener(
 
-'click',
+    'click',
 
-()=>{
+    ()=>{
 
-dialog.classList.remove(
-'hidden'
-);
+        const selectedWork =
+        workSelect.getValue();
 
-if(itemRows.length===0){
+        document
+        .getElementById(
+            "dialogTitle"
+        )
+        .innerText =
 
-addDialogRow();
+        selectedWork
 
-}
+        ?
 
-renderDialogRows();
+        `${selectedWork}`
 
-}
+        :
+
+        "DRONE ITEMS";
+
+        dialog.classList.remove(
+            'hidden'
+        );
+
+        if(
+            itemRows.length === 0
+        ){
+
+            addDialogRow();
+
+        }
+
+        renderDialogRows();
+
+    }
 
 );
 
@@ -700,6 +721,19 @@ itemRows[${index}].uom=this.value;
 
 </td>
 
+<td data-label="Unit">
+
+<input
+class="tableInput"
+value="${row.unit}"
+oninput="
+this.value=this.value.toUpperCase();
+itemRows[${index}].unit=this.value;
+"
+>
+
+</td>
+
 <td data-label="Usage">
 
 <input
@@ -712,19 +746,6 @@ value="${row.usage}"
 
 oninput="itemRows[${index}].usage=this.value"
 
->
-
-</td>
-
-<td data-label="Unit">
-
-<input
-class="tableInput"
-value="${row.unit}"
-oninput="
-this.value=this.value.toUpperCase();
-itemRows[${index}].unit=this.value;
-"
 >
 
 </td>
@@ -830,6 +851,46 @@ async ()=>{
         hasError = true;
 
     }
+	
+	/* FLOW HA REQUIRED */
+
+	const flowHa =
+	document.getElementById(
+		"flowha"
+	).value.trim();
+
+	const requireFlowWorks = [
+
+		"RUMPUT",
+		"BATAS",
+		"ULAT",
+		"SIPUT"
+
+	];
+
+	const needFlow =
+	requireFlowWorks.some(
+		w => work.toUpperCase().includes(w)
+	);
+
+	if(
+		needFlow &&
+		!flowHa
+	){
+
+		document
+		.getElementById(
+			"flowha"
+		)
+		.classList.add(
+			"inputError"
+		);
+		alert(
+			`${work} requires L/HA.`
+		);
+		hasError = true;
+
+	}
 
     /* ITEM USED + USAGE REQUIRED */
 
@@ -985,25 +1046,47 @@ async ()=>{
         }
 
         alert(
-            "Record Saved"
-        );
+				"Record Saved"
+			);
 
-        dialog.classList.add(
-            "hidden"
-        );
+			dialog.classList.add(
+				"hidden"
+			);
 
-        /* CLEAR ITEMS */
+			/* KEEP TODAY DATE */
 
-        itemRows = [];
+			document.getElementById(
+				"workDate"
+			).value = workDate;
 
-        window.itemRows =
-        itemRows;
+			/* CLEAR FORM */
 
-        renderDialogRows();
+			workSelect.clear();
 
-        /* RELOAD DASHBOARD */
+			document.getElementById(
+				"flowha"
+			).value = "";
 
-        await loadTodayRecords();
+			document.getElementById(
+				"block"
+			).value = "";
+
+			document.getElementById(
+				"workArea"
+			).value = "";
+
+			document.getElementById(
+				"areaha"
+			).value = "";
+
+			itemRows = [];
+
+			window.itemRows =
+			itemRows;
+
+			renderDialogRows();
+
+			await loadTodayRecords();
 
     }
     catch(err){
@@ -1075,7 +1158,8 @@ document.addEventListener("input", function(e) {
 async function loadWorkOptions(){
 
     try{
-
+		
+		
         const res =
         await fetch(
 
@@ -1152,7 +1236,51 @@ document
     async ()=>{
 
         try{
+			/* FLOW HA REQUIRED */
 
+            const work =
+            editWorkSelect.getValue();
+
+            const flowHa =
+            document.getElementById(
+                "editflowha"
+            ).value.trim();
+
+            const requireFlowWorks = [
+
+                "RUMPUT",
+                "BATAS",
+                "ULAT",
+                "SIPUT"
+
+            ];
+
+            const needFlow =
+            requireFlowWorks.some(
+                w => work.toUpperCase().includes(w)
+            );
+
+            if(
+                needFlow &&
+                !flowHa
+            ){
+
+                document
+                .getElementById(
+                    "editflowha"
+                )
+                .classList.add(
+                    "inputError"
+                );
+
+                alert(
+                    `${work} requires L/HA.`
+                );
+
+                return;
+
+            }
+			
             const payload = {
 
                 date:
@@ -1378,14 +1506,14 @@ User : ${localStorage.getItem("userName")}
 
                 message +=
 
-`Date : ${displayDate}
-Work : ${first.work}
-Block : ${first.block}
-Area : ${first.work_area}
-HA : ${first.area_ha}
-Flow : ${first.flow_ha}
+`*Date	: ${displayDate}*
+Work	: ${first.work}
+Block	: ${first.block}
+Area	: ${first.work_area}
+HA		: ${first.area_ha}
+Flow	: ${first.flow_ha} L/HA
 					
-Item :
+Item	:
 `;
 
 rows.forEach(item=>{
@@ -1401,7 +1529,7 @@ message +=
 			message +=
                 "===================================";
 			message +=
-                "\n";
+                "\n\n";
 
             });
 
