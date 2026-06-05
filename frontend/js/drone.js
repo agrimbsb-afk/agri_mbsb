@@ -268,12 +268,13 @@ function renderLoadedRecords(records){
             `
             <tr>
 
-                <td>
-                    ${displayDate}
-                </td>
 
                 <td>
                     ${record.work || ''}
+                </td>
+				
+				<td>
+                    ${record.flow_ha || ''}
                 </td>
 
                 <td>
@@ -401,6 +402,11 @@ function editRecord(id){
     editWorkSelect.setValue(
         row.work || ""
     );
+
+	document.getElementById(
+        "editflowha"
+    ).value =
+    row.flow_ha || "";
 
     document.getElementById(
         "editBlock"
@@ -907,6 +913,11 @@ async ()=>{
 				document.getElementById(
 					"block"
 				).value,
+				
+				flow_ha:
+				document.getElementById(
+					"flowha"
+				).value,
 
 				work_area:
 				document.getElementById(
@@ -1152,6 +1163,11 @@ document
                 work:
                 editWorkSelect.getValue(),
 
+				flow_ha:
+                document.getElementById(
+                    "editflowha"
+                ).value,
+				
                 block:
                 document.getElementById(
                     "editBlock"

@@ -107,6 +107,7 @@ exports.saveDroneRecord = async (req,res)=>{
 
             date,
             work,
+			flow_ha,
             block,
             work_area,
             area_ha,
@@ -127,7 +128,8 @@ exports.saveDroneRecord = async (req,res)=>{
                 7: item.uom,
                 8: item.usage,
                 9: item.unit,
-                10: created_by_name
+                10: created_by_name,
+				11: flow_ha
             });
 
             await pool.query(
@@ -143,12 +145,13 @@ exports.saveDroneRecord = async (req,res)=>{
                     uom,
                     usage,
                     unit,
-                    by_person
+                    by_person,
+					flow_ha
                 )
                 VALUES
                 (
                     $1,$2,$3,$4,$5,
-                    $6,$7,$8,$9,$10
+                    $6,$7,$8,$9,$10,$11
                 )
                 `,
                 [
@@ -161,7 +164,8 @@ exports.saveDroneRecord = async (req,res)=>{
                     item.uom || '',
                     Number(item.usage) || 0,
                     item.unit || '',
-                    created_by_name || ''
+                    created_by_name || '',
+					Number(flow_ha) || 0,
                 ]
             );
 
@@ -257,6 +261,7 @@ exports.updateRecord = async (req,res)=>{
 
             date,
             work,
+			flow_ha,
             block,
             work_area,
             area_ha,
@@ -275,20 +280,22 @@ exports.updateRecord = async (req,res)=>{
 
                 date = $1,
                 work = $2,
-                block = $3,
-                work_area = $4,
-                area_ha = $5,
-                item_used = $6,
-                uom = $7,
-                usage = $8,
-                unit = $9
+				flow_ha = $3,
+                block = $4,
+                work_area = $5,
+                area_ha = $6,
+                item_used = $7,
+                uom = $8,
+                usage = $9,
+                unit = $10
 
-            WHERE id = $10
+            WHERE id = $11
             `,
 
             [
                 date,
                 work,
+				Number(flow_ha) || 0,
                 block,
                 work_area,
                 Number(area_ha) || 0,
