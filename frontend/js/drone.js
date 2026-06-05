@@ -1333,6 +1333,10 @@ document
 
                     "|" +
 					
+					record.flow_ha+
+
+                    "|" +
+					
 					record.area_ha;
 
                 if(
@@ -1351,7 +1355,7 @@ document
 
             let message =
 
-`🚁 DRONE RECORD
+`DRONE RECORD
 
 User : ${localStorage.getItem("userName")}
 
@@ -1374,26 +1378,29 @@ User : ${localStorage.getItem("userName")}
 
                 message +=
 
-					`📅 ${displayDate}
-					Work	: ${first.work}
-					Block	: ${first.block}
-					Area	: ${first.work_area}
-					HA		: ${first.area_ha}
+`Date : ${displayDate}
+Work : ${first.work}
+Block : ${first.block}
+Area : ${first.work_area}
+HA : ${first.area_ha}
+Flow : ${first.flow_ha}
+					
+Item :
+`;
 
-					Item :
-					`;
+rows.forEach(item=>{
 
-									rows.forEach(item=>{
+message +=
 
-										message +=
+`${item.item_used} - ${item.usage} ${item.uom}
+`;
 
-					`${item.item_used} - ${item.usage} ${item.uom}
-
-					`;
-
-                });
-
-                message +=
+ });
+			message +=
+                "\n";
+			message +=
+                "===================================";
+			message +=
                 "\n";
 
             });
