@@ -367,49 +367,25 @@ renderDialogRows();
 
 );
 
-async function editRecord(id){
+function editRecord(id){
 
-    try{
+    currentEditId = id;
 
-        currentEditId = id;
+    const row = currentRecords.find(
+        r => r.id == id
+    );
 
-        const res = await fetch(
+    if(!row){
 
-            API + "/api/drone/record/" + id,
-
-            {
-
-                headers:{
-
-                    Authorization:
-                    "Bearer " +
-                    localStorage.getItem(
-                        "token"
-                    )
-
-                }
-
-            }
-
+        alert(
+            "Record not found"
         );
 
-        const data =
-        await res.json();
+        return;
 
-        if(!data.success){
-
-            alert(
-                "Failed to load record"
-            );
-
-            return;
-
-        }
-
-        const row =
-        data.data;
-
-        const localDate =
+    }
+	
+	const localDate =
 		new Date(row.date);
 
 		localDate.setHours(
@@ -421,63 +397,53 @@ async function editRecord(id){
 		).value =
 		localDate.toISOString().split("T")[0];
 
-		editWorkSelect.setValue(
-			row.work || ""
-		);
-		
-        document.getElementById(
-            "editBlock"
-        ).value =
-        row.block || "";
 
-        document.getElementById(
-            "editWorkArea"
-        ).value =
-        row.work_area || "";
+    editWorkSelect.setValue(
+        row.work || ""
+    );
 
-        document.getElementById(
-            "editAreaHa"
-        ).value =
-        row.area_ha || "";
+    document.getElementById(
+        "editBlock"
+    ).value =
+    row.block || "";
 
-        document.getElementById(
-            "editItemUsed"
-        ).value =
-        row.item_used || "";
+    document.getElementById(
+        "editWorkArea"
+    ).value =
+    row.work_area || "";
 
-        document.getElementById(
-            "editUom"
-        ).value =
-        row.uom || "";
+    document.getElementById(
+        "editAreaHa"
+    ).value =
+    row.area_ha || "";
 
-        document.getElementById(
-            "editUsage"
-        ).value =
-        row.usage || "";
+    document.getElementById(
+        "editItemUsed"
+    ).value =
+    row.item_used || "";
 
-        document.getElementById(
-            "editUnit"
-        ).value =
-        row.unit || "";
+    document.getElementById(
+        "editUom"
+    ).value =
+    row.uom || "";
 
-        document
-        .getElementById(
-            "editDialog"
-        )
-        .classList.remove(
-            "hidden"
-        );
+    document.getElementById(
+        "editUsage"
+    ).value =
+    row.usage || "";
 
-    }
-    catch(err){
+    document.getElementById(
+        "editUnit"
+    ).value =
+    row.unit || "";
 
-        console.error(err);
-
-        alert(
-            "Failed to load record"
-        );
-
-    }
+    document
+    .getElementById(
+        "editDialog"
+    )
+    .classList.remove(
+        "hidden"
+    );
 
 }
 
