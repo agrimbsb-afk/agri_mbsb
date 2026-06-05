@@ -272,7 +272,78 @@ font-size:14px;
 
 }
 
+.edit-form{
 
+display:flex;
+flex-direction:column;
+gap:12px;
+
+}
+
+.edit-row{
+
+display:flex;
+flex-direction:column;
+gap:5px;
+
+}
+
+.edit-row label{
+
+font-weight:600;
+
+}
+
+.edit-row input,
+.edit-row select{
+
+height:42px;
+
+padding:0 12px;
+
+border:1px solid #ddd;
+
+border-radius:8px;
+
+}
+
+#updateBtn{
+
+background:#1d3c6a;
+
+color:white;
+
+border:none;
+
+padding:12px 25px;
+
+border-radius:8px;
+
+font-weight:600;
+
+cursor:pointer;
+
+}
+
+/* =========================
+   VALIDATION
+========================= */
+
+.inputError{
+
+    border:2px solid #ef4444 !important;
+
+    background:#fff5f5 !important;
+
+}
+
+.ts-control.inputError{
+
+    border:2px solid #ef4444 !important;
+
+    background:#fff5f5 !important;
+
+}
 
 /* ====================================
    DIALOG
@@ -687,15 +758,29 @@ margin-top:15px;
 
 }
 
-#saveBtn{
+#whatsappBtn{
 
-min-width:220px;
+    background:#25D366;
 
-height:50px;
+    color:white;
 
-font-size:16px;
+    border:none;
 
-font-weight:700;
+    padding:14px 40px;
+
+    border-radius:10px;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+}
+
+#whatsappBtn:hover{
+
+    background:#1ebe5d;
 
 }
 
@@ -869,8 +954,98 @@ object-fit:contain;
 }
 
 /* ====================================
+   EDIT DIALOG FIX
+==================================== */
+
+#editDialog{
+
+    align-items:center;
+
+}
+
+#editDialog .modal-content{
+
+    width:700px;
+
+    max-width:95%;
+
+    max-height:90vh;
+
+    padding:0;
+
+    overflow:hidden;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+/* Header */
+
+#editDialog .modal-header{
+
+    flex-shrink:0;
+
+    padding:20px;
+
+    margin:0;
+
+}
+
+/* Scroll Area */
+
+#editDialog .edit-form{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:20px;
+
+}
+
+/* Footer */
+
+#editDialog .dialog-footer{
+
+    flex-shrink:0;
+
+    position:sticky;
+
+    bottom:0;
+
+    background:#fff;
+
+    border-top:1px solid #ddd;
+
+    padding:15px;
+
+    display:flex;
+
+    justify-content:center;
+
+    z-index:10;
+
+}
+
+/* Update Button */
+
+#editDialog #updateBtn{
+
+    min-width:220px;
+
+    height:48px;
+
+}
+
+
+
+/* ====================================
    MOBILE RESPONSIVE
 ==================================== */
+
+
 
 @media(max-width:768px){
 

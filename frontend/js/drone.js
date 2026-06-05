@@ -18,7 +18,10 @@ console.log(
 API
 );
 
+
 let itemRows = [];
+let currentEditId = null;
+let currentRecords = [];
 
 const dialog =
 document.getElementById(
@@ -32,6 +35,7 @@ document.addEventListener(
     async ()=>{
 
         await validateToken();
+		await loadTodayRecords();
 
     }
 
@@ -135,6 +139,7 @@ async ()=>{
 
     }
 
+await loadTodayRecords();
 });
 
 document
@@ -160,43 +165,177 @@ document
 
 
 let workSelect;
+let editWorkSelect;
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener(
+"DOMContentLoaded",
 
-    workSelect = new TomSelect("#work",{
+async ()=>{
 
-        create:false,
+    workSelect =
+    new TomSelect(
+        "#work",
+        {
+            create:false,
+            persist:false
+        }
+    );
 
-        persist:false,
-
-        maxOptions:50,
-
-        searchField:["text"],
-
-        sortField:[
-            {
-                field:"$score",
-                direction:"desc"
-            }
-        ],
-
-        placeholder:"Select Work"
-
-    });
-	
-	workSelect.on("item_add", function(){
-
-    this.close();
-
-    this.blur();
-
-});
+    editWorkSelect =
+    new TomSelect(
+        "#editWork",
+        {
+            create:false,
+            persist:false
+        }
+    );
 
     await loadWorkOptions();
 
 });
 
 
+async function loadTodayRecords(){
+
+    try{
+
+        const token =
+        localStorage.getItem("token");
+
+        const res =
+        await fetch(
+
+            API + "/api/drone/today",
+
+            {
+                headers:{
+                    Authorization:
+                    "Bearer " + token
+                }
+            }
+
+        );
+
+        const data =
+        await res.json();
+
+        console.log(
+            "TODAY RECORDS:",
+            data
+        );
+
+        if(!data.success){
+            return;
+        }
+
+		currentRecords =
+		data.data;
+
+        renderLoadedRecords(
+            data.data
+        );
+
+    }
+    catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+function renderLoadedRecords(records){
+
+    const tbody =
+    document.getElementById(
+        "recordTable"
+    );
+
+    tbody.innerHTML = "";
+
+    records.forEach(record=>{
+
+        const displayDate =
+        new Date(record.date)
+        .toLocaleDateString(
+            "en-GB"
+        );
+
+        tbody.insertAdjacentHTML(
+
+            "beforeend",
+
+            `
+            <tr>
+
+                <td>
+                    ${displayDate}
+                </td>
+
+                <td>
+                    ${record.work || ''}
+                </td>
+
+                <td>
+                    ${record.block || ''}
+                </td>
+
+                <td>
+                    ${record.work_area || ''}
+                </td>
+
+                <td>
+                    ${record.area_ha || 0}
+                </td>
+
+                <td>
+                    ${record.item_used || ''}
+                </td>
+
+                <td>
+                    ${record.uom || ''}
+                </td>
+
+                <td>
+                    ${record.usage || 0}
+                </td>
+
+                <td>
+                    ${record.unit || ''}
+                </td>
+
+                <td class="actionCell">
+
+                    <div class="actionBtns">
+
+                        <button
+                        class="iconBtn editBtn"
+                        onclick="editRecord(${record.id})">
+
+                            <i class="fa-solid fa-pen-to-square"></i>
+
+                        </button>
+
+                        <button
+                        class="iconBtn deleteBtn"
+                        onclick="deleteRecord(${record.id})">
+
+                            <i class="fa-solid fa-trash"></i>
+
+                        </button>
+
+                    </div>
+
+                </td>
+
+            </tr>
+            `
+
+        );
+
+    });
+
+}
 
 /* =========================
    OPEN DIALOG
@@ -228,7 +367,119 @@ renderDialogRows();
 
 );
 
+async function editRecord(id){
 
+    try{
+
+        currentEditId = id;
+
+        const res = await fetch(
+
+            API + "/api/drone/record/" + id,
+
+            {
+
+                headers:{
+
+                    Authorization:
+                    "Bearer " +
+                    localStorage.getItem(
+                        "token"
+                    )
+
+                }
+
+            }
+
+        );
+
+        const data =
+        await res.json();
+
+        if(!data.success){
+
+            alert(
+                "Failed to load record"
+            );
+
+            return;
+
+        }
+
+        const row =
+        data.data;
+
+        const localDate =
+		new Date(row.date);
+
+		localDate.setHours(
+			localDate.getHours() + 8
+		);
+
+		document.getElementById(
+			"editDate"
+		).value =
+		localDate.toISOString().split("T")[0];
+
+		editWorkSelect.setValue(
+			row.work || ""
+		);
+		
+        document.getElementById(
+            "editBlock"
+        ).value =
+        row.block || "";
+
+        document.getElementById(
+            "editWorkArea"
+        ).value =
+        row.work_area || "";
+
+        document.getElementById(
+            "editAreaHa"
+        ).value =
+        row.area_ha || "";
+
+        document.getElementById(
+            "editItemUsed"
+        ).value =
+        row.item_used || "";
+
+        document.getElementById(
+            "editUom"
+        ).value =
+        row.uom || "";
+
+        document.getElementById(
+            "editUsage"
+        ).value =
+        row.usage || "";
+
+        document.getElementById(
+            "editUnit"
+        ).value =
+        row.unit || "";
+
+        document
+        .getElementById(
+            "editDialog"
+        )
+        .classList.remove(
+            "hidden"
+        );
+
+    }
+    catch(err){
+
+        console.error(err);
+
+        alert(
+            "Failed to load record"
+        );
+
+    }
+
+}
 
 /* =========================
    CLOSE DIALOG
@@ -309,6 +560,30 @@ function addDialogRow(){
 
 }
 
+/* =========================
+   Edit Dialog
+========================= */
+document
+.getElementById(
+    "closeEditDialogBtn"
+)
+.addEventListener(
+
+    "click",
+
+    ()=>{
+
+        document
+        .getElementById(
+            "editDialog"
+        )
+        .classList.add(
+            "hidden"
+        );
+
+    }
+
+);
 
 
 /* =========================
@@ -337,7 +612,69 @@ renderDialogRows();
 window.deleteDialogRow =
 deleteDialogRow;
 
+async function deleteRecord(id){
 
+    if(!confirm(
+        "Delete this record?"
+    )){
+        return;
+    }
+
+    try{
+
+        const res = await fetch(
+
+            API +
+            "/api/drone/delete/" +
+            id,
+
+            {
+
+                method:"DELETE",
+
+                headers:{
+                    Authorization:
+                    "Bearer " +
+                    localStorage.getItem(
+                        "token"
+                    )
+                }
+
+            }
+
+        );
+
+        const data =
+        await res.json();
+
+        if(!data.success){
+
+            alert(
+                "Delete Failed"
+            );
+
+            return;
+
+        }
+
+        alert(
+            "Record Deleted"
+        );
+
+        await loadTodayRecords();
+
+    }
+    catch(err){
+
+        console.error(err);
+
+        alert(
+            "Delete Failed"
+        );
+
+    }
+
+}
 
 /* =========================
    RENDER DIALOG TABLE
@@ -445,7 +782,6 @@ onclick="deleteDialogRow(${index})">
 }
 
 
-
 /* =========================
    SAVE DIALOG
 ========================= */
@@ -458,281 +794,254 @@ document
 
 'click',
 
-()=>{
+async ()=>{
 
-const hasItem =
+    /* CLEAR OLD ERROR */
 
-itemRows.some(
+    document
+    .querySelectorAll(
+        ".inputError"
+    )
+    .forEach(el=>{
 
-row=>
+        el.classList.remove(
+            "inputError"
+        );
 
-row.item_used.trim() !== ''
+    });
 
-);
+    let hasError = false;
 
-if(!hasItem){
+    /* DATE REQUIRED */
 
-alert(
-'Please enter at least one item.'
-);
+    const workDate =
+    document.getElementById(
+        "workDate"
+    ).value.trim();
 
-return;
+    if(!workDate){
+
+        document
+        .getElementById(
+            "workDate"
+        )
+        .classList.add(
+            "inputError"
+        );
+
+        hasError = true;
+
+    }
+
+    /* WORK REQUIRED */
+
+    const work =
+    document.getElementById(
+        "work"
+    ).value.trim();
+
+    if(!work){
+
+        const tsControl =
+        document.querySelector(
+            ".ts-control"
+        );
+
+        if(tsControl){
+
+            tsControl.classList.add(
+                "inputError"
+            );
+
+        }
+
+        hasError = true;
+
+    }
+
+    /* ITEM USED + USAGE REQUIRED */
+
+    const rows =
+    document.querySelectorAll(
+        "#dialogTableBody tr"
+    );
+
+    rows.forEach(
+
+        (row,index)=>{
+
+            const itemInput =
+            row.querySelector(
+                'td:nth-child(1) input'
+            );
+
+            const usageInput =
+            row.querySelector(
+                'td:nth-child(3) input'
+            );
+
+            if(
+
+                !itemRows[index].item_used ||
+
+                itemRows[index]
+                .item_used
+                .trim() === ''
+
+            ){
+
+                itemInput.classList.add(
+                    "inputError"
+                );
+
+                hasError = true;
+
+            }
+
+            if(
+
+                itemRows[index].usage === '' ||
+
+                itemRows[index].usage === null ||
+
+                itemRows[index].usage === undefined
+
+            ){
+
+                usageInput.classList.add(
+                    "inputError"
+                );
+
+                hasError = true;
+
+            }
+
+        }
+
+    );
+
+    if(hasError){
+
+        return;
+
+    }
+
+    try{
+		
+		const url =
+		API + "/api/drone/save";
+
+			const payload = {
+
+				date: workDate,
+
+				work: work,
+
+				block:
+				document.getElementById(
+					"block"
+				).value,
+
+				work_area:
+				document.getElementById(
+					"workArea"
+				).value,
+
+				area_ha:
+				document.getElementById(
+					"areaha"
+				).value,
+
+				created_by_name:
+				localStorage.getItem(
+					"userName"
+				),
+
+				items:
+				itemRows
+
+			};
+
+        const res =
+		await fetch(
+
+			url,
+
+			{
+
+				method:"POST",
+
+				headers:{
+
+					"Content-Type":
+					"application/json",
+
+					Authorization:
+					"Bearer " +
+					localStorage.getItem(
+						"token"
+					)
+
+				},
+
+				body:
+				JSON.stringify(
+					payload
+				)
+
+			}
+
+		);
+
+        const data =
+        await res.json();
+
+        if(!data.success){
+
+            alert(
+                data.message ||
+                "Save Failed"
+            );
+
+            return;
+
+        }
+
+        alert(
+            "Record Saved"
+        );
+
+        dialog.classList.add(
+            "hidden"
+        );
+
+        /* CLEAR ITEMS */
+
+        itemRows = [];
+
+        window.itemRows =
+        itemRows;
+
+        renderDialogRows();
+
+        /* RELOAD DASHBOARD */
+
+        await loadTodayRecords();
+
+    }
+    catch(err){
+
+        console.error(err);
+
+        alert(
+            "Save Failed"
+        );
+
+    }
 
 }
-
-renderDashboard();
-
-dialog.classList.add(
-'hidden'
 );
 
-}
-
-);
-
-
-
-/* =========================
-   DASHBOARD
-========================= */
-
-function renderDashboard(){
-
-const tbody =
-
-document.getElementById(
-'recordTable'
-);
-
-tbody.innerHTML='';
-
-itemRows.forEach(
-
-(row,index)=>{
-
-tbody.insertAdjacentHTML(
-
-'beforeend',
-
-`
-
-<tr>
-
-<td>
-${document.getElementById('workDate').value}
-</td>
-
-<td>
-${document.getElementById('work').value}
-</td>
-
-<td>
-${document.getElementById('block').value}
-</td>
-
-<td>
-${document.getElementById('workArea').value}
-</td>
-
-<td>
-${document.getElementById('areaSpace').value}
-</td>
-
-<td>
-${row.item_used}
-</td>
-
-<td>
-${row.uom}
-</td>
-
-<td>
-${row.usage}
-</td>
-
-<td>
-${row.unit}
-</td>
-
-<td class="actionCell">
-
-<div class="actionBtns">
-
-<button
-class="iconBtn editBtn"
-onclick="editDashboardRow(${index})">
-<i class="fa-solid fa-pen-to-square"></i>
-</button>
-
-<button
-class="iconBtn deleteBtn"
-onclick="deleteDashboardRow(${index})">
-<i class="fa-solid fa-trash"></i>
-</button>
-
-</div>
-
-</td>
-
-</tr>
-
-`
-
-);
-
-}
-
-);
-
-}
-
-
-
-/* =========================
-   EDIT DASHBOARD
-========================= */
-
-function editDashboardRow(index){
-
-dialog.classList.remove(
-'hidden'
-);
-
-renderDialogRows();
-
-setTimeout(()=>{
-
-const rows =
-
-document.querySelectorAll(
-'#dialogTableBody tr'
-);
-
-if(rows[index]){
-
-rows[index].scrollIntoView({
-
-behavior:'smooth',
-
-block:'center'
-
-});
-
-}
-
-},100);
-
-}
-
-window.editDashboardRow =
-editDashboardRow;
-
-
-
-/* =========================
-   DELETE DASHBOARD
-========================= */
-
-function deleteDashboardRow(index){
-
-if(
-
-!confirm(
-'Delete this record?'
-)
-
-){
-
-return;
-
-}
-
-itemRows.splice(
-index,
-1
-);
-
-if(itemRows.length===0){
-
-addDialogRow();
-
-}
-
-renderDashboard();
-
-}
-
-window.deleteDashboardRow =
-deleteDashboardRow;
-
-
-
-/* =========================
-   SAVE RECORD
-========================= */
-
-document
-.getElementById(
-'saveBtn'
-)
-.addEventListener(
-
-'click',
-
-()=>{
-
-const payload = {
-
-date:
-document.getElementById(
-'workDate'
-).value,
-
-work:
-document.getElementById(
-'work'
-).value,
-
-block:
-document.getElementById(
-'block'
-).value,
-
-work_area:
-document.getElementById(
-'workArea'
-).value,
-
-area_space:
-document.getElementById(
-'areaSpace'
-).value,
-
-created_by_id:
-localStorage.getItem(
-'userId'
-),
-
-created_by_name:
-localStorage.getItem(
-'userName'
-),
-
-items:
-itemRows
-
-};
-
-console.log(
-'DRONE RECORD',
-payload
-);
-
-alert(
-'Record Saved To Dashboard Memory'
-);
-
-});
 
 
 
@@ -790,37 +1099,348 @@ async function loadWorkOptions(){
 
     try{
 
-        const res = await fetch(
-            API + "/api/drone/workoptions"
+        const res =
+        await fetch(
+
+            API + "/api/drone/workoptions",
+
+            {
+                headers:{
+                    Authorization:
+                    "Bearer " +
+                    localStorage.getItem(
+                        "token"
+                    )
+                }
+            }
+
         );
 
-        const data = await res.json();
+        const data =
+        await res.json();
 
         workSelect.clearOptions();
 
-        data.forEach(work => {
+        editWorkSelect.clearOptions();
 
-            workSelect.addOption({
+        data.forEach(work=>{
 
-                value: work.work_name,
+            const option = {
+
+                value:
+                work.work_name,
 
                 text:
-                    `${work.work_name}`
+                work.work_name
 
-            });
+            };
+
+            workSelect.addOption(
+                option
+            );
+
+            editWorkSelect.addOption(
+                option
+            );
 
         });
 
-        workSelect.refreshOptions(false);
+        workSelect.refreshOptions(
+            false
+        );
+
+        editWorkSelect.refreshOptions(
+            false
+        );
+		
+		
 
     }
     catch(err){
 
-        console.error(
-            "LOAD WORK OPTIONS ERROR:",
-            err
-        );
+        console.error(err);
 
     }
 
 }
+
+document
+.getElementById(
+    "updateBtn"
+)
+.addEventListener(
+
+    "click",
+
+    async ()=>{
+
+        try{
+
+            const payload = {
+
+                date:
+                document.getElementById(
+                    "editDate"
+                ).value,
+
+                work:
+                editWorkSelect.getValue(),
+
+                block:
+                document.getElementById(
+                    "editBlock"
+                ).value,
+
+                work_area:
+                document.getElementById(
+                    "editWorkArea"
+                ).value,
+
+                area_ha:
+                document.getElementById(
+                    "editAreaHa"
+                ).value,
+
+                item_used:
+                document.getElementById(
+                    "editItemUsed"
+                ).value,
+
+                uom:
+                document.getElementById(
+                    "editUom"
+                ).value,
+
+                usage:
+                document.getElementById(
+                    "editUsage"
+                ).value,
+
+                unit:
+                document.getElementById(
+                    "editUnit"
+                ).value
+
+            };
+
+            const res = await fetch(
+
+                API +
+                "/api/drone/update/" +
+                currentEditId,
+
+                {
+
+                    method:"PUT",
+
+                    headers:{
+
+                        "Content-Type":
+                        "application/json",
+
+                        Authorization:
+                        "Bearer " +
+                        localStorage.getItem(
+                            "token"
+                        )
+
+                    },
+
+                    body:JSON.stringify(
+                        payload
+                    )
+
+                }
+
+            );
+
+            const data =
+            await res.json();
+
+            if(!data.success){
+
+                alert(
+                    "Update Failed"
+                );
+
+                return;
+
+            }
+
+            alert(
+                "Record Updated"
+            );
+
+            document
+            .getElementById(
+                "editDialog"
+            )
+            .classList.add(
+                "hidden"
+            );
+
+            await loadTodayRecords();
+
+        }
+        catch(err){
+
+            console.error(err);
+
+            alert(
+                "Update Failed"
+            );
+
+        }
+
+    }
+
+);
+
+/* =========================
+   WHATSAPP EXPORT
+========================= */
+
+document
+.getElementById(
+    "whatsappBtn"
+)
+.addEventListener(
+
+    "click",
+
+    async ()=>{
+		
+		console.log(
+			currentRecords
+		);
+
+        try{
+
+            if(
+                !currentRecords ||
+                currentRecords.length === 0
+            ){
+
+                alert(
+                    "No records found."
+                );
+
+                return;
+
+            }
+
+            const groups = {};
+
+            currentRecords.forEach(record=>{
+
+                const key =
+
+                    record.date +
+
+                    "|" +
+
+                    record.work +
+
+                    "|" +
+
+                    record.block +
+
+                    "|" +
+
+                    record.work_area;
+
+                if(
+                    !groups[key]
+                ){
+
+                    groups[key] = [];
+
+                }
+
+                groups[key].push(
+                    record
+                );
+
+            });
+
+            let message =
+
+`🚁 DRONE RECORD
+
+User : ${localStorage.getItem("userName")}
+
+`;
+
+            Object.values(
+                groups
+            ).forEach(rows=>{
+
+                const first =
+                rows[0];
+
+                const displayDate =
+                new Date(
+                    first.date
+                )
+                .toLocaleDateString(
+                    "en-GB"
+                );
+
+                message +=
+
+					`📅 ${displayDate}
+					Work : ${first.work}
+					Block : ${first.block}
+					Area : ${first.work_area}
+
+					Item :
+					`;
+
+									rows.forEach(item=>{
+
+										message +=
+
+					`${item.item_used} - ${item.usage} ${item.uom}
+
+					`;
+
+                });
+
+                message +=
+                "\n";
+
+            });
+
+            await navigator.clipboard.writeText(
+				message
+			);
+
+			const whatsappUrl =
+
+				"https://wa.me/?text=" +
+
+				encodeURIComponent(
+					message
+				);
+
+			window.open(
+				whatsappUrl,
+				"_blank"
+			);
+
+        }
+        catch(err){
+
+            console.error(
+                err
+            );
+
+            alert(
+                "Copy Failed"
+            );
+
+        }
+
+    }
+
+);
