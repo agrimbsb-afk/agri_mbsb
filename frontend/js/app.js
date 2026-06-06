@@ -238,18 +238,18 @@ document.body.style.overflow='';
 
 
 // ---------- CREATE INPUT ROW ----------
-function createRow(){
+function createRow(date = getToday()){
 
 
     return `
 
     <tr>
 
-        <td>
+         <td>
             <input
             type="date"
             class="tableInput date"
-            value="${getToday()}">
+            value="${date}">
         </td>
 
         <td>
@@ -315,7 +315,6 @@ function createRow(){
 }
 
 
-
 // ---------- ADD ROW ----------
 
 document
@@ -328,12 +327,41 @@ document
 
     ()=>{
 
+        /* GET LAST SELECTED DATE */
+
+        const dateInputs =
+
+        [
+            ...inputBody.querySelectorAll(
+                ".date"
+            )
+        ];
+
+        let selectedDate =
+        getToday();
+
+        if(dateInputs.length){
+
+            selectedDate =
+
+            dateInputs[
+                dateInputs.length - 1
+            ].value
+
+            || getToday();
+
+        }
+
+        /* INSERT NEW ROW */
+
         inputBody
         .insertAdjacentHTML(
 
             "afterbegin",
 
-            createRow()
+            createRow(
+                selectedDate
+            )
 
         );
 
@@ -352,19 +380,19 @@ document
 
         });
 
-        /* FOCUS FIRST WORK INPUT */
+        /* FOCUS WORK */
 
         setTimeout(()=>{
 
-            const firstInput =
+            const firstWork =
 
-            document.querySelector(
+            inputBody.querySelector(
                 ".workSelect"
             );
 
-            if(firstInput){
+            if(firstWork){
 
-                firstInput.focus();
+                firstWork.focus();
 
             }
 
