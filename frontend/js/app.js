@@ -746,6 +746,8 @@ await fetch(url);
 allRecords=
 await res.json();
 
+currentPage = 1;
+
 renderDashboard();
 
 

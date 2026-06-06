@@ -60,7 +60,7 @@ date,
 'YYYY-MM'
 )=$1
 
-ORDER BY id ASC
+ORDER BY date ASC
 
 `;
 
@@ -96,7 +96,7 @@ created_at,
 
 FROM work_records
 
-ORDER BY id ASC
+ORDER BY date ASC
 
 `;
 
