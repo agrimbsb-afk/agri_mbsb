@@ -70,46 +70,47 @@ EXPORT EXCEL
 DATABASE RECORDS
 
 </h2>
+   <div class="table-wrapper">
+		<table
+		id="dashboardTable">
 
-<table
-id="dashboardTable">
+		<thead>
 
-<thead>
+		<tr>
 
-<tr>
+		<th>DATE</th>
 
-<th>DATE</th>
+		<th>WORK</th>
 
-<th>WORK</th>
+		<th>BLOCK</th>
 
-<th>BLOCK</th>
+		<th>QTY</th>
 
-<th>QTY</th>
+		<th>UNIT</th>
 
-<th>UNIT</th>
+		<th>UNIT PRICE</th>
 
-<th>UNIT PRICE</th>
+		<th>BY PERSON</th>
 
-<th>BY PERSON</th>
+		<th>ACTION</th>
 
-<th>ACTION</th>
+		</tr>
 
-</tr>
+		</thead>
 
-</thead>
+		<tbody
+		id="dashboardBody">
 
-<tbody
-id="dashboardBody">
+		</tbody>
 
-</tbody>
+		</table>
 
-</table>
-<div id="pagination"></div>
+	</div>
 </div>
-
+<div
+    id="pagination"
+    class="pagination">
 </div>
-
-
 
 <!-- ADD RECORD MODAL -->
 
@@ -120,89 +121,90 @@ class="modal hidden">
 <div
 class="modal-content modal-large">
 
-<div class="modal-header">
+    <!-- HEADER -->
 
-<h2>
+    <div class="modal-header">
 
-ADD WORK RECORD
+        <h2>
+            ADD WORK RECORD
+        </h2>
 
-</h2>
+        <button
+        id="closeDialogBtn">
 
-<button
-id="closeDialogBtn">
+            ✕
 
-✕
+        </button>
 
-</button>
+    </div>
+
+    <!-- BODY -->
+
+    <!-- BODY -->
+
+<div class="modal-body">
+
+    <table id="inputTable">
+
+        <thead>
+
+            <tr>
+
+                <th>DATE *</th>
+
+                <th>WORK *</th>
+
+                <th>BLOCK</th>
+
+                <th>QTY</th>
+
+                <th>UNIT</th>
+
+                <th>UNIT PRICE</th>
+
+                <th>TOTAL</th>
+
+                <th>BY PERSON *</th>
+
+                <th>ACTION</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody id="inputBody">
+
+        </tbody>
+
+    </table>
+
+</div>
+
+    <!-- FOOTER -->
+
+    <div class="modal-footer">
+
+        <button
+        id="addRowBtn">
+
+            + ADD ROW
+
+        </button>
+
+        <button
+        id="saveAllBtn">
+
+            SAVE ALL
+
+        </button>
+
+    </div>
+
+</div>
 
 </div>
 
 
-
-<div class="modal-toolbar">
-
-<button id="addRowBtn">
-
-+ ADD ROW
-
-</button>
-
-
-</div>
-
-
-
-<table
-id="inputTable">
-
-<thead>
-
-<tr>
-
-<th>DATE *</th>
-
-<th>WORK *</th>
-
-<th>BLOCK</th>
-
-<th>QTY</th>
-
-<th>UNIT</th>
-
-<th>UNIT PRICE</th>
-
-<th>TOTAL</th>
-
-<th>BY PERSON *</th>
-
-<th>ACTION</th>
-
-</tr>
-
-</thead>
-
-<tbody
-id="inputBody">
-
-</tbody>
-
-</table>
-<div class="modal-toolbar">
-
-<button id="saveAllBtn">
-
-SAVE ALL
-
-</button>
-
-</div>
-</div>
-
-</div>
-
-
-
-<!-- EDIT MODAL -->
 
 <!-- EDIT MODAL -->
 
@@ -210,119 +212,167 @@ SAVE ALL
 id="editModal"
 class="modal hidden">
 
-<div class="modal-content">
+    <div
+    class="modal-content edit-modal">
 
-<div class="edit-header">
+        <div class="modal-header">
 
-<h2>
+            <h2>
+                EDIT RECORD
+            </h2>
 
-EDIT RECORD
+        </div>
 
-</h2>
+        <input
+        type="hidden"
+        id="editId">
+
+        <div class="editGroup">
+
+            <label>Date</label>
+
+            <input
+            type="date"
+            id="editDate">
+
+        </div>
+
+        <div class="editGroup">
+
+            <label>Work</label>
+
+            <input
+            id="editWork"
+            class="modalInput"
+            list="editWorkList"
+            placeholder="SEARCH WORK"
+            autocomplete="off">
+
+            <datalist
+            id="editWorkList">
+            </datalist>
+
+        </div>
+
+        <div class="editGroup">
+
+            <label>Block</label>
+
+            <input
+            type="text"
+            id="editBlock"
+            placeholder="BLOCK">
+
+        </div>
+
+        <div class="editGroup">
+
+            <label>Qty</label>
+
+            <input
+            type="number"
+            id="editQty"
+            placeholder="QTY">
+
+        </div>
+
+        <div class="editGroup">
+
+            <label>Unit</label>
+
+            <input
+            type="text"
+            id="editWorkUnit"
+            readonly
+            style="
+            background:#d2d3d6;
+            cursor:not-allowed;
+            ">
+
+        </div>
+
+        <div class="editGroup">
+
+            <label>Unit Price</label>
+
+            <input
+            type="number"
+            id="editUnitPrice"
+            readonly
+            style="
+            background:#d2d3d6;
+            cursor:not-allowed;
+            ">
+
+        </div>
+
+        <div class="editGroup">
+
+            <label>Total</label>
+
+            <input
+            type="number"
+            id="editTotal"
+            readonly
+            style="
+            background:#d2d3d6;
+            cursor:not-allowed;
+            ">
+
+        </div>
+
+        <div class="editGroup">
+
+            <label>By Person</label>
+
+            <input
+            id="editByPerson"
+            list="editWorkerList"
+            placeholder="SELECT WORKER"
+            autocomplete="off">
+
+            <datalist
+            id="editWorkerList">
+            </datalist>
+
+        </div>
+
+        <div class="modal-buttons">
+
+            <button
+            id="updateBtn">
+
+                UPDATE
+
+            </button>
+
+            <button
+            id="closeModalBtn">
+
+                CLOSE
+
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 
-<input
-type="hidden"
-id="editId">
 
-<input
-type="date"
-id="editDate">
 
-<input
-
-id="editWork"
-
-class="modalInput"
-
-list="editWorkList"
-
-placeholder="SEARCH WORK"
-
-autocomplete="off"
-
->
+<!-- DATALIST -->
 
 <datalist
-id="editWorkList">
+id="workList">
 </datalist>
-
-<input
-type="text"
-id="editBlock"
-placeholder="BLOCK">
-
-<input
-type="number"
-id="editQty"
-placeholder="QTY">
-
-<input
-type="text"
-id="editWorkUnit"
-placeholder="UNIT"
-readonly
-style="
-background:#d2d3d6;
-cursor:not-allowed;
-">
-
-<input
-type="number"
-id="editUnitPrice"
-placeholder="UNIT PRICE"
-readonly
-style="
-background:#d2d3d6;
-cursor:not-allowed;
-">
-
-<input
-type="number"
-id="editTotal"
-placeholder="TOTAL"
-readonly
-style="
-background:#d2d3d6;
-cursor:not-allowed;
-">
-
-<td>
-
-<input
-
-id="editByPerson"
-
-list="editWorkerList"
-
-placeholder="SELECT WORKER"
-
-autocomplete="off"
-
->
 
 <datalist
-id="editWorkerList">
+id="workerList">
 </datalist>
 
-</td>
 
-<div class="modal-buttons">
 
-<button id="updateBtn">
-UPDATE
-</button>
-
-<button id="closeModalBtn">
-CLOSE
-</button>
-
-</div>
-
-</div>
-
-</div>
 
 
 

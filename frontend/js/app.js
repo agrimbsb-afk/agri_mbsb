@@ -238,155 +238,79 @@ document.body.style.overflow='';
 
 
 // ---------- CREATE INPUT ROW ----------
-
 function createRow(){
 
-console.log(
-'createRow OPTIONS:',
-workOptions
-);
 
-return `
+    return `
 
-<tr>
+    <tr>
 
-<td>
-<input
-type="date"
-class="tableInput date"
-value="${getToday()}">
-</td>
+        <td>
+            <input
+            type="date"
+            class="tableInput date"
+            value="${getToday()}">
+        </td>
 
-<td>
+        <td>
+            <input
+            class="tableInput workSelect"
+            list="workList"
+            placeholder="SEARCH WORK">
+        </td>
 
-<input
+        <td>
+            <input
+            type="text"
+            class="tableInput block">
+        </td>
 
-class="tableInput workSelect"
+        <td>
+            <input
+            type="number"
+            class="tableInput qty">
+        </td>
 
-list="workList"
+        <td>
+            <input
+            type="text"
+            class="tableInput work_unit"
+            readonly>
+        </td>
 
-placeholder="SEARCH WORK"
+        <td>
+            <input
+            type="number"
+            class="tableInput unit_price"
+            readonly>
+        </td>
 
-autocomplete="off"
+        <td>
+            <input
+            type="number"
+            class="tableInput total"
+            readonly>
+        </td>
 
->
+        <td>
+            <input
+            class="tableInput by_person"
+            list="workerList"
+            placeholder="SELECT WORKER">
+        </td>
 
-<datalist id="workList">
+        <td>
+            <button
+            class="deleteInputRow">
+                DELETE
+            </button>
+        </td>
 
-${workOptions.map(
+    </tr>
 
-w=>`
-
-<option
-value="${w.work_name}">
-
-`
-
-).join('')}
-
-</datalist>
-
-</td>
-
-<td>
-<input
-type="text"
-class="tableInput block">
-</td>
-
-<td>
-<input
-type="number"
-class="tableInput qty">
-</td>
+    `;
 
 
-<td>
-<input
-type="text"
-class="tableInput work_unit"
-
-readonly
-
-tabindex="-1"
-
-style="
-background:#d2d3d6;
-cursor:not-allowed;
-pointer-events:none;
-">
-</td>
-
-<td>
-<input
-
-type="number"
-
-class="tableInput unit_price"
-
-readonly
-
-tabindex="-1"
-
-style="
-background:#d2d3d6;
-cursor:not-allowed;
-pointer-events:none;
-"
-
->
-</td>
-
-<td>
-<input
-
-type="number"
-
-class="tableInput total"
-
-readonly
-
-tabindex="-1"
-
-style="
-background:#d2d3d6;
-cursor:not-allowed;
-pointer-events:none;
-"
-
->
-</td>
-
-<td>
-
-<input
-
-class="tableInput by_person"
-
-list="workerList"
-
-placeholder="SELECT WORKER"
-
-autocomplete="off"
-
->
-
-</td>
-
-<td>
-
-<button
-class="deleteInputRow">
-
-DELETE
-
-</button>
-
-</td>
-
-</tr>
-
-`;
 
 }
 
@@ -396,25 +320,57 @@ DELETE
 
 document
 .getElementById(
-'addRowBtn'
+    "addRowBtn"
 )
-
 .addEventListener(
 
-'click',
+    "click",
 
-()=>{
+    ()=>{
 
-inputBody
-.insertAdjacentHTML(
+        inputBody
+        .insertAdjacentHTML(
 
-'beforeend',
+            "afterbegin",
 
-createRow()
+            createRow()
 
-);
+        );
 
-}
+        /* SCROLL TO TOP */
+
+        const modalBody =
+        document.querySelector(
+            ".modal-body"
+        );
+
+        modalBody.scrollTo({
+
+            top:0,
+
+            behavior:"smooth"
+
+        });
+
+        /* FOCUS FIRST WORK INPUT */
+
+        setTimeout(()=>{
+
+            const firstInput =
+
+            document.querySelector(
+                ".workSelect"
+            );
+
+            if(firstInput){
+
+                firstInput.focus();
+
+            }
+
+        },100);
+
+    }
 
 );
 
@@ -530,214 +486,60 @@ const payload=[];
 
 for(const row of rows){
 
-const obj={
+    const date =
+    row.querySelector('.date').value.trim();
 
-date:
+    const work =
+    row.querySelector('.workSelect').value.trim();
 
-row
-.querySelector(
-'.date'
-)
-.value,
+    const byPerson =
+    row.querySelector('.by_person').value.trim();
 
-work:
+    const qty =
+    row.querySelector('.qty').value;
 
-row
-.querySelector(
-'.workSelect'
-)
-.value,
+    /* REQUIRED CHECK */
 
-block:
+    if(
+        !date ||
+        !work ||
+        !byPerson ||
+        qty === ''
+    ){
 
-row
-.querySelector(
-'.block'
-)
-.value,
+        alert(
+            'Please fill Date, Work, Qty and By Person.'
+        );
 
-qty:
+        return;
+    }
 
-row
-.querySelector(
-'.qty'
-)
-.value,
+    const obj={
 
-work_unit:
+        date: date,
 
-row
-.querySelector(
-'.work_unit'
-)
-.value,
+        work: work,
 
-unit_price:
+        block:
+        row.querySelector('.block').value || '',
 
-row
-.querySelector(
-'.unit_price'
-)
-.value,
+        qty: qty,
 
-total:
+        work_unit:
+        row.querySelector('.work_unit').value || '',
 
-row
-.querySelector(
-'.total'
-)
-.value,
+        unit_price:
+        row.querySelector('.unit_price').value || 0,
 
-by_person:
+        total:
+        row.querySelector('.total').value || 0,
 
-row
-.querySelector(
-'.by_person'
-)
-.value
+        by_person:
+        byPerson
 
-};
+    };
 
-// ---------- VALIDATION ----------
-
-row.querySelectorAll(
-'input'
-).forEach(
-
-input=>{
-
-input.classList.remove(
-'inputError'
-);
-
-if(
-
-input.dataset.originalPlaceholder
-
-){
-
-input.placeholder=
-
-input.dataset
-.originalPlaceholder;
-
-}
-
-}
-
-);
-
-let hasError=false;
-
-
-
-function showError(
-
-selector,
-message
-
-){
-
-const input=
-
-row.querySelector(
-selector
-);
-
-if(!input)return;
-
-
-
-input.classList.add(
-'inputError'
-);
-
-
-
-if(
-
-!input.dataset
-.originalPlaceholder
-
-){
-
-input.dataset
-.originalPlaceholder=
-
-input.placeholder;
-
-}
-
-
-
-input.value='';
-
-input.placeholder=
-message;
-
-hasError=true;
-
-}
-
-
-
-// REQUIRED
-
-if(!obj.date){
-
-showError(
-'.date',
-'DATE REQUIRED'
-);
-
-}
-
-if(!obj.work){
-
-showError(
-'.workSelect',
-'WORK REQUIRED'
-);
-
-}
-
-if(
-
-obj.qty==='' ||
-
-obj.qty===null ||
-
-obj.qty===undefined
-
-){
-
-showError(
-'.qty',
-'QTY REQUIRED'
-);
-
-}
-
-if(!obj.by_person){
-
-showError(
-'.by_person',
-'BY PERSON REQUIRED'
-);
-
-}
-
-if(hasError){
-
-return;
-
-}
-
-
-
-payload.push(
-obj
-);
+    payload.push(obj);
 
 }
 
@@ -793,32 +595,6 @@ alert(
 'Saved Successfully'
 );
 
-// WhatsApp Message
-const msg = `📢 AGRI MBSB WORK RECORD
-
-${payload.map(r =>
-
-`📅 ${r.date}
-🔧 ${r.work}
-📦 Qty : ${r.qty} ${r.work_unit}
-👤 ${r.by_person}`
-
-).join('\n\n')}
-
-`;
-
-// Copy To Clipboard
-await navigator.clipboard.writeText(msg);
-
-// Open WhatsApp Group
-window.open(
-'https://chat.whatsapp.com/F2VelLtwXXHFxw8mmQh2VF',
-'_blank'
-);
-
-alert(
-'WhatsApp message copied.\nPaste into group and Send.'
-);
 
 
 
@@ -2004,7 +1780,7 @@ e.target.value
 
 let currentPage=1;
 
-const rowsPerPage=10;
+const rowsPerPage=5;
 
 let allRecords=[];
 

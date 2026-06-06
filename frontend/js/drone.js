@@ -344,16 +344,86 @@ function renderLoadedRecords(records){
 
 document
 .getElementById(
-    'addBtn'
+    "addBtn"
 )
 .addEventListener(
 
-    'click',
+    "click",
 
     ()=>{
 
         const selectedWork =
         workSelect.getValue();
+
+        /* WORK REQUIRED */
+
+        if(!selectedWork){
+
+            const tsControl =
+            document.querySelector(
+                ".ts-control"
+            );
+
+            if(tsControl){
+
+                tsControl.classList.add(
+                    "inputError"
+                );
+
+            }
+
+            alert(
+                "Please select Work first."
+            );
+
+            return;
+
+        }
+
+        /* FLOW HA REQUIRED */
+
+        const flowHa =
+        document.getElementById(
+            "flowha"
+        ).value.trim();
+
+        const requireFlowWorks = [
+
+            "RUMPUT",
+            "BATAS",
+            "ULAT",
+            "SIPUT"
+
+        ];
+
+        const needFlow =
+        requireFlowWorks.some(
+            w =>
+            selectedWork
+            .toUpperCase()
+            .includes(w)
+        );
+
+        if(
+            needFlow &&
+            !flowHa
+        ){
+
+            document
+            .getElementById(
+                "flowha"
+            )
+            .classList.add(
+                "inputError"
+            );
+
+            alert(
+                `${selectedWork} requires L/HA.`
+            );
+
+            return;
+
+        }
 
         document
         .getElementById(
@@ -361,18 +431,10 @@ document
         )
         .innerText =
 
-        selectedWork
-
-        ?
-
-        `${selectedWork}`
-
-        :
-
-        "DRONE ITEMS";
+        `DRONE ITEMS - ${selectedWork}`;
 
         dialog.classList.remove(
-            'hidden'
+            "hidden"
         );
 
         if(
@@ -384,6 +446,33 @@ document
         }
 
         renderDialogRows();
+
+    }
+
+);
+
+document
+.getElementById(
+    "work"
+)
+.addEventListener(
+
+    "change",
+
+    ()=>{
+
+        const tsControl =
+        document.querySelector(
+            ".ts-control"
+        );
+
+        if(tsControl){
+
+            tsControl.classList.remove(
+                "inputError"
+            );
+
+        }
 
     }
 
@@ -1485,7 +1574,7 @@ document
 
 `DRONE RECORD
 
-User : ${localStorage.getItem("userName")}
+PILOT : ${localStorage.getItem("userName")}
 
 `;
 
