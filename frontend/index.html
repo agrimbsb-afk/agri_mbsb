@@ -21,96 +21,100 @@ href="./styles/style.css">
 
 <div class="container">
 
-<h1>
+<div class="page-header">
 
-AGRI MBSB WORK RECORD SYSTEM
+    <div class="page-header-left">
 
-</h1>
+        <div class="system-title">
 
+            MBSB KONG RECORD
 
-
-<!-- TOP BAR -->
-
-<div class="topbar">
-
-<button id="openDialogBtn">
-
-+ ADD RECORD
-
-</button>
+        </div>
 
 
-<input
-type="month"
-id="monthFilter">
-
-
-<button id="clearFilterBtn">
-
-CLEAR
-
-</button>
-
-
-<button id="exportBtn">
-
-EXPORT EXCEL
-
-</button>
+    </div>
 
 </div>
 
 
-<!-- DASHBOARD -->
-
 <div class="card">
 
-<h2>
+    <!-- TOP BAR -->
 
-DATABASE RECORDS
+    <div class="topbar">
 
-</h2>
-   <div class="table-wrapper">
-		<table
-		id="dashboardTable">
+        <button id="openDialogBtn">
 
-		<thead>
+            + ADD RECORD
 
-		<tr>
+        </button>
 
-		<th
-			onclick="sortByDate()"
-			style="cursor:pointer"
-			>
-			DATE ↕
-		</th>
+        <input
+        type="month"
+        id="monthFilter">
 
-		<th>WORK</th>
+        <button id="clearFilterBtn">
 
-		<th>BLOCK</th>
+            CLEAR
 
-		<th>QTY</th>
+        </button>
 
-		<th>UNIT</th>
+        <button id="exportBtn">
 
-		<th>UNIT PRICE</th>
+            EXPORT EXCEL
 
-		<th>BY PERSON</th>
+        </button>
 
-		<th>ACTION</th>
+    </div>
 
-		</tr>
+    <h2>
 
-		</thead>
+        DATABASE RECORDS
 
-		<tbody
-		id="dashboardBody">
+    </h2>
 
-		</tbody>
+    <div class="table-wrapper">
 
-		</table>
+        <table id="dashboardTable">
 
-	</div>
+            <thead>
+
+                <tr>
+
+                    <th
+                    onclick="sortByDate()"
+                    style="cursor:pointer">
+
+                        DATE ↕
+
+                    </th>
+
+                    <th>WORK</th>
+
+                    <th>BLOCK</th>
+
+                    <th>QTY</th>
+
+                    <th>UNIT</th>
+
+                    <th>UNIT PRICE</th>
+
+                    <th>BY PERSON</th>
+
+                    <th>ACTION</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="dashboardBody">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </div>
 <div
     id="pagination"

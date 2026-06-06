@@ -52,7 +52,121 @@ margin-bottom:25px;
 
 }
 
+/* =====================
+   HEADER
+===================== */
 
+.page-header{
+
+    background:#fff;
+
+    border-radius:24px;
+
+    padding:30px;
+
+    margin-bottom:25px;
+
+    box-shadow:
+    0 4px 20px rgba(
+        0,0,0,.05
+    );
+
+}
+
+.system-title{
+
+    font-size:3rem;
+
+    font-weight:800;
+
+    color:#183153;
+
+    line-height:1.1;
+
+}
+
+.system-subtitle{
+
+    margin-top:10px;
+
+    font-size:1rem;
+
+    color:#6b7280;
+
+}
+
+/* =====================
+   CARD
+===================== */
+
+.card{
+
+    background:#fff;
+
+    border-radius:24px;
+
+    padding:25px;
+
+    box-shadow:
+    0 4px 20px rgba(
+        0,0,0,.05
+    );
+
+}
+
+/* =====================
+   TOPBAR
+===================== */
+
+.topbar{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+    margin-bottom:25px;
+
+}
+
+.topbar button{
+
+    height:52px;
+
+    min-width:160px;
+
+    border-radius:14px;
+
+}
+
+#monthFilter{
+
+    height:52px;
+
+    min-width:200px;
+
+    padding:0 15px;
+
+    border-radius:14px;
+
+}
+
+/* =====================
+   TABLE TITLE
+===================== */
+
+.card h2{
+
+    font-size:2rem;
+
+    color:#183153;
+
+    margin-bottom:20px;
+
+}
 
 /* BUTTON */
 
