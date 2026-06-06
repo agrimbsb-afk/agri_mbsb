@@ -24,6 +24,7 @@ const dashboardBody =
 document.getElementById('dashboardBody');
 
 let workOptions=[];
+let dateSortAsc = false; // false=最新在上
 
 // ---------- TODAY DATE ----------
 
@@ -478,6 +479,29 @@ e.target.showPicker?.();
 
 });
 
+function sortByDate(){
+
+    allRecords.sort((a,b)=>{
+
+        const d1 =
+        a.date.split('-').reverse().join('-');
+
+        const d2 =
+        b.date.split('-').reverse().join('-');
+
+        return dateSortAsc
+        ? new Date(d1) - new Date(d2)
+        : new Date(d2) - new Date(d1);
+
+    });
+
+    dateSortAsc = !dateSortAsc;
+
+    currentPage = 1;
+
+    renderDashboard();
+
+}
 
 
 // ---------- SAVE ALL ----------
@@ -677,7 +701,11 @@ alert(
 
 );
 
+
+
 // ---------- LOAD DASHBOARD ----------
+
+
 
 async function loadDashboard(
 
@@ -745,6 +773,18 @@ await fetch(url);
 
 allRecords=
 await res.json();
+
+allRecords.sort((a,b)=>{
+
+    const d1 =
+    a.date.split('-').reverse().join('-');
+
+    const d2 =
+    b.date.split('-').reverse().join('-');
+
+    return new Date(d2) - new Date(d1);
+
+});
 
 currentPage = 1;
 
@@ -822,7 +862,7 @@ onclick="openEdit(
 '${r.id}',
 '${r.date}',
 '${r.work}',
-'${r.block}',
+'${r.block ||''}',
 '${r.qty}',
 '${r.work_unit}',
 '${r.unit_price}',

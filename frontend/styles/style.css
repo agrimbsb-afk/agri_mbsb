@@ -725,6 +725,16 @@ font-weight:700;
 
 }
 
+.edit-modal-body{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:20px;
+
+}
+
 .editGroup{
 
     display:flex;
@@ -755,13 +765,33 @@ font-weight:700;
 
 .modal-buttons{
 
+    flex-shrink:0;
+
     display:flex;
 
     justify-content:flex-end;
 
     gap:12px;
 
-    margin-top:20px;
+    padding:15px;
+
+    background:white;
+
+    border-top:1px solid #e5e7eb;
+
+}
+
+#editModal .button-group{
+
+    position:sticky;
+
+    bottom:0;
+
+    background:white;
+
+    padding:10px;
+
+    border-top:1px solid #ccc;
 
 }
 

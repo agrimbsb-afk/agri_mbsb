@@ -78,7 +78,12 @@ DATABASE RECORDS
 
 		<tr>
 
-		<th>DATE</th>
+		<th
+			onclick="sortByDate()"
+			style="cursor:pointer"
+			>
+			DATE ↕
+		</th>
 
 		<th>WORK</th>
 
@@ -208,12 +213,16 @@ class="modal-content modal-large">
 
 <!-- EDIT MODAL -->
 
+<!-- EDIT MODAL -->
+
 <div
 id="editModal"
 class="modal hidden">
 
     <div
     class="modal-content edit-modal">
+
+        <!-- HEADER -->
 
         <div class="modal-header">
 
@@ -227,115 +236,123 @@ class="modal hidden">
         type="hidden"
         id="editId">
 
-        <div class="editGroup">
+        <!-- SCROLLABLE BODY -->
 
-            <label>Date</label>
+        <div class="edit-modal-body">
 
-            <input
-            type="date"
-            id="editDate">
+            <div class="editGroup">
+
+                <label>Date</label>
+
+                <input
+                type="date"
+                id="editDate">
+
+            </div>
+
+            <div class="editGroup">
+
+                <label>Work</label>
+
+                <input
+                id="editWork"
+                class="modalInput"
+                list="editWorkList"
+                placeholder="SEARCH WORK"
+                autocomplete="off">
+
+                <datalist
+                id="editWorkList">
+                </datalist>
+
+            </div>
+
+            <div class="editGroup">
+
+                <label>Block</label>
+
+                <input
+                type="text"
+                id="editBlock"
+                placeholder="BLOCK">
+
+            </div>
+
+            <div class="editGroup">
+
+                <label>Qty</label>
+
+                <input
+                type="number"
+                id="editQty"
+                placeholder="QTY">
+
+            </div>
+
+            <div class="editGroup">
+
+                <label>Unit</label>
+
+                <input
+                type="text"
+                id="editWorkUnit"
+                readonly
+                style="
+                background:#d2d3d6;
+                cursor:not-allowed;
+                ">
+
+            </div>
+
+            <div class="editGroup">
+
+                <label>Unit Price</label>
+
+                <input
+                type="number"
+                id="editUnitPrice"
+                readonly
+                style="
+                background:#d2d3d6;
+                cursor:not-allowed;
+                ">
+
+            </div>
+
+            <div class="editGroup">
+
+                <label>Total</label>
+
+                <input
+                type="number"
+                id="editTotal"
+                readonly
+                style="
+                background:#d2d3d6;
+                cursor:not-allowed;
+                ">
+
+            </div>
+
+            <div class="editGroup">
+
+                <label>By Person</label>
+
+                <input
+                id="editByPerson"
+                list="editWorkerList"
+                placeholder="SELECT WORKER"
+                autocomplete="off">
+
+                <datalist
+                id="editWorkerList">
+                </datalist>
+
+            </div>
 
         </div>
 
-        <div class="editGroup">
-
-            <label>Work</label>
-
-            <input
-            id="editWork"
-            class="modalInput"
-            list="editWorkList"
-            placeholder="SEARCH WORK"
-            autocomplete="off">
-
-            <datalist
-            id="editWorkList">
-            </datalist>
-
-        </div>
-
-        <div class="editGroup">
-
-            <label>Block</label>
-
-            <input
-            type="text"
-            id="editBlock"
-            placeholder="BLOCK">
-
-        </div>
-
-        <div class="editGroup">
-
-            <label>Qty</label>
-
-            <input
-            type="number"
-            id="editQty"
-            placeholder="QTY">
-
-        </div>
-
-        <div class="editGroup">
-
-            <label>Unit</label>
-
-            <input
-            type="text"
-            id="editWorkUnit"
-            readonly
-            style="
-            background:#d2d3d6;
-            cursor:not-allowed;
-            ">
-
-        </div>
-
-        <div class="editGroup">
-
-            <label>Unit Price</label>
-
-            <input
-            type="number"
-            id="editUnitPrice"
-            readonly
-            style="
-            background:#d2d3d6;
-            cursor:not-allowed;
-            ">
-
-        </div>
-
-        <div class="editGroup">
-
-            <label>Total</label>
-
-            <input
-            type="number"
-            id="editTotal"
-            readonly
-            style="
-            background:#d2d3d6;
-            cursor:not-allowed;
-            ">
-
-        </div>
-
-        <div class="editGroup">
-
-            <label>By Person</label>
-
-            <input
-            id="editByPerson"
-            list="editWorkerList"
-            placeholder="SELECT WORKER"
-            autocomplete="off">
-
-            <datalist
-            id="editWorkerList">
-            </datalist>
-
-        </div>
+        <!-- FIXED BUTTON -->
 
         <div class="modal-buttons">
 
@@ -358,7 +375,6 @@ class="modal hidden">
     </div>
 
 </div>
-
 
 
 <!-- DATALIST -->

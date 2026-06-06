@@ -920,18 +920,18 @@ try{
             );
 
             const dataRow =
-sheet.addRow([
+			sheet.addRow([
 
-    r.date,
-    r.work,
-    r.block || '',
-    Number(r.qty || 0),
-    r.work_unit || '',
-    Number(r.unit_price || 0),
-    Number(r.total || 0),
-    r.by_person || ''
+				r.date,
+				r.work,
+				r.block || '',
+				Number(r.qty || 0),
+				r.work_unit || '',
+				Number(r.unit_price || 0),
+				Number(r.total || 0),
+				r.by_person || ''
 
-]);
+			]);
 
 				setBorder(
 					dataRow
