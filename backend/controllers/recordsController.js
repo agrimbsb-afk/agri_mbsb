@@ -563,333 +563,491 @@ err.message
 
 // EXPORT EXCEL
 
-exports.exportExcel =
-async(req,res)=>{
+exports.exportExcel = async (req,res)=>{
 
 try{
 
-const { month } =
-req.query;
+    const { month } = req.query;
 
-let query='';
-let values=[];
+    let query = '';
+    let values = [];
+
+    if(month){
+
+        query = `
+
+        SELECT
+
+            TO_CHAR(
+                date,
+                'DD-MM-YYYY'
+            ) AS date,
+
+            work,
+            block,
+            qty,
+            work_unit,
+            unit_price,
+            total,
+            by_person
+
+        FROM work_records
+
+        WHERE TO_CHAR(
+            date,
+            'YYYY-MM'
+        ) = $1
+
+        ORDER BY
+        by_person,
+        date ASC
+
+        `;
+
+        values = [month];
+
+    }
+    else{
+
+        query = `
+
+        SELECT
+
+            TO_CHAR(
+                date,
+                'DD-MM-YYYY'
+            ) AS date,
+
+            work,
+            block,
+            qty,
+            work_unit,
+            unit_price,
+            total,
+            by_person
+
+        FROM work_records
+
+        ORDER BY
+        by_person,
+        date ASC
+
+        `;
+
+    }
+
+    const result =
+    await pool.query(
+        query,
+        values
+    );
+
+    const workbook =
+    new ExcelJS.Workbook();
+
+    const sheet =
+    workbook.addWorksheet(
+        "SALARY SUMMARY"
+    );
 
 
+	function setBorder(row){
 
-if(month){
+    row.eachCell(
+        { includeEmpty:true },
+        cell=>{
 
-query=`
+            cell.border = {
 
-SELECT
+                top:{
+                    style:'thin'
+                },
 
-id,
+                left:{
+                    style:'thin'
+                },
 
-TO_CHAR(
-date,
-'DD-MM-YYYY'
-) AS date,
+                bottom:{
+                    style:'thin'
+                },
 
-work,
-block,
-qty,
-work_unit,
-unit_price,
-total,
-by_person,
+                right:{
+                    style:'thin'
+                }
 
-TO_CHAR(
-created_at,
-'DD-MM-YYYY HH24:MI:SS'
-) AS created_at
+            };
 
-FROM work_records
-
-WHERE
-
-TO_CHAR(
-date,
-'YYYY-MM'
-)=$1
-
-ORDER BY id ASC
-
-`;
-
-values=[month];
+        }
+    );
 
 }
 
-else{
+	function setGray(row){
 
-query=`
+			row.eachCell(cell=>{
 
-SELECT
+				cell.fill = {
 
-id,
+					type:'pattern',
 
-TO_CHAR(
-date,
-'DD-MM-YYYY'
-) AS date,
+					pattern:'solid',
 
-work,
-block,
-qty,
-work_unit,
-unit_price,
-total,
-by_person,
+					fgColor:{
+						argb:'D9D9D9'
+					}
 
-TO_CHAR(
-created_at,
-'DD-MM-YYYY HH24:MI:SS'
-) AS created_at
+				};
 
-FROM work_records
+				cell.font = {
 
-ORDER BY id ASC
+					bold:true
 
-`;
+				};
 
-}
+			});
 
+		}
 
+    /* ==========================
+       BUILD MAP
+    ========================== */
 
-const result=
+    const salaryMap = {};
+    const detailMap = {};
 
-await pool.query(
-query,
-values
-);
+    result.rows.forEach(r=>{
 
+        const person =
 
+        (r.by_person || '')
+        .trim()
+        .toUpperCase();
 
-const workbook=
-new ExcelJS.Workbook();
+        if(!salaryMap[person]){
 
-const sheet=
-workbook.addWorksheet(
-'AGRI_MBSB'
-);
+            salaryMap[person] = 0;
 
+            detailMap[person] = [];
 
+        }
 
-// HEADER
+        salaryMap[person] +=
+        Number(
+            r.total || 0
+        );
 
+        detailMap[person]
+        .push(r);
+
+    });
+
+    /* ==========================
+       BANGLA SHARE
+    ========================== */
+
+    const banglaTotal =
+
+    salaryMap["BANGLA"] || 0;
+
+    const workers =
+
+		Object.keys(
+			salaryMap
+		)
+
+		.filter(
+
+			person =>
+
+			person !== "BANGLA"
+
+		)
+
+		.sort();
+
+	const banglaShare =
+
+	workers.length > 0
+
+	? banglaTotal /
+	  workers.length
+
+	: 0;
+
+    /* ==========================
+       SUMMARY
+    ========================== */
+
+    sheet.addRow([]);
+
+    const summaryHeader =
+		sheet.addRow([
+			'',
+			'',
+			'BANGLA',
+			'TOTAL'
+		]);
+
+		setGray(
+			summaryHeader
+		);
+
+		setBorder(
+			summaryHeader
+		);
+
+    workers.forEach(name=>{
+
+        const ownTotal =
+
+        salaryMap[name] || 0;
+
+		const row =
+		sheet.addRow([
+
+			name,
+
+			ownTotal,
+
+			banglaShare,
+
+			ownTotal +
+			banglaShare
+
+		]);
+
+		setBorder(
+			row
+		);
+
+    });
+
+	const banglaRow =
+	sheet.addRow([
+		'',
+		'',
+		banglaTotal,
+		''
+	]);
+
+	setBorder(
+		banglaRow
+	);
+
+    sheet.addRow([]);
+
+    /* ==========================
+       DETAIL SECTION
+    ========================== */
+
+    const personOrder = [
+
+		"BANGLA",
+
+		...workers
+
+	];
+
+    personOrder.forEach(person=>{
+
+        const rows =
+
+        detailMap[person] || [];
+
+        if(rows.length === 0){
+
+            return;
+
+        }
+
+        const personTitle =
+		sheet.addRow([
+			person
+		]);
+
+		sheet.mergeCells(
+
+			personTitle.number,
+
+			1,
+
+			personTitle.number,
+
+			8
+
+		);
+
+		personTitle
+		.getCell(1)
+		.font = {
+
+			bold:true,
+
+			size:14
+
+		};
+
+        const headerRow =
+        sheet.addRow([
+
+            "DATE",
+            "WORK",
+            "BLOCK",
+            "QTY",
+            "UNIT",
+            "UNIT PRICE",
+            "TOTAL",
+            "BY PERSON"
+
+        ]);
+
+		setGray(
+			headerRow
+		);
+
+		setBorder(
+			headerRow
+		);
+
+        let personTotal = 0;
+
+        rows.forEach(r=>{
+
+            personTotal +=
+
+            Number(
+                r.total || 0
+            );
+
+            const dataRow =
 sheet.addRow([
 
-'DATE',
-'WORK',
-'BLOCK',
-'QTY',
-'UNIT',
-'UNIT PRICE',
-'TOTAL',
-'BY PERSON',
+    r.date,
+    r.work,
+    r.block || '',
+    Number(r.qty || 0),
+    r.work_unit || '',
+    Number(r.unit_price || 0),
+    Number(r.total || 0),
+    r.by_person || ''
 
 ]);
 
+				setBorder(
+					dataRow
+				);
+
+        });
+
+        const totalRow =
+		sheet.addRow([
+
+			"TOTAL",
+			"",
+			"",
+			"",
+			"",
+			"",
+			personTotal,
+			""
+
+		]);
+
+		setGray(
+			totalRow
+		);
+
+		setBorder(
+			totalRow
+		);
+
+        sheet.addRow([]);
+
+    });
+
+    /* ==========================
+       NUMBER FORMAT
+    ========================== */
+
+    sheet.getColumn(2)
+    .numFmt =
+    '#,##0.00';
+
+    sheet.getColumn(3)
+    .numFmt =
+    '#,##0.00';
+
+    sheet.getColumn(4)
+    .numFmt =
+    '#,##0.00';
+
+    sheet.getColumn(6)
+    .numFmt =
+    '#,##0.00';
+
+    sheet.getColumn(7)
+    .numFmt =
+    '#,##0.00';
+
+    /* ==========================
+       WIDTH
+    ========================== */
+
+    sheet.columns = [
+
+        { width:15 },
+        { width:25 },
+        { width:15 },
+        { width:10 },
+        { width:12 },
+        { width:15 },
+        { width:15 },
+        { width:18 }
+
+    ];
+
+    /* ==========================
+       BORDER
+    ========================== */
 
 
-// DATA
+    /* ==========================
+       DOWNLOAD
+    ========================== */
 
-result.rows.forEach(
+    res.setHeader(
 
-r=>{
+        'Content-Type',
 
-sheet.addRow([
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
-r.date,
-r.work,
-r.block,
-r.qty,
-r.work_unit,
-r.unit_price,
-r.total,
-r.by_person
+    );
 
-]);
+    res.setHeader(
 
-}
+        'Content-Disposition',
 
-);
+        'attachment; filename=AGRI_MBSB_SALARY.xlsx'
 
+    );
 
+    await workbook.xlsx.write(
+        res
+    );
 
-// HEADER STYLE
-
-const header=
-sheet.getRow(1);
-
-header.eachCell(
-
-cell=>{
-
-cell.fill={
-
-type:'pattern',
-
-pattern:'solid',
-
-fgColor:{
-argb:'D9D9D9'
-}
-
-};
-
-cell.font={
-
-bold:true
-
-};
-
-cell.border={
-
-top:{style:'thin'},
-left:{style:'thin'},
-bottom:{style:'thin'},
-right:{style:'thin'}
-
-};
-
-}
-
-);
-
-
-
-// ALL BORDER
-
-// ---------- FULL CELL BORDER ----------
-
-const totalRows =
-sheet.rowCount;
-
-const totalCols =
-sheet.columnCount;
-
-
-
-for(
-
-let r=1;
-
-r<=totalRows;
-
-r++
-
-){
-
-for(
-
-let c=1;
-
-c<=totalCols;
-
-c++
-
-){
-
-const cell =
-
-sheet.getCell(
-r,
-c
-);
-
-
-
-cell.border={
-
-top:{
-style:'thin'
-},
-
-left:{
-style:'thin'
-},
-
-bottom:{
-style:'thin'
-},
-
-right:{
-style:'thin'
-}
-
-};
-
-
-
-cell.alignment={
-
-vertical:'middle',
-
-horizontal:'left'
-
-};
+    res.end();
 
 }
-
-}
-
-
-
-// COLUMN WIDTH
-
-sheet.columns=[
-
-{width:15},
-{width:25},
-{width:18},
-{width:10},
-{width:10},
-{width:10},
-{width:15},
-{width:15},
-{width:20}
-
-];
-
-
-
-res.setHeader(
-
-'Content-Type',
-
-'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-
-);
-
-res.setHeader(
-
-'Content-Disposition',
-
-'attachment; filename=AGRI_MBSB.xlsx'
-
-);
-
-
-
-await workbook.xlsx.write(
-res
-);
-
-res.end();
-
-}
-
 catch(err){
 
-console.error(err);
+    console.error(err);
 
-res.status(500)
-.json({
+    res.status(500).json({
 
-error:
-err.message
+        error:
+        err.message
 
-});
+    });
 
 }
 
