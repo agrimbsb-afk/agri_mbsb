@@ -420,4 +420,13 @@ grid-template-columns:1fr;
 }
 }
 
+.ts-control.inputError{
 
+    border:2px solid #dc2626 !important;
+
+    background:#fef2f2 !important;
+
+    box-shadow:
+    0 0 0 3px rgba(220,38,38,.15) !important;
+
+}

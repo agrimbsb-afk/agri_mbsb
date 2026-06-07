@@ -22,6 +22,8 @@ API
 let itemRows = [];
 let currentEditId = null;
 let currentRecords = [];
+let workSelect;
+let editWorkSelect;
 
 const dialog =
 document.getElementById(
@@ -164,8 +166,7 @@ document
 });
 
 
-let workSelect;
-let editWorkSelect;
+
 
 document.addEventListener(
 "DOMContentLoaded",
@@ -359,18 +360,7 @@ document
 
         if(!selectedWork){
 
-            const tsControl =
-            document.querySelector(
-                ".ts-control"
-            );
-
-            if(tsControl){
-
-                tsControl.classList.add(
-                    "inputError"
-                );
-
-            }
+            workSelect.control.classList.add("inputError");
 
             alert(
                 "Please select Work first."
@@ -461,18 +451,7 @@ document
 
     ()=>{
 
-        const tsControl =
-        document.querySelector(
-            ".ts-control"
-        );
-
-        if(tsControl){
-
-            tsControl.classList.remove(
-                "inputError"
-            );
-
-        }
+        workSelect.control.classList.add("inputError");
 
     }
 

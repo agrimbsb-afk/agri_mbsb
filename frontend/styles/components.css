@@ -300,6 +300,34 @@ border-bottom:1px solid #eee;
 
 }
 
+.inputError{
+
+    border:2px solid #dc2626 !important;
+
+    background:#fef2f2 !important;
+
+}
+
+.inputError::placeholder{
+
+    color:#dc2626;
+
+    font-weight:600;
+
+}
+
+.ts-control.inputError{
+
+    border:2px solid #dc2626 !important;
+
+    background:#fef2f2 !important;
+
+    box-shadow:
+    0 0 0 3px rgba(220,38,38,.15)
+    !important;
+
+}
+
 @media(max-width:768px){
 
 .topbar{
