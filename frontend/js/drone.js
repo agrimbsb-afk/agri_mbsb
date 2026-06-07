@@ -305,9 +305,9 @@ function renderLoadedRecords(records){
                     ${record.unit || ''}
                 </td>
 
-                <td class="actionCell">
+                <td class="iconBtn action-cell">
 
-                    <div class="actionBtns">
+                    
 
                         <button
                         class="iconBtn editBtn"
@@ -325,7 +325,7 @@ function renderLoadedRecords(records){
 
                         </button>
 
-                    </div>
+                   
 
                 </td>
 
@@ -868,6 +868,10 @@ onclick="deleteDialogRow(${index})">
    SAVE DIALOG
 ========================= */
 
+// ---------- SAVE DRONE RECORD ----------
+
+let isDroneSaving = false;
+
 document
 .getElementById(
 'dialogSaveBtn'
@@ -876,249 +880,266 @@ document
 
 'click',
 
-async ()=>{
+async()=>{
 
-    /* CLEAR OLD ERROR */
-
-    document
-    .querySelectorAll(
-        ".inputError"
-    )
-    .forEach(el=>{
-
-        el.classList.remove(
-            "inputError"
-        );
-
-    });
-
-    let hasError = false;
-
-    /* DATE REQUIRED */
-
-    const workDate =
-    document.getElementById(
-        "workDate"
-    ).value.trim();
-
-    if(!workDate){
-
-        document
-        .getElementById(
-            "workDate"
-        )
-        .classList.add(
-            "inputError"
-        );
-
-        hasError = true;
-
+    // 防止双击
+    if(isDroneSaving){
+        return;
     }
 
-    /* WORK REQUIRED */
-
-    const work =
+    const saveBtn =
     document.getElementById(
-        "work"
-    ).value.trim();
+        'dialogSaveBtn'
+    );
 
-    if(!work){
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
 
-        const tsControl =
-        document.querySelector(
-            ".ts-control"
-        );
+    try{
 
-        if(tsControl){
+        /* CLEAR OLD ERROR */
 
-            tsControl.classList.add(
+        document
+        .querySelectorAll(
+            ".inputError"
+        )
+        .forEach(el=>{
+
+            el.classList.remove(
                 "inputError"
             );
 
-        }
+        });
 
-        hasError = true;
+        let hasError = false;
 
-    }
-	
-	/* FLOW HA REQUIRED */
+        /* DATE REQUIRED */
 
-	const flowHa =
-	document.getElementById(
-		"flowha"
-	).value.trim();
+        const workDate =
+        document.getElementById(
+            "workDate"
+        ).value.trim();
 
-	const requireFlowWorks = [
+        if(!workDate){
 
-		"RUMPUT",
-		"BATAS",
-		"ULAT",
-		"SIPUT"
-
-	];
-
-	const needFlow =
-	requireFlowWorks.some(
-		w => work.toUpperCase().includes(w)
-	);
-
-	if(
-		needFlow &&
-		!flowHa
-	){
-
-		document
-		.getElementById(
-			"flowha"
-		)
-		.classList.add(
-			"inputError"
-		);
-		alert(
-			`${work} requires L/HA.`
-		);
-		hasError = true;
-
-	}
-
-    /* ITEM USED + USAGE REQUIRED */
-
-    const rows =
-    document.querySelectorAll(
-        "#dialogTableBody tr"
-    );
-
-    rows.forEach(
-
-        (row,index)=>{
-
-            const itemInput =
-            row.querySelector(
-                'td:nth-child(1) input'
+            document
+            .getElementById(
+                "workDate"
+            )
+            .classList.add(
+                "inputError"
             );
 
-            const usageInput =
-            row.querySelector(
-                'td:nth-child(3) input'
-            );
-
-            if(
-
-                !itemRows[index].item_used ||
-
-                itemRows[index]
-                .item_used
-                .trim() === ''
-
-            ){
-
-                itemInput.classList.add(
-                    "inputError"
-                );
-
-                hasError = true;
-
-            }
-
-            if(
-
-                itemRows[index].usage === '' ||
-
-                itemRows[index].usage === null ||
-
-                itemRows[index].usage === undefined
-
-            ){
-
-                usageInput.classList.add(
-                    "inputError"
-                );
-
-                hasError = true;
-
-            }
+            hasError = true;
 
         }
 
-    );
+        /* WORK REQUIRED */
 
-    if(hasError){
+        const work =
+        document.getElementById(
+            "work"
+        ).value.trim();
 
-        return;
+        if(!work){
 
-    }
+            const tsControl =
+            document.querySelector(
+                ".ts-control"
+            );
 
-    try{
-		
-		const url =
-		API + "/api/drone/save";
+            if(tsControl){
 
-			const payload = {
+                tsControl.classList.add(
+                    "inputError"
+                );
 
-				date: workDate,
+            }
 
-				work: work,
+            hasError = true;
 
-				block:
-				document.getElementById(
-					"block"
-				).value,
-				
-				flow_ha:
-				document.getElementById(
-					"flowha"
-				).value,
+        }
 
-				work_area:
-				document.getElementById(
-					"workArea"
-				).value,
+        /* FLOW HA REQUIRED */
 
-				area_ha:
-				document.getElementById(
-					"areaha"
-				).value,
+        const flowHa =
+        document.getElementById(
+            "flowha"
+        ).value.trim();
 
-				created_by_name:
-				localStorage.getItem(
-					"userName"
-				),
+        const requireFlowWorks = [
 
-				items:
-				itemRows
+            "RUMPUT",
+            "BATAS",
+            "ULAT",
+            "SIPUT"
 
-			};
+        ];
+
+        const needFlow =
+        requireFlowWorks.some(
+            w => work.toUpperCase().includes(w)
+        );
+
+        if(
+            needFlow &&
+            !flowHa
+        ){
+
+            document
+            .getElementById(
+                "flowha"
+            )
+            .classList.add(
+                "inputError"
+            );
+
+            alert(
+                `${work} requires L/HA.`
+            );
+
+            hasError = true;
+
+        }
+
+        /* ITEM USED + USAGE REQUIRED */
+
+        const rows =
+        document.querySelectorAll(
+            "#dialogTableBody tr"
+        );
+
+        rows.forEach(
+
+            (row,index)=>{
+
+                const itemInput =
+                row.querySelector(
+                    'td:nth-child(1) input'
+                );
+
+                const usageInput =
+                row.querySelector(
+                    'td:nth-child(4) input'
+                );
+
+                if(
+
+                    !itemRows[index].item_used ||
+
+                    itemRows[index]
+                    .item_used
+                    .trim() === ''
+
+                ){
+
+                    itemInput.classList.add(
+                        "inputError"
+                    );
+
+                    hasError = true;
+
+                }
+
+                if(
+
+                    itemRows[index].usage === '' ||
+
+                    itemRows[index].usage === null ||
+
+                    itemRows[index].usage === undefined
+
+                ){
+
+                    usageInput.classList.add(
+                        "inputError"
+                    );
+
+                    hasError = true;
+
+                }
+
+            }
+
+        );
+
+        if(hasError){
+
+            return;
+
+        }
+
+        isDroneSaving = true;
+
+        const url =
+        API + "/api/drone/save";
+
+        const payload = {
+
+            date: workDate,
+
+            work: work,
+
+            block:
+            document.getElementById(
+                "block"
+            ).value,
+
+            flow_ha:
+            document.getElementById(
+                "flowha"
+            ).value,
+
+            work_area:
+            document.getElementById(
+                "workArea"
+            ).value,
+
+            area_ha:
+            document.getElementById(
+                "areaha"
+            ).value,
+
+            created_by_name:
+            localStorage.getItem(
+                "userName"
+            ),
+
+            items:
+            itemRows
+
+        };
 
         const res =
-		await fetch(
+        await fetch(
 
-			url,
+            url,
 
-			{
+            {
 
-				method:"POST",
+                method:"POST",
 
-				headers:{
+                headers:{
 
-					"Content-Type":
-					"application/json",
+                    "Content-Type":
+                    "application/json",
 
-					Authorization:
-					"Bearer " +
-					localStorage.getItem(
-						"token"
-					)
+                    Authorization:
+                    "Bearer " +
+                    localStorage.getItem(
+                        "token"
+                    )
 
-				},
+                },
 
-				body:
-				JSON.stringify(
-					payload
-				)
+                body:
+                JSON.stringify(
+                    payload
+                )
 
-			}
+            }
 
-		);
+        );
 
         const data =
         await res.json();
@@ -1126,8 +1147,11 @@ async ()=>{
         if(!data.success){
 
             alert(
+
                 data.message ||
+
                 "Save Failed"
+
             );
 
             return;
@@ -1135,56 +1159,69 @@ async ()=>{
         }
 
         alert(
-				"Record Saved"
-			);
+            "Record Saved"
+        );
 
-			dialog.classList.add(
-				"hidden"
-			);
+        dialog.classList.add(
+            "hidden"
+        );
 
-			/* KEEP TODAY DATE */
+        /* KEEP DATE */
 
-			document.getElementById(
-				"workDate"
-			).value = workDate;
+        document.getElementById(
+            "workDate"
+        ).value = workDate;
 
-			/* CLEAR FORM */
+        /* CLEAR FORM */
 
-			workSelect.clear();
+        workSelect.clear();
 
-			document.getElementById(
-				"flowha"
-			).value = "";
+        document.getElementById(
+            "flowha"
+        ).value = "";
 
-			document.getElementById(
-				"block"
-			).value = "";
+        document.getElementById(
+            "block"
+        ).value = "";
 
-			document.getElementById(
-				"workArea"
-			).value = "";
+        document.getElementById(
+            "workArea"
+        ).value = "";
 
-			document.getElementById(
-				"areaha"
-			).value = "";
+        document.getElementById(
+            "areaha"
+        ).value = "";
 
-			itemRows = [];
+        itemRows = [];
 
-			window.itemRows =
-			itemRows;
+        window.itemRows =
+        itemRows;
 
-			renderDialogRows();
+        renderDialogRows();
 
-			await loadTodayRecords();
+        await loadTodayRecords();
 
     }
+
     catch(err){
 
-        console.error(err);
+        console.error(
+            err
+        );
 
         alert(
             "Save Failed"
         );
+
+    }
+
+    finally{
+
+        isDroneSaving = false;
+
+        saveBtn.disabled = false;
+
+        saveBtn.textContent = 'SAVE';
 
     }
 

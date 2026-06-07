@@ -1,0 +1,994 @@
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+
+font-family:Arial,sans-serif;
+
+background:#f4f7fb;
+
+padding:25px;
+
+color:#222;
+
+}
+
+.container{
+
+max-width:1800px;
+
+margin:auto;
+
+}
+
+h1{
+
+margin-bottom:25px;
+
+color:#183153;
+
+}
+
+.hidden{
+
+display:none !important;
+
+}
+
+/* TOPBAR */
+
+.topbar{
+
+display:flex;
+
+gap:10px;
+
+flex-wrap:wrap;
+
+margin-bottom:25px;
+
+}
+
+/* =====================
+   HEADER
+===================== */
+
+.page-header{
+
+    background:#fff;
+
+    border-radius:24px;
+
+    padding:30px;
+
+    margin-bottom:25px;
+
+    box-shadow:
+    0 4px 20px rgba(
+        0,0,0,.05
+    );
+
+}
+
+.system-title{
+
+    font-size:1rem;
+
+    font-weight:800;
+
+    color:#183153;
+
+    line-height:1.1;
+
+}
+
+.system-subtitle{
+
+    margin-top:10px;
+
+    font-size:1rem;
+
+    color:#6b7280;
+
+}
+
+/* =====================
+   CARD
+===================== */
+
+.card{
+
+    background:#fff;
+
+    border-radius:24px;
+
+    padding:25px;
+
+    box-shadow:
+    0 4px 20px rgba(
+        0,0,0,.05
+    );
+
+}
+
+/* =====================
+   TOPBAR
+===================== */
+
+
+.topbar{
+
+    display:flex;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+}
+
+.topbar button{
+
+    height:42px;
+
+    padding:0 18px;
+
+    min-width:auto;
+
+    border-radius:12px;
+
+}
+
+#monthFilter{
+
+    height:42px;
+
+    width:160px;
+
+    min-width:160px;
+
+    padding:0 12px;
+
+    border-radius:12px;
+
+}
+
+@media(max-width:768px){
+
+    .topbar{
+
+        display:grid;
+
+        grid-template-columns:
+        repeat(2,1fr);
+
+        gap:10px;
+
+    }
+
+    .topbar button,
+    #monthFilter{
+
+        width:100%;
+
+        height:44px;
+
+    }
+
+}
+
+
+
+/* =====================
+   TABLE TITLE
+===================== */
+
+.card h2{
+
+    font-size:2rem;
+
+    color:#183153;
+
+    margin-bottom:20px;
+
+}
+
+/* BUTTON */
+
+button{
+
+background:#183153;
+
+color:white;
+
+border:none;
+
+padding:10px 18px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+font-weight:bold;
+
+transition:.2s;
+
+}
+
+button:hover{
+
+background:#28589d;
+
+}
+/* ADD ROW */
+
+#addRowBtn{
+
+    background:#50C878;
+
+}
+
+#addRowBtn:hover{
+
+    background:#90EE90;
+
+}
+
+
+/* INPUT */
+
+input{
+
+padding:10px;
+
+border:1px solid #d7dce5;
+
+border-radius:8px;
+
+outline:none;
+
+}
+
+
+
+/* CARD */
+
+.card{
+
+    background:white;
+
+    padding:20px;
+
+    border-radius:14px;
+
+    box-shadow:
+    0 4px 14px rgba(0,0,0,.08);
+
+    overflow:auto;
+
+    max-height:75vh;
+
+}
+
+
+
+/* TABLE */
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+
+}
+
+thead{
+
+background:#183153;
+
+color:white;
+
+}
+
+th{
+
+padding:14px;
+
+text-align:left;
+
+}
+
+td{
+
+padding:12px;
+
+border-bottom:1px solid #eee;
+
+}
+
+tbody tr:hover{
+
+background:#f8fbff;
+
+}
+
+
+
+/* TABLE INPUT */
+
+.tableInput{
+
+width:100%;
+
+padding:8px;
+
+border:1px solid #ccc;
+
+border-radius:6px;
+
+}
+
+
+
+/* ACTION BUTTONS */
+
+.action-btn{
+
+padding:8px 12px;
+
+margin-right:5px;
+
+}
+
+.editBtn{
+
+background:#f39c12;
+
+}
+
+.editBtn:hover{
+
+background:#d68910;
+
+}
+
+.deleteBtn{
+
+background:#e74c3c;
+
+}
+
+.deleteBtn:hover{
+
+background:#c0392b;
+
+}
+
+
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:15px;
+
+    z-index:9999;
+
+}
+
+/* =========================
+   MODAL CONTENT
+========================= */
+
+.modal-content{
+
+    background:white;
+
+    border-radius:18px;
+
+    width:700px;
+
+    max-width:95%;
+
+    height:85vh;
+
+    max-height:85vh;
+
+    display:flex;
+
+    flex-direction:column;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 8px 25px rgba(
+    0,0,0,.18
+    );
+
+}
+
+/* =========================
+   LARGE MODAL
+========================= */
+
+.modal-large{
+
+    width:96%;
+
+    max-width:1800px;
+
+    height:90vh;
+
+    max-height:90vh;
+
+    overflow:hidden;
+
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.modal-header{
+
+    flex-shrink:0;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:20px;
+
+    border-bottom:1px solid #eee;
+
+    background:white;
+
+}
+
+.modal-header h2{
+
+    color:#183153;
+
+    font-size:2rem;
+
+    font-weight:700;
+
+    margin:0;
+
+}
+
+#closeDialogBtn{
+
+    background:#e74c3c;
+
+    color:white;
+
+    border:none;
+
+    width:50px;
+
+    height:50px;
+
+    border-radius:12px;
+
+    font-size:24px;
+
+    cursor:pointer;
+
+}
+
+/* =========================
+   BODY
+========================= */
+
+.modal-body{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    overflow-x:hidden;
+
+    padding:20px;
+
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.modal-footer{
+
+    flex-shrink:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:12px;
+
+    padding:15px;
+
+    border-top:1px solid #eee;
+
+    background:white;
+
+}
+
+.modal-footer button{
+
+    min-width:180px;
+
+}
+
+/* =========================
+   TOOLBAR
+========================= */
+
+.modal-toolbar{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+/* =========================
+   EDIT MODAL BUTTONS
+========================= */
+
+.modal-buttons{
+
+    display:flex;
+
+    gap:12px;
+
+    margin-top:10px;
+
+}
+
+#updateBtn{
+
+    background:#27ae60;
+
+}
+
+#closeModalBtn{
+
+    background:#7f8c8d;
+
+}
+
+/* =========================
+   MONTH FILTER
+========================= */
+
+.month-wrapper{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}
+
+#monthFilter{
+
+    padding:10px;
+
+    border:1px solid #ccc;
+
+    border-radius:8px;
+
+    background:white;
+
+    min-width:160px;
+
+    cursor:pointer;
+
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:900px){
+
+    .modal{
+
+        padding:10px;
+
+    }
+
+    .modal-content{
+
+        width:95%;
+
+        max-width:95%;
+
+        height:90vh;
+
+        max-height:90vh;
+
+    }
+
+    .modal-header{
+
+        padding:15px;
+
+    }
+
+    .modal-header h2{
+
+        font-size:1.2rem;
+
+    }
+
+    .modal-body{
+
+        padding:15px;
+
+    }
+
+    .modal-footer{
+
+        display:flex;
+
+        gap:10px;
+
+    }
+
+    .modal-footer button{
+
+        flex:1;
+
+        min-width:0;
+
+    }
+
+}
+
+.inputError{
+
+border:2px solid #ef4444 !important;
+
+background:#fef2f2 !important;
+
+color:#dc2626 !important;
+
+}
+
+.inputError::placeholder{
+
+color:#dc2626;
+
+font-weight:700;
+
+}
+
+/* PAGINATION */
+
+.table-wrapper{
+
+    overflow-x:auto;
+
+}
+
+.pagination{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:8px;
+
+    width:100%;
+
+    margin:20px auto;
+
+    flex-wrap:wrap;
+
+}
+
+.pagination button{
+
+    min-width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:8px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+}
+
+.activePage{
+
+    background:#2563eb !important;
+
+}
+
+
+/* =====================================
+   MOBILE TABLE → CARD
+===================================== */
+
+@media (max-width:768px){
+
+    #inputTable{
+
+        width:100%;
+
+    }
+
+    #inputTable thead{
+
+        display:none;
+
+    }
+
+    #inputTable,
+    #inputTable tbody,
+    #inputTable tr,
+    #inputTable td{
+
+        display:block;
+
+        width:100%;
+
+    }
+
+    #inputTable tr{
+
+        background:#f7f9fc;
+
+        border:1px solid #dbe2ea;
+
+        border-radius:12px;
+
+        padding:15px;
+
+        margin-bottom:15px;
+
+    }
+
+    #inputTable td{
+
+        border:none;
+
+        padding:8px 0;
+
+    }
+
+    #inputTable td::before{
+
+        display:block;
+
+        font-weight:700;
+
+        color:#183153;
+
+        margin-bottom:5px;
+
+    }
+
+    #inputTable td:nth-child(1)::before{
+        content:"Date";
+    }
+
+    #inputTable td:nth-child(2)::before{
+        content:"Work";
+    }
+
+    #inputTable td:nth-child(3)::before{
+        content:"Block";
+    }
+
+    #inputTable td:nth-child(4)::before{
+        content:"Qty";
+    }
+
+    #inputTable td:nth-child(5)::before{
+        content:"Unit";
+    }
+
+    #inputTable td:nth-child(6)::before{
+        content:"Unit Price";
+    }
+
+    #inputTable td:nth-child(7)::before{
+        content:"Total";
+    }
+
+    #inputTable td:nth-child(8)::before{
+        content:"By Person";
+    }
+
+    #inputTable td:nth-child(9)::before{
+        content:"Action";
+    }
+
+    .deleteInputRow{
+
+        width:100%;
+
+        margin-top:10px;
+
+        background:#ef4444;
+
+    }
+
+}
+
+/* =====================================
+   EDIT MODAL
+===================================== */
+
+.edit-modal{
+
+    width:700px;
+
+    max-width:95%;
+
+    height:auto;
+
+    max-height:90vh;
+
+    overflow-y:auto;
+
+    padding:20px;
+
+}
+
+.edit-modal-body{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:20px;
+
+}
+
+.editGroup{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:6px;
+
+    margin-bottom:14px;
+
+}
+
+.editGroup label{
+
+    font-size:14px;
+
+    font-weight:700;
+
+    color:#183153;
+
+}
+
+.editGroup input{
+
+    width:100%;
+
+}
+
+.modal-buttons{
+
+    flex-shrink:0;
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:12px;
+
+    padding:15px;
+
+    background:white;
+
+    border-top:1px solid #e5e7eb;
+
+}
+
+#editModal .button-group{
+
+    position:sticky;
+
+    bottom:0;
+
+    background:white;
+
+    padding:10px;
+
+    border-top:1px solid #ccc;
+
+}
+
+#updateBtn{
+
+    background:#22c55e;
+
+}
+
+#updateBtn:hover{
+
+    background:#16a34a;
+
+}
+
+#closeModalBtn{
+
+    background:#94a3b8;
+
+}
+
+#closeModalBtn:hover{
+
+    background:#64748b;
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .edit-modal{
+
+        width:95%;
+
+        max-width:95%;
+
+        padding:15px;
+
+    }
+
+    .modal-buttons{
+
+        flex-direction:column;
+
+    }
+
+    .modal-buttons button{
+
+        width:100%;
+
+    }
+
+}
+

@@ -24,6 +24,7 @@ const dashboardBody =
 document.getElementById('dashboardBody');
 
 let workOptions=[];
+let staffOptions=[];
 let dateSortAsc = false; // false=最新在上
 
 // ---------- TODAY DATE ----------
@@ -45,11 +46,11 @@ const res=
 await fetch(
 
 API+
-'/records/workers'
+'/records/staff'
 
 );
 
-workerOptions=
+staffOptions=
 
 await res.json();
 
@@ -57,11 +58,11 @@ await res.json();
 
 document
 .getElementById(
-'workerList'
+'staffList'
 )
 .innerHTML=
 
-workerOptions.map(
+staffOptions.map(
 
 w=>`
 
@@ -76,26 +77,6 @@ value="${w.worker_name}"
 ).join('');
 
 
-
-document
-.getElementById(
-'editWorkerList'
-)
-.innerHTML=
-
-workerOptions.map(
-
-w=>`
-
-<option
-
-value="${w.worker_name}"
-
->
-
-`
-
-).join('');
 
 }
 catch(err){
@@ -122,35 +103,13 @@ console.timeEnd('WORK_OPTIONS');
 workOptions=
 await res.json();
 
-let workerOptions=[];
+
 
 // GLOBAL LIST
 
 document
 .getElementById(
 'workList'
-)
-.innerHTML=
-
-workOptions.map(
-
-w=>`
-
-<option
-value="${w.work_name}">
-</option>
-
-`
-
-).join('');
-
-
-
-// EDIT LIST
-
-document
-.getElementById(
-'editWorkList'
 )
 .innerHTML=
 
@@ -174,7 +133,7 @@ console.error(err);
 }
 
 }
-loadWorkers();
+
 
 // ---------- OPEN DIALOG ----------
 
@@ -296,14 +255,14 @@ function createRow(date = getToday()){
         <td>
             <input
             class="tableInput by_person"
-            list="workerList"
+            list="staffList"
             placeholder="SELECT WORKER">
         </td>
 
         <td>
-            <button
-            class="deleteInputRow">
-                DELETE
+             <button
+                class="iconBtn deleteBtn">
+                <i class="fa-solid fa-trash"></i>
             </button>
         </td>
 
@@ -462,10 +421,11 @@ inputBody.addEventListener(
 
 if(
 
-e.target.classList
-.contains(
-'workSelect'
-)
+e.target.classList.contains('workSelect') ||
+
+e.target.classList.contains('by_person')
+
+
 
 ){
 
@@ -502,23 +462,31 @@ function sortByDate(){
     renderDashboard();
 
 }
-
-
-// ---------- SAVE ALL ----------
-
+//Save All//
 document
-.getElementById(
-'saveAllBtn'
-)
-
+.getElementById('saveAllBtn')
 .addEventListener(
 
 'click',
 
 async()=>{
-	
-const filterDate =
 
+const saveBtn =
+document.getElementById(
+'saveAllBtn'
+);
+
+// 防止重复点击
+if(saveBtn.disabled){
+    return;
+}
+
+saveBtn.disabled = true;
+saveBtn.textContent = 'Saving...';
+
+try{
+
+const filterDate =
 document
 .getElementById(
 'monthFilter'
@@ -526,12 +494,7 @@ document
 .value;
 
 const rows=[
-
-...inputBody
-.querySelectorAll(
-'tr'
-)
-
+...inputBody.querySelectorAll('tr')
 ];
 
 const payload=[];
@@ -550,8 +513,6 @@ for(const row of rows){
     const qty =
     row.querySelector('.qty').value;
 
-    /* REQUIRED CHECK */
-
     if(
         !date ||
         !work ||
@@ -560,22 +521,22 @@ for(const row of rows){
     ){
 
         alert(
-            'Please fill Date, Work, Qty and By Person.'
+        'Please fill Date, Work, Qty and By Person.'
         );
 
         return;
     }
 
-    const obj={
+    payload.push({
 
-        date: date,
+        date,
 
-        work: work,
+        work,
 
         block:
         row.querySelector('.block').value || '',
 
-        qty: qty,
+        qty,
 
         work_unit:
         row.querySelector('.work_unit').value || '',
@@ -589,117 +550,70 @@ for(const row of rows){
         by_person:
         byPerson
 
-    };
-
-    payload.push(obj);
+    });
 
 }
 
+const res = await fetch(
 
-
-try{
-
-const res=
-
-await fetch(
-
-API+
-'/records/bulk',
+API + '/records/bulk',
 
 {
+    method:'POST',
 
-method:'POST',
+    headers:{
+        'Content-Type':
+        'application/json'
+    },
 
-headers:{
-
-'Content-Type':
-'application/json'
-
-},
-
-body:
-
-JSON.stringify(
-payload
-)
-
+    body:
+    JSON.stringify(payload)
 }
 
 );
 
+if(!res.ok){
 
-
-if(
-
-!res.ok
-
-){
-
-throw new Error(
-'Save Failed'
-);
+    throw new Error(
+    'Save Failed'
+    );
 
 }
 
-
-
-alert(
-'Saved Successfully'
-);
-
-
-
-
-
-// CLEAR INPUT
+alert('Saved Successfully');
 
 inputBody.innerHTML='';
 
-inputBody
-.insertAdjacentHTML(
-
+inputBody.insertAdjacentHTML(
 'beforeend',
-
 createRow()
-
 );
-
-
-
-// CLOSE DIALOG
 
 document
-.getElementById(
-'inputModal'
-)
-
-.classList
-.add(
-'hidden'
-);
-
-
-
-// RELOAD DASHBOARD
+.getElementById('inputModal')
+.classList.add('hidden');
 
 loadDashboard(filterDate);
+
 }
 
 catch(err){
 
-console.error(
-err
-);
+    console.error(err);
 
-alert(
-'Save Error'
-);
+    alert('Save Error');
 
 }
 
+finally{
+
+    saveBtn.disabled = false;
+
+    saveBtn.textContent = 'SAVE';
+
 }
 
-);
+});
 
 
 
@@ -855,9 +769,9 @@ r=>`
 
 <td>${r.by_person||''}</td>
 
-<td>
+<td class="iconBtn action-cell">
 
-<button
+<button 
 onclick="openEdit(
 '${r.id}',
 '${r.date}',
@@ -868,15 +782,15 @@ onclick="openEdit(
 '${r.unit_price}',
 '${r.total}',
 '${r.by_person}'
-)">
+)" class="iconBtn editBtn" >
 
-EDIT
+	<i class="fa-solid fa-pen-to-square"></i>
 
 </button>
 
 <button
 
-class="action-btn deleteBtn"
+class="iconBtn deleteBtn"
 
 onclick="deleteRecord(
 
@@ -886,7 +800,7 @@ onclick="deleteRecord(
 
 >
 
-DELETE
+<i class="fa-solid fa-trash"></i>
 
 </button>
 
@@ -908,65 +822,98 @@ renderPagination();
 
 function renderPagination(){
 
-const totalPages=
+    const totalPages =
+    Math.ceil(
+        allRecords.length / rowsPerPage
+    );
 
-Math.ceil(
+    let html = '';
 
-allRecords.length
-/
-rowsPerPage
+    // PREV
+    html += `
+    <button
+    class="page-nav"
+    ${currentPage===1?'disabled':''}
+    onclick="
+    if(currentPage>1){
+        currentPage--;
+        renderDashboard();
+    }">
+    <i class="fa-solid fa-chevron-left"></i>
+    </button>
+    `;
 
-);
+    let start =
+    Math.max(1,currentPage-2);
 
+    let end =
+    Math.min(totalPages,currentPage+2);
 
+    if(start > 1){
 
-let html='';
+        html += `
+        <button onclick="
+        currentPage=1;
+        renderDashboard();
+        ">1</button>
+        `;
 
+        if(start > 2){
+            html += `<span>...</span>`;
+        }
+    }
 
+    for(let i=start;i<=end;i++){
 
-for(
+        html += `
+        <button
+        class="${
+        i===currentPage
+        ?'active'
+        :''
+        }"
+        onclick="
+        currentPage=${i};
+        renderDashboard();
+        ">
+        ${i}
+        </button>
+        `;
+    }
 
-let i=1;
-i<=totalPages;
-i++
+    if(end < totalPages){
 
-){
+        if(end < totalPages-1){
+            html += `<span>...</span>`;
+        }
 
-html+=`
+        html += `
+        <button onclick="
+        currentPage=${totalPages};
+        renderDashboard();
+        ">
+        ${totalPages}
+        </button>
+        `;
+    }
 
-<button
+    // NEXT
+    html += `
+    <button
+    class="page-nav"
+    ${currentPage===totalPages?'disabled':''}
+    onclick="
+    if(currentPage<totalPages){
+        currentPage++;
+        renderDashboard();
+    }">
+    <i class="fa-solid fa-chevron-right"></i>
+    </button>
+    `;
 
-class="${
-i===currentPage
-?'activePage'
-:''
-}"
-
-onclick="
-currentPage=${i};
-renderDashboard();
-"
-
->
-
-${i}
-
-</button>
-
-`;
-
-}
-
-
-
-document
-.getElementById(
-'pagination'
-)
-.innerHTML=
-
-html;
-
+    document
+    .getElementById('pagination')
+    .innerHTML = html;
 }
 
 // ---------- MONTH PICKER AUTO FILTER ----------
@@ -1171,7 +1118,7 @@ ${w.work_name}
 
 document
 .getElementById(
-'editModal'
+'editDialog'
 )
 
 .classList
@@ -1228,269 +1175,238 @@ by_person || '';
 
 // ---------- UPDATE ----------
 
-document
-.getElementById(
-'updateBtn'
-)
+let isUpdating = false;
 
+document
+.getElementById('updateBtn')
 .addEventListener(
 
 'click',
 
 async()=>{
 
-const filterDate=
+if(isUpdating){
+    return;
+}
 
-document
-.getElementById(
-'monthFilter'
-)
-.value;
-
-
-
-// ---------- CLEAR OLD WARNING ----------
-
-[
-
-editDate,
-editWork,
-editQty,
-editByPerson
-
-]
-
-.forEach(
-
-input=>{
-
-input.classList.remove(
-'inputError'
+const updateBtn =
+document.getElementById(
+'updateBtn'
 );
 
-if(
+try{
 
-input.dataset
-.originalPlaceholder
+    isUpdating = true;
 
-){
+    updateBtn.disabled = true;
 
-input.placeholder=
+    updateBtn.textContent =
+    'Updating...';
 
-input.dataset
-.originalPlaceholder;
+    const filterDate =
+    document
+    .getElementById(
+    'monthFilter'
+    )
+    .value;
+
+    // ---------- CLEAR OLD WARNING ----------
+
+    [
+        editDate,
+        editWork,
+        editQty,
+        editByPerson
+    ]
+
+    .forEach(input=>{
+
+        input.classList.remove(
+        'inputError'
+        );
+
+        if(
+        input.dataset
+        .originalPlaceholder
+        ){
+
+            input.placeholder=
+            input.dataset
+            .originalPlaceholder;
+
+        }
+
+    });
+
+    let hasError=false;
+
+    function showError(
+    input,
+    message
+    ){
+
+        input.classList.add(
+        'inputError'
+        );
+
+        if(
+        !input.dataset
+        .originalPlaceholder
+        ){
+
+            input.dataset
+            .originalPlaceholder=
+            input.placeholder;
+
+        }
+
+        input.value='';
+
+        input.placeholder=
+        message;
+
+        hasError=true;
+    }
+
+    // VALIDATION
+
+    if(!editDate.value){
+
+        showError(
+        editDate,
+        'DATE REQUIRED'
+        );
+
+    }
+
+    if(!editWork.value){
+
+        showError(
+        editWork,
+        'WORK REQUIRED'
+        );
+
+    }
+
+    if(
+    editQty.value === '' ||
+    editQty.value === null
+    ){
+
+        showError(
+        editQty,
+        'QTY REQUIRED'
+        );
+
+    }
+
+    if(!editByPerson.value){
+
+        showError(
+        editByPerson,
+        'BY PERSON REQUIRED'
+        );
+
+    }
+
+    if(hasError){
+
+        return;
+    }
+
+    const id = editId.value;
+
+    const payload={
+
+        date:
+        editDate.value,
+
+        work:
+        editWork.value,
+
+        block:
+        editBlock.value,
+
+        qty:
+        editQty.value,
+
+        work_unit:
+        editWorkUnit.value,
+
+        unit_price:
+        editUnitPrice.value,
+
+        total:
+        editTotal.value,
+
+        by_person:
+        editByPerson.value
+
+    };
+
+    const res = await fetch(
+
+    API + '/records/' + id,
+
+    {
+
+        method:'PUT',
+
+        headers:{
+            'Content-Type':
+            'application/json'
+        },
+
+        body:
+        JSON.stringify(
+        payload
+        )
+
+    }
+
+    );
+
+    if(!res.ok){
+
+        alert(
+        'Update Failed'
+        );
+
+        return;
+    }
+
+    alert(
+    'Updated Successfully'
+    );
+
+    closeModal();
+
+    loadDashboard(
+    filterDate
+    );
+
+}
+catch(err){
+
+    console.error(err);
+
+    alert(
+    'Update Error'
+    );
+
+}
+finally{
+
+    isUpdating = false;
+
+    updateBtn.disabled = false;
+
+    updateBtn.textContent =
+    'UPDATE';
 
 }
 
-}
-
-);
-
-
-
-let hasError=false;
-
-
-
-function showError(
-
-input,
-message
-
-){
-
-input.classList.add(
-'inputError'
-);
-
-if(
-
-!input.dataset
-.originalPlaceholder
-
-){
-
-input.dataset
-.originalPlaceholder=
-
-input.placeholder;
-
-}
-
-input.value='';
-
-input.placeholder=
-message;
-
-hasError=true;
-
-}
-
-
-
-// ---------- VALIDATION ----------
-
-if(!editDate.value){
-
-showError(
-
-editDate,
-
-'DATE REQUIRED'
-
-);
-
-}
-
-
-
-if(!editWork.value){
-
-showError(
-
-editWork,
-
-'WORK REQUIRED'
-
-);
-
-}
-
-
-
-if(
-
-editQty.value==='' ||
-
-editQty.value===null ||
-
-editQty.value===undefined
-
-){
-
-showError(
-
-editQty,
-
-'QTY REQUIRED'
-
-);
-
-}
-
-
-
-if(!editByPerson.value){
-
-showError(
-
-editByPerson,
-
-'BY PERSON REQUIRED'
-
-);
-
-}
-
-
-
-if(hasError){
-
-return;
-
-}
-
-
-
-const id=
-editId.value;
-
-
-
-const payload={
-
-date:
-editDate.value,
-
-work:
-editWork.value,
-
-block:
-editBlock.value,
-
-qty:
-editQty.value,
-
-work_unit:
-editWorkUnit.value,
-
-unit_price:
-editUnitPrice.value,
-
-total:
-editTotal.value,
-
-by_person:
-editByPerson.value
-
-};
-
-
-
-const res=
-
-await fetch(
-
-API+
-'/records/'+id,
-
-{
-
-method:'PUT',
-
-headers:{
-
-'Content-Type':
-'application/json'
-
-},
-
-body:
-JSON.stringify(
-payload
-)
-
-}
-
-);
-
-
-
-if(!res.ok){
-
-alert(
-'Update Failed'
-);
-
-return;
-
-}
-
-
-
-alert(
-'Updated Successfully'
-);
-
-closeModal();
-
-loadDashboard(
-filterDate
-);
-
-}
-
-);
+});
 
 
 
@@ -1502,7 +1418,7 @@ function closeModal(){
 
 document
 .getElementById(
-'editModal'
+'editDialog'
 )
 .classList
 .add(
@@ -1562,7 +1478,7 @@ el.classList
 
 document
 .getElementById(
-'closeModalBtn'
+'closeEditBtn'
 )
 
 .addEventListener(
@@ -1572,6 +1488,21 @@ document
 closeModal
 
 );
+
+
+document
+.getElementById(
+'closeEditTopBtn'
+)
+
+.addEventListener(
+
+'click',
+
+closeModal
+
+);
+closeEditBtn
 
 // ---------- DEFAULT CURRENT MONTH ----------
 
@@ -1815,6 +1746,20 @@ e.preventDefault();
 editWork.focus();
 
 editWork.showPicker?.();
+
+});
+
+editByPerson.addEventListener(
+
+'mousedown',
+
+(e)=>{
+
+e.preventDefault();
+
+editByPerson.focus();
+
+editByPerson.showPicker?.();
 
 });
 

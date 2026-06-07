@@ -1,34 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
 
-<link
-rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> 
 <meta charset="UTF-8">
+
 
 <meta
 name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>
+<title>Drone Record </title>
 
-Drone Record 
-
-</title>
-<link
-rel="icon"
-type="image/png"
-href="./icon/mbsb_drone.png">
-
-<link
-rel="stylesheet"
-href="./styles/style.css">
-
-<link
-rel="stylesheet"
-href="./styles/drone.css">
+<link rel="icon" type="image/png" href="./icon/mbsb_drone.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> 
+<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+<link rel="stylesheet" href="./styles/variables.css">
+<link rel="stylesheet" href="./styles/base.css">
+<link rel="stylesheet" href="./styles/layout.css">
+<link rel="stylesheet" href="./styles/components.css">
+<link rel="stylesheet" href="./styles/style.css">
 
 </head>
 
@@ -36,336 +27,294 @@ href="./styles/drone.css">
 
 <div class="container">
 
-<div class="page-header">
+	<div class="page-header">
 
-    <div class="page-header-left">
+		<div class="page-header-left">
 
-        <div class="system-title">
-            DRONE RECORD
-        </div>
+			<div class="system-title">
+				DRONE RECORD
+			</div>
 
-        <div class="system-subtitle">
+			<div class="system-subtitle">
 
-            Welcome back,
+				Welcome back,
 
-            <span id="loginUser">
-                USER
-            </span>
+				<span id="loginUser">
+					USER
+				</span>
 
-        </div>
+			</div>
 
-    </div>
+		</div>
 
-    <div class="page-header-right">
+		<div class="page-header-right">
 
-        <div id="todayDate"></div>
+			<div id="todayDate"></div>
 
-        <button id="logoutBtn">
-            <i class="fa-solid fa-right-from-bracket"></i>
-            Logout
-        </button>
+			<button id="logoutBtn" class="btn btn-danger">
+				<i class="fa-solid fa-right-from-bracket"></i>
+				Logout
+			</button>
 
-    </div>
+		</div>
+
+	</div>
+
+	<div class="card">
+
+		<div class="topbar">
+
+		<input
+		id="workDate"
+		type="date">
+
+		<select id="work">
+			<option value="">Select Work</option>
+		</select>
+
+		<input
+		id="flowha"
+		placeholder="L/HA">
+
+		<input
+		id="block"
+		placeholder="Block">
+
+		<input
+		id="workArea"
+		placeholder="Work Area">
+
+		<input
+		id="areaha"
+		type="number"
+		placeholder="Area (HA)">
+
+
+
+		<button
+		id="addBtn" class="btn btn-success">
+
+		+ ADD
+
+		</button>
+
+		</div>
+
+		<div class="table-container">
+			<table>
+
+			<thead>
+
+			<tr>
+
+			<!-- <th>Date</th> -->
+			<th>Work</th>
+			<th>L/HA</th>
+			<th>Block</th>
+			<th>Work Area</th>
+			<th>Area (HA)</th>
+			<th>Item Used</th>
+			<th>UOM</th>
+			<th>Usage</th>
+			<th>Unit/Ha</th>
+			<th>Action</th>
+			</tr>
+
+			</thead>
+
+			<tbody id="recordTable">
+
+			</tbody>
+
+			</table>
+		</div>
+
+		<div class="save-bar">
+
+			<button id="whatsappBtn">
+
+				<i class="fa-brands fa-whatsapp"></i>
+				WhatsApp
+
+			</button>
+
+		</div>
+
+	</div>
 
 </div>
-
-<div class="card">
-
-<div class="topbar">
-
-<input
-id="workDate"
-type="date">
-
-<select id="work">
-    <option value="">Select Work</option>
-</select>
-
-<input
-id="flowha"
-placeholder="L/HA">
-
-<input
-id="block"
-placeholder="Block">
-
-<input
-id="workArea"
-placeholder="Work Area">
-
-<input
-id="areaha"
-type="number"
-placeholder="Area (HA)">
-
-
-
-<button
-id="addBtn">
-
-+ ADD
-
-</button>
-
-</div>
-
-<div class="table-container">
-<table>
-
-<thead>
-
-<tr>
-
-<!-- <th>Date</th> -->
-<th>Work</th>
-<th>L/HA</th>
-<th>Block</th>
-<th>Work Area</th>
-<th>Area (HA)</th>
-<th>Item Used</th>
-<th>UOM</th>
-<th>Usage</th>
-<th>Unit/Ha</th>
-<th>Action</th>
-</tr>
-
-</thead>
-
-<tbody id="recordTable">
-
-</tbody>
-
-</table>
-</div>
-
-<div class="save-bar">
-
-    <button id="whatsappBtn">
-
-        <i class="fa-brands fa-whatsapp"></i>
-        WhatsApp
-
-    </button>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- DIALOG -->
-
 <div
-id="itemDialog"
-class="modal hidden">
-
-<div
-class="modal-content modal-large">
-
-<div
-class="modal-header">
-
-<h2  id="dialogTitle">
-
-DRONE WORK
-
-</h2>
-
-<button
-id="closeDialogBtn">
-
-X
-
-</button>
-
+    id="pagination"
+    class="pagination">
 </div>
-<div class="dialog-content">
 
-	<table>
+<!-- ADD DIALOG -->
 
-	<thead>
+<div id="itemDialog" class="modal hidden">
 
-	<tr>
+	<div class="modal-content modal-large">
 
-	<th>Item Used</th>
-	<th>UOM</th>
-	<th>Unit/HA</th>
-	<th>Usage</th>
-	<th>Action</th>
+		<div class="modal-header">
 
-	</tr>
+			<h2 id="dialogTitle">DRONE WORK</h2>
 
-	</thead>
+			<button id="closeDialogBtn" class="btn btn-danger">X</button>
+			
+		</div>
 
-	<tbody
-	id="dialogTableBody">
+		<!-- DIALOG BODY -->
+		 
+		<div class="modal-body">
 
-	</tbody>
+			<div class="table-container">
 
-	</table>
+				<table class="dialog-table">
 
-</div>
-<div class="dialog-footer">
+					<thead>
 
-    <button id="addDialogRowBtn">
-        + Add Row
-    </button>
+						<tr>
 
-    <button id="dialogSaveBtn">
-        Save
-    </button>
+							<th>Item Used</th>
+							<th>UOM</th>
+							<th>Unit/HA</th>
+							<th>Usage</th>
+							<th>Action</th>
 
-</div>
+						</tr>
+
+					</thead>
+
+					<tbody id="dialogTableBody"></tbody>
+
+				</table>
+				
+			</div>
+
+		</div>
+		
+		<!-- FOOTER -->
+		<div class="dialog-footer">
+
+			<button id="addDialogRowBtn" class="btn btn-success">+ ADD</button>
+
+			<button id="dialogSaveBtn" class="btn btn-primary">SAVE</button>
+
+		</div>
+
+	</div>
 
 </div>
 
-</div>
+<!-- EDIT DIALOG -->
 
-<!-- ==================================
-     EDIT DIALOG
-=================================== -->
+<div id="editDialog" class="modal hidden">
 
-<div
-id="editDialog"
-class="modal hidden">
+	<div class="modal-content">
 
-<div
-class="modal-content">
+		<div class="modal-header">
 
-<div class="modal-header">
+			<h2>EDIT DRONE RECORD</h2>
 
-<h2>
-EDIT DRONE RECORD
-</h2>
+			<button id="closeEditDialogBtn" class="btn btn-danger" >X</button>
 
-<button
-id="closeEditDialogBtn">
-X
-</button>
+		</div>
 
-</div>
+		<div class="edit-form">
 
-<div class="edit-form">
+			<div class="edit-row">
 
-<div class="edit-row">
+				<label>Date</label>
 
-<label>Date</label>
+				<input id="editDate" type="date">
 
-<input
-id="editDate"
-type="date">
+			</div>
 
-</div>
+			<div class="edit-row">
 
-<div class="edit-row">
+				<label>Work</label>
 
-<label>Work</label>
+				<select id="editWork">
+					<option value="">Select Work</option>
+				</select>
 
-<select id="editWork">
+			</div>
 
-<option value="">
-Select Work
-</option>
+			<div class="edit-row">
 
-</select>
+				<label>L/HA</label>
 
-</div>
+				<input id="editflowha">
 
+			</div>
 
+			<div class="edit-row">
 
-<div class="edit-row">
+				<label>Block</label>
 
-<label>L/HA</label>
+				<input id="editBlock">
 
-<input
-id="editflowha">
+			</div>
 
-</div>
+			<div class="edit-row">
 
-<div class="edit-row">
+				<label>Work Area</label>
 
-<label>Block</label>
+				<input id="editWorkArea">
 
-<input
-id="editBlock">
+			</div>
 
-</div>
+			<div class="edit-row">
 
-<div class="edit-row">
+				<label>Area (HA)</label>
 
-<label>Work Area</label>
+				<input id="editAreaHa" type="number">
 
-<input
-id="editWorkArea">
+			</div>
 
-</div>
+			<div class="edit-row">
 
-<div class="edit-row">
+				<label>Item Used</label>
 
-<label>Area (HA)</label>
+				<input id="editItemUsed">
 
-<input
-id="editAreaHa"
-type="number">
+			</div>
 
-</div>
+			<div class="edit-row">
 
-<div class="edit-row">
+				<label>UOM</label>
 
-<label>Item Used</label>
+				<input id="editUom">
 
-<input
-id="editItemUsed">
+			</div>
 
-</div>
+			<div class="edit-row">
 
-<div class="edit-row">
+				<label>Usage</label>
 
-<label>UOM</label>
+				<input id="editUsage" type="number">
 
-<input
-id="editUom">
+			</div>
 
-</div>
+			<div class="edit-row">
 
-<div class="edit-row">
+				<label>Unit</label>
 
-<label>Usage</label>
+				<input id="editUnit">
 
-<input
-id="editUsage"
-type="number">
+			</div>
+
+		</div>
+
+		<div class="dialog-footer">
+
+			<button id="updateBtn" class="btn btn-primary">Update</button>
+
+		</div>
+
+	</div>
 
 </div>
 
-<div class="edit-row">
-
-<label>Unit</label>
-
-<input
-id="editUnit">
-
-</div>
-
-</div>
-
-<div class="dialog-footer">
-
-<button id="updateBtn">
-
-Update
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-<link
-href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css"
-rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 

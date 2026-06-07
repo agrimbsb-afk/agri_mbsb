@@ -25,7 +25,7 @@ controller.getWorkOptions
 );
 
 router.get(
-'/workers',
+'/staff',
 controller.getWorkers
 );
 

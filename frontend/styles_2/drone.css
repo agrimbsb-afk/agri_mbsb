@@ -1,0 +1,1279 @@
+/* ==========================
+   HEADER
+========================== */
+
+/* ==========================
+   PAGE HEADER
+========================== */
+
+.page-header{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:25px 30px;
+
+    margin-bottom:25px;
+
+    background:white;
+
+    border-radius:18px;
+
+    box-shadow:
+    0 4px 15px rgba(
+        0,
+        0,
+        0,
+        .08
+    );
+
+}
+
+.system-title{
+
+    font-size:42px;
+
+    font-weight:800;
+
+    color:#183153;
+
+    letter-spacing:1px;
+
+}
+
+.system-subtitle{
+
+    margin-top:8px;
+
+    color:#666;
+
+    font-size:15px;
+
+}
+
+.system-subtitle span{
+
+    color:#183153;
+
+    font-weight:700;
+
+}
+
+.page-header-right{
+
+    display:flex;
+    align-items:center;
+
+    gap:15px;
+
+}
+
+#todayDate{
+
+    font-size:14px;
+
+    color:#555;
+
+    font-weight:600;
+
+}
+
+#logoutBtn{
+
+    background:#ef4444;
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    padding:10px 18px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+}
+
+#logoutBtn:hover{
+
+    background:#dc2626;
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .page-header{
+
+        flex-direction:column;
+        align-items:flex-start;
+        gap:15px;
+
+    }
+
+    .system-title{
+
+        font-size:28px;
+
+    }
+
+    .page-header-right{
+
+        width:100%;
+        justify-content:space-between;
+
+    }
+
+}
+
+.user-panel{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+}
+
+#loginUser{
+
+    font-weight:600;
+
+    color:#183153;
+
+    font-size:15px;
+
+}
+
+#logoutBtn{
+
+    background:#ef4444;
+
+    color:white;
+
+    border:none;
+
+    border-radius:8px;
+
+    padding:10px 16px;
+
+    cursor:pointer;
+
+    font-weight:600;
+
+}
+
+#logoutBtn:hover{
+
+    background:#dc2626;
+
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .page-header{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:10px;
+
+    }
+
+    .user-panel{
+
+        width:100%;
+
+        justify-content:space-between;
+
+    }
+
+}
+
+
+/* ====================================
+   DRONE WORK RECORD
+==================================== */
+
+.topbar{
+
+display:grid;
+
+grid-template-columns:
+repeat(
+auto-fit,
+minmax(180px,1fr)
+);
+
+gap:12px;
+
+margin-bottom:20px;
+
+align-items:end;
+
+}
+
+.topbar input{
+
+width:100%;
+
+}
+
+#addBtn{
+
+height:42px;
+
+}
+
+
+
+/* ====================================
+   DASHBOARD TABLE
+==================================== */
+
+.card table{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:auto;
+}
+
+.card th{
+
+background:#183153;
+
+color:white;
+
+}
+
+.card th,
+.card td{
+
+padding:10px;
+
+word-break:break-word;
+
+overflow-wrap:break-word;
+
+vertical-align:middle;
+
+}
+
+#recordTable td{
+
+font-size:14px;
+
+}
+
+.edit-form{
+
+display:flex;
+flex-direction:column;
+gap:12px;
+
+}
+
+.edit-row{
+
+display:flex;
+flex-direction:column;
+gap:5px;
+
+}
+
+.edit-row label{
+
+font-weight:600;
+
+}
+
+.edit-row input,
+.edit-row select{
+
+height:42px;
+
+padding:0 12px;
+
+border:1px solid #ddd;
+
+border-radius:8px;
+
+}
+
+#updateBtn{
+
+background:#1d3c6a;
+
+color:white;
+
+border:none;
+
+padding:12px 25px;
+
+border-radius:8px;
+
+font-weight:600;
+
+cursor:pointer;
+
+}
+
+/* =========================
+   VALIDATION
+========================= */
+
+.inputError{
+
+    border:2px solid #ef4444 !important;
+
+    background:#fff5f5 !important;
+
+}
+
+.ts-control.inputError{
+
+    border:2px solid #ef4444 !important;
+
+    background:#fff5f5 !important;
+
+}
+
+/* ====================================
+   DIALOG
+==================================== */
+
+.modal-large{
+
+width:95%;
+
+max-width:1200px;
+
+max-height:90vh;
+
+overflow-y:auto;
+
+overflow-x:hidden;
+
+}
+/* ==========================
+   DIALOG FIXED FOOTER
+========================== */
+
+.modal-large{
+
+    display:flex;
+    flex-direction:column;
+
+    overflow:hidden;
+}
+
+/* table content */
+
+.dialog-content{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding-bottom:20px;
+}
+
+/* footer */
+
+.dialog-footer{
+
+    position:sticky;
+
+    bottom:0;
+
+    background:#fff;
+
+    border-top:1px solid #ddd;
+
+    padding:15px;
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:12px;
+
+    z-index:999;
+}
+
+/* buttons */
+
+#addDialogRowBtn{
+
+    min-width:100px;
+    height:48px;
+}
+
+#dialogSaveBtn{
+
+    min-width:100px;
+    height:48px;
+}
+
+.modal-large table{
+
+width:100%;
+
+table-layout:fixed;
+
+min-width:unset;
+
+}
+
+.modal-large th{
+
+background:#183153;
+
+color:white;
+
+}
+
+.modal-large th,
+.modal-large td{
+
+padding:10px;
+
+}
+
+
+
+/* ====================================
+   DIALOG INPUT
+==================================== */
+
+#dialogTableBody input{
+
+width:100%;
+
+padding:8px;
+
+border:1px solid #d7dce5;
+
+border-radius:6px;
+
+outline:none;
+
+}
+
+#dialogTableBody input:focus{
+
+border-color:#183153;
+
+}
+
+
+
+/* ====================================
+   BUTTONS
+==================================== */
+
+#addDialogRowBtn{
+
+background:#27ae60;
+
+}
+
+#addDialogRowBtn:hover{
+
+background:#229954;
+
+}
+
+#dialogSaveBtn{
+
+background:#183153;
+
+}
+
+#dialogSaveBtn:hover{
+
+background:#28589d;
+
+}
+
+
+
+/* ====================================
+   DELETE BUTTON
+==================================== */
+
+.deleteBtn{
+
+background:#e74c3c;
+
+}
+
+.deleteBtn:hover{
+
+background:#c0392b;
+
+}
+
+
+
+/* ====================================
+   MOBILE
+==================================== */
+
+@media(max-width:768px){
+
+.topbar{
+
+grid-template-columns:1fr;
+
+}
+
+.topbar button{
+
+width:100%;
+
+}
+
+.card{
+
+padding:15px;
+
+}
+
+
+
+/* Dashboard Table */
+
+.card table{
+
+font-size:12px;
+
+}
+
+.card th,
+.card td{
+
+padding:6px;
+
+}
+
+
+
+/* Dialog */
+
+.modal-large{
+
+width:100%;
+
+max-height:95vh;
+
+padding:15px;
+
+}
+
+
+
+/* Convert table to cards */
+
+.modal-large table,
+.modal-large thead,
+.modal-large tbody,
+.modal-large th,
+.modal-large td,
+.modal-large tr{
+
+display:block;
+
+width:100%;
+
+}
+
+.modal-large thead{
+
+display:none;
+
+}
+
+.modal-large tr{
+
+background:white;
+
+border:1px solid #d7dce5;
+
+border-radius:12px;
+
+padding:12px;
+
+margin-bottom:12px;
+
+box-shadow:
+0 2px 8px rgba(
+0,0,0,.05
+);
+
+}
+
+.modal-large td{
+
+display:flex;
+
+flex-direction:column;
+
+align-items:flex-start;
+
+border:none;
+
+padding:8px 0;
+
+}
+
+.modal-large td::before{
+
+content:attr(data-label);
+
+font-weight:700;
+
+color:#183153;
+
+margin-bottom:5px;
+
+}
+
+.modal-large td input{
+
+width:100%;
+
+font-size:14px;
+
+}
+
+.modal-large td button{
+
+width:100%;
+
+}
+
+#addDialogRowBtn,
+#dialogSaveBtn{
+
+width:100%;
+
+}
+
+}
+
+
+.editBtn{
+
+background:#f39c12;
+
+
+}
+
+.editBtn:hover{
+
+background:#d68910;
+
+}
+
+.actionCell{
+    width:120px;
+    text-align:center;
+}
+
+.actionBtns{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+}
+
+.iconBtn{
+    width:38px;
+    height:38px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    transition:.2s;
+
+    padding:0;
+}
+
+.iconBtn i{
+    margin:0;
+    line-height:1;
+}
+
+.iconBtn:hover{
+    transform:scale(1.08);
+}
+
+.editBtn{
+    background:#2563eb;
+    color:#fff;
+}
+
+.deleteBtn{
+    background:#ef4444;
+    color:#fff;
+}
+
+
+
+/* ==========================
+   SAVE BAR
+========================== */
+
+.save-bar{
+
+position:sticky;
+
+bottom:0;
+
+background:white;
+
+padding:15px;
+
+border-top:1px solid #ddd;
+
+display:flex;
+
+justify-content:center;
+
+z-index:100;
+
+margin-top:15px;
+
+}
+
+#whatsappBtn{
+
+    background:#25D366;
+
+    color:white;
+
+    border:none;
+
+    padding:14px 40px;
+
+    border-radius:10px;
+
+    font-size:18px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+}
+
+#whatsappBtn:hover{
+
+    background:#1ebe5d;
+
+}
+
+.login-logo{
+
+text-align:center;
+
+margin-bottom:20px;
+
+}
+
+.login-logo img{
+
+width:100px;
+
+height:100px;
+
+object-fit:contain;
+
+}
+
+/* ====================================
+   TOM SELECT
+==================================== */
+
+.ts-wrapper{
+    width:100%;
+}
+
+.ts-wrapper.single{
+    width:100%;
+}
+
+.ts-control{
+
+    width:100%;
+
+    height:42px !important;
+    min-height:42px !important;
+
+    border:1px solid #d7dce5 !important;
+    border-radius:10px !important;
+
+    background:#fff !important;
+
+    padding:0 12px !important;
+
+    display:flex;
+    align-items:center;
+
+    box-shadow:none !important;
+
+    font-size:16px;
+
+    cursor:text;
+}
+
+.ts-control input{
+
+    font-size:16px !important;
+
+    line-height:20px !important;
+
+    min-width:1px !important;
+
+}
+
+.ts-control.single .item{
+
+    line-height:20px;
+
+    padding:0;
+
+    margin:0;
+
+}
+
+.ts-control.focus{
+
+    border-color:#183153 !important;
+
+    box-shadow:none !important;
+
+}
+
+.ts-placeholder{
+
+    color:#777 !important;
+
+}
+
+/* ====================================
+   DROPDOWN
+==================================== */
+
+.ts-dropdown{
+
+    z-index:99999 !important;
+
+    border:1px solid #d7dce5;
+
+    border-radius:10px;
+
+    overflow:hidden;
+
+    margin-top:4px;
+
+    background:#fff;
+
+    box-shadow:
+    0 10px 25px rgba(
+        0,
+        0,
+        0,
+        0.15
+    );
+
+}
+
+.ts-dropdown .option{
+
+    padding:10px 12px;
+
+    font-size:14px;
+
+    cursor:pointer;
+
+}
+
+.ts-dropdown .option:hover{
+
+    background:#f3f6fa;
+
+}
+
+.ts-dropdown .active{
+
+    background:#183153 !important;
+
+    color:#fff !important;
+
+}
+
+.card{
+    overflow:visible;
+}
+
+/* ====================================
+   PREVENT DROPDOWN CLIPPING
+==================================== */
+
+.card{
+    overflow:visible !important;
+}
+
+.topbar{
+    overflow:visible !important;
+}
+
+.ts-wrapper.dropdown-active{
+    z-index:99999;
+}
+
+/* ====================================
+   MATCH OTHER INPUT HEIGHT
+==================================== */
+
+.topbar input,
+.topbar select,
+.ts-control{
+
+    height:42px !important;
+    min-height:42px !important;
+
+}
+
+/* ====================================
+   EDIT DIALOG FIX
+==================================== */
+
+#editDialog{
+
+    align-items:center;
+
+}
+
+#editDialog .modal-content{
+
+    width:700px;
+
+    max-width:95%;
+
+    max-height:90vh;
+
+    padding:0;
+
+    overflow:hidden;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+/* Header */
+
+#editDialog .modal-header{
+
+    flex-shrink:0;
+
+    padding:20px;
+
+    margin:0;
+
+}
+
+/* Scroll Area */
+
+#editDialog .edit-form{
+
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:20px;
+
+}
+
+/* Footer */
+
+#editDialog .dialog-footer{
+
+    flex-shrink:0;
+
+    position:sticky;
+
+    bottom:0;
+
+    background:#fff;
+
+    border-top:1px solid #ddd;
+
+    padding:15px;
+
+    display:flex;
+
+    justify-content:center;
+
+    z-index:10;
+
+}
+
+/* Update Button */
+
+#editDialog #updateBtn{
+
+    min-width:220px;
+
+    height:48px;
+
+}
+
+
+.table-container{
+
+    width:100%;
+
+    overflow-x:auto;
+
+    overflow-y:hidden;
+
+    -webkit-overflow-scrolling:touch;
+
+}
+
+.card table{
+
+    width:100%;
+
+    min-width:1200px;
+
+    border-collapse:collapse;
+
+}
+
+
+/* ====================================
+   MOBILE RESPONSIVE
+==================================== */
+
+
+
+@media(max-width:768px){
+
+    /* Top Form */
+
+    .topbar{
+        grid-template-columns:1fr;
+        gap:10px;
+    }
+
+    .topbar input,
+    .topbar select,
+    .topbar button,
+    .ts-wrapper{
+        width:100%;
+    }
+
+    /* Dashboard Table Scroll */
+	table{
+
+		width:100%;
+
+		min-width:1200px;
+
+		border-collapse:collapse;
+
+	}
+
+    .table-container{
+        width:100%;
+        overflow-x:auto;
+        overflow-y:hidden;
+
+        -webkit-overflow-scrolling:touch;
+    }
+
+    .card table{
+        min-width:1100px;
+    }
+
+    .card th,
+    .card td{
+        white-space:nowrap;
+        font-size:12px;
+    }
+
+    /* Dialog */
+
+    .modal-large{
+
+        width:95%;
+        max-width:95%;
+
+        max-height:85vh;
+
+        overflow-y:auto;
+
+        padding:15px;
+    }
+
+    .modal-large table,
+    .modal-large thead,
+    .modal-large tbody,
+    .modal-large th,
+    .modal-large td,
+    .modal-large tr{
+
+        display:block;
+        width:100%;
+    }
+
+    .modal-large thead{
+        display:none;
+    }
+
+    .modal-large tr{
+
+        background:#fff;
+
+        border:1px solid #d7dce5;
+
+        border-radius:12px;
+
+        padding:10px;
+
+        margin-bottom:10px;
+
+        box-shadow:
+        0 2px 8px rgba(
+            0,
+            0,
+            0,
+            .05
+        );
+    }
+
+    .modal-large td{
+
+        display:block;
+
+        border:none;
+
+        padding:4px 0;
+    }
+
+    .modal-large td::before{
+
+        content:attr(data-label);
+
+        display:block;
+
+        font-weight:700;
+
+        color:#183153;
+
+        margin-bottom:4px;
+
+        font-size:13px;
+    }
+
+    .modal-large td input{
+
+        width:100%;
+
+        height:38px;
+
+        padding:8px 10px;
+
+        font-size:14px;
+    }
+
+    .modal-large td button{
+
+        width:100%;
+
+        height:40px;
+    }
+
+    /* Dialog Footer */
+
+    #addDialogRowBtn,
+    #dialogSaveBtn{
+
+        width:100%;
+        height:42px;
+    }
+
+    /* Tom Select */
+
+    .ts-control{
+
+        height:42px !important;
+        min-height:42px !important;
+
+        font-size:14px;
+    }
+
+    .ts-control input{
+
+        font-size:14px !important;
+    }
+
+}
+
+/* ====================================
+   SMALL PHONE
+==================================== */
+
+@media(max-width:480px){
+
+    .card{
+        padding:10px;
+    }
+
+    .modal-large{
+        width:98%;
+        max-width:98%;
+        padding:12px;
+    }
+
+    .card table{
+        min-width:1200px;
+    }
+
+    #saveBtn{
+        width:100%;
+        min-width:unset;
+    }
+
+}
+/* Dashboard Action Column */
+
+#recordTable td:last-child{
+    text-align:center;
+    vertical-align:middle;
+}
+
+#recordTable td:last-child .actionBtns{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:100%;
+    gap:8px;
+}
+

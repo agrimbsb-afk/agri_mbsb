@@ -7,13 +7,17 @@
 
 <meta
 name="viewport"
-content="width=device-width, initial-scale=1.0">
+content="width=device-width,initial-scale=1">
 
 <title>AGRI MBSB</title>
 
-<link
-rel="stylesheet"
-href="./styles/style.css">
+<link rel="icon" type="image/png" href="./icon/mbsb_drone.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> 
+<link rel="stylesheet" href="./styles/variables.css">
+<link rel="stylesheet" href="./styles/base.css">
+<link rel="stylesheet" href="./styles/layout.css">
+<link rel="stylesheet" href="./styles/components.css">
+<link rel="stylesheet" href="./styles/style.css">
 
 </head>
 
@@ -21,20 +25,16 @@ href="./styles/style.css">
 
 <div class="container">
 
-<div class="page-header">
+	<div class="page-header">
 
-    <div class="page-header-left">
+		<div class="page-header-left">
 
-        <div class="system-title">
+			<div class="system-title">
+				MBSB KONG RECORD
+			</div>
+		</div>
 
-            MBSB KONG RECORD
-
-        </div>
-
-
-    </div>
-
-</div>
+	</div>
 
 
 <div class="card">
@@ -43,51 +43,30 @@ href="./styles/style.css">
 
     <div class="topbar">
 
-        <button id="openDialogBtn">
+        <button  id="openDialogBtn" class="btn btn-success">
 
-            + ADD RECORD
-
-        </button>
-
-        <input
-        type="month"
-        id="monthFilter">
-
-        <button id="clearFilterBtn">
-
-            CLEAR
+            + ADD
 
         </button>
 
-        <button id="exportBtn">
+        <input type="month" id="monthFilter">
 
-            EXPORT EXCEL
+        <button id="clearFilterBtn" class="btn">CLEAR</button>
 
-        </button>
+        <button id="exportBtn" class="btn btn-primary">EXPORT</button>
 
     </div>
 
-    <h2>
 
-        DATABASE RECORDS
+    <div class="table-container">
 
-    </h2>
-
-    <div class="table-wrapper">
-
-        <table id="dashboardTable">
+        <table>
 
             <thead>
 
                 <tr>
 
-                    <th
-                    onclick="sortByDate()"
-                    style="cursor:pointer">
-
-                        DATE ↕
-
-                    </th>
+                    <th onclick="sortByDate()"  style="cursor:pointer">DATE ↕</th>
 
                     <th>WORK</th>
 
@@ -116,241 +95,154 @@ href="./styles/style.css">
     </div>
 
 </div>
-<div
-    id="pagination"
-    class="pagination">
-</div>
+<div id="pagination" class="pagination"></div>
 
-<!-- ADD RECORD MODAL -->
+<!-- ADD DIALOG -->
 
-<div
-id="inputModal"
-class="modal hidden">
+<div id="inputModal" class="modal hidden">
 
-<div
-class="modal-content modal-large">
+	<div class="modal-content modal-large">
 
-    <!-- HEADER -->
+		<div class="modal-header">
 
-    <div class="modal-header">
+			<h2 id="dialogTitle">ADD WORK RECORD</h2>
 
-        <h2>
-            ADD WORK RECORD
-        </h2>
+			<button	id="closeDialogBtn" class="btn btn-danger">X</button>
 
-        <button
-        id="closeDialogBtn">
+		</div>
 
-            ✕
 
-        </button>
+		<!-- DIALOG BODY -->
 
-    </div>
+		<div class="modal-body">
+		
+			<div class="table-container">
+			
+			<table id="inputTable" class="dialog-table">
 
-    <!-- BODY -->
+					<thead>
 
-    <!-- BODY -->
+						<tr>
 
-<div class="modal-body">
+							<th>DATE *</th>
+							<th>WORK *</th>
+							<th>BLOCK</th>
+							<th>QTY</th>
+							<th>UNIT</th>
+							<th>UNIT PRICE</th>
+							<th>TOTAL</th>
+							<th>BY PERSON *</th>
+							<th>ACTION</th>
 
-    <table id="inputTable">
+						</tr>
 
-        <thead>
+					</thead>
 
-            <tr>
+					<tbody id="inputBody"></tbody>
 
-                <th>DATE *</th>
+				</table>
+			
+			</div>
 
-                <th>WORK *</th>
+		</div>
 
-                <th>BLOCK</th>
+		<!-- FOOTER -->
 
-                <th>QTY</th>
+		<div class="dialog-footer">
 
-                <th>UNIT</th>
+			<button id="addRowBtn" class="btn btn-success">+ ADD</button>
 
-                <th>UNIT PRICE</th>
+			<button id="saveAllBtn" class="btn btn-primary">SAVE</button>
 
-                <th>TOTAL</th>
+		</div>
 
-                <th>BY PERSON *</th>
-
-                <th>ACTION</th>
-
-            </tr>
-
-        </thead>
-
-        <tbody id="inputBody">
-
-        </tbody>
-
-    </table>
-
-</div>
-
-    <!-- FOOTER -->
-
-    <div class="modal-footer">
-
-        <button
-        id="addRowBtn">
-
-            + ADD ROW
-
-        </button>
-
-        <button
-        id="saveAllBtn">
-
-            SAVE ALL
-
-        </button>
-
-    </div>
-
-</div>
+	</div>
 
 </div>
 
 
+<!-- EDIT DIALOG -->
 
-<!-- EDIT MODAL -->
+<div id="editDialog" class="modal hidden">
 
-<!-- EDIT MODAL -->
-
-<div
-id="editModal"
-class="modal hidden">
-
-    <div
-    class="modal-content edit-modal">
-
-        <!-- HEADER -->
+    <div class="modal-content">
 
         <div class="modal-header">
 
-            <h2>
-                EDIT RECORD
-            </h2>
+            <h2>EDIT RECORD</h2>
+			
+			<button id="closeEditTopBtn" class="btn btn-danger">X</button>
 
         </div>
 
-        <input
-        type="hidden"
-        id="editId">
+        <input type="hidden" id="editId">
 
         <!-- SCROLLABLE BODY -->
 
-        <div class="edit-modal-body">
+        <div class="edit-form">
 
-            <div class="editGroup">
+            <div class="edit-row">
 
                 <label>Date</label>
 
-                <input
-                type="date"
-                id="editDate">
+                <input type="date" id="editDate">
 
             </div>
 
-            <div class="editGroup">
+            <div class="edit-row">
 
                 <label>Work</label>
-
-                <input
-                id="editWork"
-                class="modalInput"
-                list="editWorkList"
-                placeholder="SEARCH WORK"
-                autocomplete="off">
-
-                <datalist
-                id="editWorkList">
-                </datalist>
+				
+				<input id="editWork" list="workList" placeholder="SELECT WORK" autocomplete="off">
 
             </div>
 
-            <div class="editGroup">
+            <div class="edit-row">
 
                 <label>Block</label>
 
-                <input
-                type="text"
-                id="editBlock"
-                placeholder="BLOCK">
+                <input type="text" id="editBlock" placeholder="BLOCK">
 
             </div>
 
-            <div class="editGroup">
+            <div class="edit-row">
 
                 <label>Qty</label>
 
-                <input
-                type="number"
-                id="editQty"
-                placeholder="QTY">
+                <input type="number" id="editQty" placeholder="QTY">
 
             </div>
 
-            <div class="editGroup">
+            <div class="edit-row">
 
                 <label>Unit</label>
 
-                <input
-                type="text"
-                id="editWorkUnit"
-                readonly
-                style="
-                background:#d2d3d6;
-                cursor:not-allowed;
-                ">
+                <input type="text" id="editWorkUnit" style="background:#d2d3d6;cursor:not-allowed;" readonly>
 
             </div>
 
-            <div class="editGroup">
+            <div class="edit-row">
 
                 <label>Unit Price</label>
 
-                <input
-                type="number"
-                id="editUnitPrice"
-                readonly
-                style="
-                background:#d2d3d6;
-                cursor:not-allowed;
-                ">
+                <input type="number" id="editUnitPrice" style="background:#d2d3d6;cursor:not-allowed;" readonly>
 
             </div>
 
-            <div class="editGroup">
+            <div class="edit-row">
 
                 <label>Total</label>
 
-                <input
-                type="number"
-                id="editTotal"
-                readonly
-                style="
-                background:#d2d3d6;
-                cursor:not-allowed;
-                ">
+                <input type="number" id="editTotal" style="background:#d2d3d6;cursor:not-allowed;" readonly>
 
             </div>
 
-            <div class="editGroup">
+            <div class="edit-row">
 
                 <label>By Person</label>
 
-                <input
-                id="editByPerson"
-                list="editWorkerList"
-                placeholder="SELECT WORKER"
-                autocomplete="off">
+                <input id="editByPerson" list="staffList" placeholder="SELECT WORKER" autocomplete="off">
 
-                <datalist
-                id="editWorkerList">
-                </datalist>
 
             </div>
 
@@ -358,43 +250,17 @@ class="modal hidden">
 
         <!-- FIXED BUTTON -->
 
-        <div class="modal-buttons">
+		<div class="dialog-footer">
 
-            <button
-            id="updateBtn">
+			<button id="updateBtn" class="btn btn-primary">UPDATE</button>
 
-                UPDATE
+			<button id="closeEditBtn" class="btn">CLOSE</button>
 
-            </button>
-
-            <button
-            id="closeModalBtn">
-
-                CLOSE
-
-            </button>
-
-        </div>
+		</div>
 
     </div>
 
 </div>
-
-
-<!-- DATALIST -->
-
-<datalist
-id="workList">
-</datalist>
-
-<datalist
-id="workerList">
-</datalist>
-
-
-
-
-
 
 <!-- SHEETJS -->
 
@@ -412,7 +278,7 @@ src="./js/app.js">
 id="workList">
 </datalist>
 
-<datalist id="workerList">
+<datalist id="staffList">
 
 </datalist>
 </body>

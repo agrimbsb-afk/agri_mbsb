@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> 
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>
+
+Drone Record 
+
+</title>
+<link
+rel="icon"
+type="image/png"
+href="./icon/mbsb_drone.png">
+
+<link
+rel="stylesheet"
+href="./styles/style.css">
+
+<link
+rel="stylesheet"
+href="./styles/drone.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="page-header">
+
+    <div class="page-header-left">
+
+        <div class="system-title">
+            DRONE RECORD
+        </div>
+
+        <div class="system-subtitle">
+
+            Welcome back,
+
+            <span id="loginUser">
+                USER
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="page-header-right">
+
+        <div id="todayDate"></div>
+
+        <button id="logoutBtn">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Logout
+        </button>
+
+    </div>
+
+</div>
+
+<div class="card">
+
+<div class="topbar">
+
+<input
+id="workDate"
+type="date">
+
+<select id="work">
+    <option value="">Select Work</option>
+</select>
+
+<input
+id="flowha"
+placeholder="L/HA">
+
+<input
+id="block"
+placeholder="Block">
+
+<input
+id="workArea"
+placeholder="Work Area">
+
+<input
+id="areaha"
+type="number"
+placeholder="Area (HA)">
+
+
+
+<button
+id="addBtn">
+
++ ADD
+
+</button>
+
+</div>
+
+<div class="table-container">
+<table>
+
+<thead>
+
+<tr>
+
+<!-- <th>Date</th> -->
+<th>Work</th>
+<th>L/HA</th>
+<th>Block</th>
+<th>Work Area</th>
+<th>Area (HA)</th>
+<th>Item Used</th>
+<th>UOM</th>
+<th>Usage</th>
+<th>Unit/Ha</th>
+<th>Action</th>
+</tr>
+
+</thead>
+
+<tbody id="recordTable">
+
+</tbody>
+
+</table>
+</div>
+
+<div class="save-bar">
+
+    <button id="whatsappBtn">
+
+        <i class="fa-brands fa-whatsapp"></i>
+        WhatsApp
+
+    </button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- DIALOG -->
+
+<div
+id="itemDialog"
+class="modal hidden">
+
+<div
+class="modal-content modal-large">
+
+<div
+class="modal-header">
+
+<h2  id="dialogTitle">
+
+DRONE WORK
+
+</h2>
+
+<button
+id="closeDialogBtn">
+
+X
+
+</button>
+
+</div>
+<div class="dialog-content">
+
+	<table>
+
+	<thead>
+
+	<tr>
+
+	<th>Item Used</th>
+	<th>UOM</th>
+	<th>Unit/HA</th>
+	<th>Usage</th>
+	<th>Action</th>
+
+	</tr>
+
+	</thead>
+
+	<tbody
+	id="dialogTableBody">
+
+	</tbody>
+
+	</table>
+
+</div>
+<div class="dialog-footer">
+
+    <button id="addDialogRowBtn">
+        + Add Row
+    </button>
+
+    <button id="dialogSaveBtn">
+        Save
+    </button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ==================================
+     EDIT DIALOG
+=================================== -->
+
+<div
+id="editDialog"
+class="modal hidden">
+
+<div
+class="modal-content">
+
+<div class="modal-header">
+
+<h2>
+EDIT DRONE RECORD
+</h2>
+
+<button
+id="closeEditDialogBtn">
+X
+</button>
+
+</div>
+
+<div class="edit-form">
+
+<div class="edit-row">
+
+<label>Date</label>
+
+<input
+id="editDate"
+type="date">
+
+</div>
+
+<div class="edit-row">
+
+<label>Work</label>
+
+<select id="editWork">
+
+<option value="">
+Select Work
+</option>
+
+</select>
+
+</div>
+
+
+
+<div class="edit-row">
+
+<label>L/HA</label>
+
+<input
+id="editflowha">
+
+</div>
+
+<div class="edit-row">
+
+<label>Block</label>
+
+<input
+id="editBlock">
+
+</div>
+
+<div class="edit-row">
+
+<label>Work Area</label>
+
+<input
+id="editWorkArea">
+
+</div>
+
+<div class="edit-row">
+
+<label>Area (HA)</label>
+
+<input
+id="editAreaHa"
+type="number">
+
+</div>
+
+<div class="edit-row">
+
+<label>Item Used</label>
+
+<input
+id="editItemUsed">
+
+</div>
+
+<div class="edit-row">
+
+<label>UOM</label>
+
+<input
+id="editUom">
+
+</div>
+
+<div class="edit-row">
+
+<label>Usage</label>
+
+<input
+id="editUsage"
+type="number">
+
+</div>
+
+<div class="edit-row">
+
+<label>Unit</label>
+
+<input
+id="editUnit">
+
+</div>
+
+</div>
+
+<div class="dialog-footer">
+
+<button id="updateBtn">
+
+Update
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<link
+href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css"
+rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+
+<script src="./js/drone.js"></script>
+</body>
+
+</html>
