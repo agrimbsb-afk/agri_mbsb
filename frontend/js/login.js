@@ -100,7 +100,7 @@ alert(
 
 	}else{
 		
-		window.location.href ='admin_page/product.html';
+		window.location.href ='admin_page/main.html';
 
 	}
 
