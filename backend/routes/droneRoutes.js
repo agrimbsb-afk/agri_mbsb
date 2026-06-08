@@ -1,6 +1,4 @@
-console.log(
-    "DRONE ROUTES LOADED"
-);
+
 
 const express = require("express");
 const router = express.Router();

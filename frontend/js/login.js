@@ -85,13 +85,25 @@ localStorage.setItem(
 data.user.userName
 );
 
+localStorage.setItem(
+'userRole',
+data.user.userRole
+);
+
 alert(
 'Login Success'
 );
 
+	if(localStorage.getItem('userRole') !== 'admin'){
 
-window.location.href =
-'drone.html';
+	   window.location.href = 'drone.html';
+
+	}else{
+		
+		window.location.href ='admin_page/product.html';
+
+	}
+
 
 }
 

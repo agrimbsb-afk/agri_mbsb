@@ -17,7 +17,8 @@ require('./routes/auth');
 const droneRoutes =
 require("./routes/droneRoutes");
 
-
+const productRoutes =
+require("./routes/productRoutes");
 
 const app =
 express();
@@ -67,6 +68,11 @@ authRoutes
 app.use(
     "/api/drone",
     droneRoutes
+);
+
+app.use(
+    "/api/product",
+    productRoutes
 );
 
 // START SERVER

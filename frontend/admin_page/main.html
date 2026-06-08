@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<script>
+
+if(localStorage.getItem('userRole') !== 'admin'){
+
+    location.replace('login.html');
+
+}
+
+</script>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>MBSB ADMIN</title>
+
+<link rel="icon" type="image/png" href="../icon/mbsb_drone.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> 
+<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
+<link rel="stylesheet" href="../styles/variables.css">
+<link rel="stylesheet" href="../styles/base.css">
+<link rel="stylesheet" href="../styles/layout.css">
+<link rel="stylesheet" href="../styles/components.css">
+<link rel="stylesheet" href="../styles/style.css">
+
+</head>
+
+<body>
+
+<div class="admin-layout">
+<!-- SIDEBAR -->
+
+	<aside class="sidebar">
+
+		<div class="sidebar-header">
+
+			<i class="fa-solid fa-bars"></i>
+
+		</div>
+
+	   <nav class="sidebar-menu">
+
+		<a
+		href="#product"
+		data-page="product">
+
+			<i class="fa-solid fa-box"></i>
+
+			<span>
+			Product
+			</span>
+
+		</a>
+
+		<a
+		href="#user"
+		data-page="user">
+
+			<i class="fa-solid fa-user"></i>
+
+			<span>
+			User
+			</span>
+
+		</a>
+
+		<a
+		href="#worker"
+		data-page="worker">
+
+			<i class="fa-solid fa-users"></i>
+
+			<span>
+			Worker
+			</span>
+
+		</a>
+
+		<a
+		href="#drone_admin"
+		data-page="drone_admin">
+
+			<i class="fa-solid fa-helicopter"></i>
+
+			<span>
+			Drone
+			</span>
+
+		</a>
+
+		<a
+		href="#kong"
+		data-page="kong">
+
+			<i class="fa-solid fa-seedling"></i>
+
+			<span>
+			Kong
+			</span>
+
+		</a>
+
+	</nav>
+
+		<div class="sidebar-footer">
+
+			<a href="#" id="logoutBtn">
+
+				<i class="fa-solid fa-right-from-bracket"></i>
+
+				<span>Logout</span>
+
+			</a>
+
+		</div>
+
+	</aside>
+
+<!-- MAIN CONTENT -->
+
+	<div class="main-content">
+
+		<div id="mainContainer">
+
+			<div class="card">
+
+				<div class="system-title">
+
+					MBSB ADMIN
+
+				</div>
+
+				<div class="system-subtitle">
+
+					Select a module from sidebar
+
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+
+</div>
+
+<script src="../js/admin/main.js"></script>
+<script src="../js/admin/sidebar.js"></script>
+
+</body>
+
+</html>

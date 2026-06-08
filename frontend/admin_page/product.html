@@ -1,0 +1,171 @@
+<div class="page-header">
+
+    <div class="page-header-left">
+
+        <div class="system-title">
+            <i class="fa-solid fa-box"></i>
+			Product Management
+        </div>
+
+        <div class="system-subtitle">
+            Stock Inventory Dashboard
+        </div>
+
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div class="topbar">
+
+        <select id="searchProduct">
+            <option value="">
+                All Product
+            </option>
+        </select>
+
+        <select id="seasonFilter">
+            <option value="">
+                All Season
+            </option>
+        </select>
+
+        <button
+        id="addBtn"
+        class="btn btn-success">
+
+            Add Product
+
+        </button>
+
+        <button
+        id="exportBtn"
+        class="btn btn-primary">
+
+            Export
+
+        </button>
+
+    </div>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+					<th>Code</th>
+					
+                    <th>Name</th>
+
+                    <th>PCS/CTN</th>
+
+                    <th>UOM</th>
+
+                    <th>CTN</th>
+					
+					<th>PCS</th>
+					
+					<th>VOL</th>
+
+                    <th>Action</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="productTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- PRODUCT MODAL -->
+
+<div
+id="productModal"
+class="modal hidden">
+
+    <div
+    class="modal-content">
+
+        <div
+        class="modal-header">
+
+            <h2>
+                Product
+            </h2>
+
+        </div>
+
+        <div
+        class="edit-form">
+
+            <div class="edit-row">
+
+                <label>
+                    Product ID
+                </label>
+
+                <input
+                id="productId">
+
+            </div>
+
+            <div class="edit-row">
+
+                <label>
+                    Product Name
+                </label>
+
+                <input
+                id="productName">
+
+            </div>
+
+            <div class="edit-row">
+
+                <label>
+                    PCS / CTN
+                </label>
+
+                <input
+                type="number"
+                id="pcsPerCtn">
+
+            </div>
+
+            <div class="edit-row">
+
+                <label>
+                    UOM
+                </label>
+
+                <input
+                id="productUom">
+
+            </div>
+
+        </div>
+
+        <div class="dialog-footer">
+
+            <button
+            id="saveProductBtn"
+            class="btn btn-success">
+
+                Save
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

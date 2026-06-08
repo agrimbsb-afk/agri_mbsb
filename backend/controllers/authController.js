@@ -24,7 +24,8 @@ SELECT
 id,
 "user_Id",
 "user_Name",
-"user_password"
+"user_password",
+"user_role"
 FROM "user_Details"
 WHERE "user_Id" = $1
 `,
@@ -71,7 +72,8 @@ jwt.sign(
 {
 id:user.id,
 userId:user.user_Id,
-userName:user.user_Name
+userName:user.user_Name,
+userRole:user.user_role
 },
 
 process.env.JWT_SECRET ||
@@ -92,7 +94,8 @@ token,
 user:{
 id:user.id,
 userId:user.user_Id,
-userName:user.user_Name
+userName:user.user_Name,
+userRole:user.user_role
 }
 
 });
