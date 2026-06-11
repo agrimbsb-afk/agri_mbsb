@@ -316,7 +316,25 @@ border-bottom:1px solid #eee;
 
 }
 
+.table-loading{
 
+    text-align:center;
+
+    padding:40px;
+
+    color:#64748b;
+
+    font-size:15px;
+
+    font-weight:600;
+
+}
+
+.table-loading i{
+
+    margin-right:8px;
+
+}
 
 @media(max-width:768px){
 

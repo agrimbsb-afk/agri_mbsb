@@ -14,13 +14,12 @@ content="width=device-width,initial-scale=1">
 
 <link rel="icon" type="image/png" href="./icon/mbsb_drone.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> 
-<link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
 <link rel="stylesheet" href="./styles/variables.css">
 <link rel="stylesheet" href="./styles/base.css">
 <link rel="stylesheet" href="./styles/layout.css">
 <link rel="stylesheet" href="./styles/components.css">
 <link rel="stylesheet" href="./styles/style.css">
-
+<link rel="stylesheet" href="./styles/drone/drone.css">
 </head>
 
 <body>
@@ -68,9 +67,23 @@ content="width=device-width,initial-scale=1">
 		id="workDate"
 		type="date">
 
-		<select id="work">
-			<option value="">Select Work</option>
-		</select>
+		<div class="custom-select">
+
+			<div class="search-dropdown">
+
+				<input
+				type="text"
+				id="searchWork"
+				placeholder="Select Work">
+
+				<div
+				id="workDropdown"
+				class="dropdown-list">
+				</div>
+
+			</div>
+
+		</div>
 
 		<input
 		id="flowha"
@@ -232,10 +245,24 @@ content="width=device-width,initial-scale=1">
 			<div class="edit-row">
 
 				<label>Work</label>
+				
+				<div class="custom-select">
 
-				<select id="editWork">
-					<option value="">Select Work</option>
-				</select>
+					<div class="search-dropdown">
+
+						<input
+						type="text"
+						id="editWork"
+						placeholder="Select Work">
+
+						<div
+						id="editWorkDropdown"
+						class="dropdown-list">
+						</div>
+
+					</div>
+
+				</div>
 
 			</div>
 
@@ -315,8 +342,6 @@ content="width=device-width,initial-scale=1">
 
 </div>
 
-
-<script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
 <script src="./js/drone.js"></script>
 </body>

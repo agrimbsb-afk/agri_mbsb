@@ -1,5 +1,8 @@
 require('dotenv').config();
 
+process.env.TZ =
+'Asia/Kuala_Lumpur';
+
 const express =
 require('express');
 
@@ -72,6 +75,11 @@ app.use(
 
 app.use(
     "/api/product",
+    productRoutes
+);
+
+app.use(
+    "/api/list",
     productRoutes
 );
 

@@ -45,8 +45,18 @@ exports.loadTodayRecords = async (req,res)=>{
 
     try{
 
-        const today =
-        new Date().toISOString().split("T")[0];
+		const today =
+
+		new Date()
+		.toLocaleDateString(
+			"en-CA",
+			{
+				timeZone:
+				"Asia/Kuala_Lumpur"
+			}
+		);
+		
+		console.log(today);
 
         const userName =
         req.user.userName;
@@ -87,6 +97,80 @@ exports.loadTodayRecords = async (req,res)=>{
 
 };
 
+exports.getProductsByWork =
+async(req,res)=>{
+
+    try{
+
+        const { work } =
+        req.params;
+
+        // Step 1
+        const categoryResult =
+        await pool.query(
+
+            `
+            SELECT product_category
+            FROM work_category
+            WHERE work_name = $1
+            `,
+            [work]
+
+        );
+
+        if(
+            categoryResult.rows.length === 0
+        ){
+
+            return res.json([]);
+
+        }
+
+        const category =
+        categoryResult.rows[0]
+        .product_category;
+
+        // Step 2
+        const productResult =
+        await pool.query(
+
+            `
+            SELECT
+                product_id,
+                product_name,
+                product_uom,
+                pcs_per_ctn,
+                vol_per_pcs
+            FROM stock_products
+            WHERE product_category = $1
+            ORDER BY product_name
+            `,
+            [category]
+
+        );
+
+        res.json(
+            productResult.rows
+        );
+
+    }
+    catch(err){
+
+        console.error(err);
+
+        res.status(500).json({
+
+            success:false,
+
+            message:
+            err.message
+
+        });
+
+    }
+
+};
+
 
 
 /* ==================================
@@ -94,6 +178,7 @@ exports.loadTodayRecords = async (req,res)=>{
 ================================== */
 
 exports.saveDroneRecord = async (req,res)=>{
+	
 
     try{
 

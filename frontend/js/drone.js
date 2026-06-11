@@ -22,8 +22,9 @@ API
 let itemRows = [];
 let currentEditId = null;
 let currentRecords = [];
-let workSelect;
-let editWorkSelect;
+let selectedWork = '';
+let selectedEditWork = '';
+let workOptions = [];
 
 const dialog =
 document.getElementById(
@@ -173,24 +174,6 @@ document.addEventListener(
 
 async ()=>{
 
-    workSelect =
-    new TomSelect(
-        "#work",
-        {
-            create:false,
-            persist:false
-        }
-    );
-
-    editWorkSelect =
-    new TomSelect(
-        "#editWork",
-        {
-            create:false,
-            persist:false
-        }
-    );
-
     await loadWorkOptions();
 
 });
@@ -339,6 +322,41 @@ function renderLoadedRecords(records){
 
 }
 
+function renderEditWorkDropdown(data){
+
+    const dropdown =
+    document.getElementById(
+        "editWorkDropdown"
+    );
+
+    if(!dropdown) return;
+
+    dropdown.innerHTML = '';
+
+    data.forEach(work=>{
+
+        dropdown.insertAdjacentHTML(
+
+            'beforeend',
+
+            `
+            <div
+            class="dropdown-item"
+            onclick="
+            selectEditWork(
+            '${work.work_name}'
+            )
+            ">
+                ${work.work_name}
+            </div>
+            `
+
+        );
+
+    });
+
+}
+
 /* =========================
    OPEN DIALOG
 ========================= */
@@ -351,16 +369,18 @@ document
 
     "click",
 
-    ()=>{
+    async ()=>{
 
-        const selectedWork =
-        workSelect.getValue();
+        const currentWork =
+		selectedWork;
 
         /* WORK REQUIRED */
 
-        if(!selectedWork){
+        if(!currentWork){
 
-            workSelect.control.classList.add("inputError");
+            document
+			.getElementById("searchWork")
+			.classList.add("inputError");
 
             alert(
                 "Please select Work first."
@@ -408,7 +428,7 @@ document
             );
 
             alert(
-                `${selectedWork} requires L/HA.`
+                `${currentWork} requires L/HA.`
             );
 
             return;
@@ -421,11 +441,15 @@ document
         )
         .innerText =
 
-        `DRONE ITEMS - ${selectedWork}`;
+        `DRONE ITEMS - ${currentWork}`;
 
-        dialog.classList.remove(
-            "hidden"
-        );
+        await loadProductsByWork(
+			currentWork
+		);
+
+		dialog.classList.remove(
+			"hidden"
+		);
 
         if(
             itemRows.length === 0
@@ -440,22 +464,65 @@ document
     }
 
 );
-
 document
 .getElementById(
-    "work"
+    "searchWork"
 )
 .addEventListener(
 
-    "change",
+    "input",
 
     ()=>{
 
-        workSelect.control.classList.add("inputError");
+        document
+        .getElementById(
+            "searchWork"
+        )
+        .classList.remove(
+            "inputError"
+        );
 
     }
 
 );
+
+let currentProducts = [];
+
+async function loadProductsByWork(work){
+
+    try{
+
+        const res =
+        await fetch(
+
+            API +
+            "/api/drone/products/" +
+            encodeURIComponent(work),
+
+            {
+                headers:{
+                    Authorization:
+                    "Bearer " +
+                    localStorage.getItem(
+                        "token"
+                    )
+                }
+            }
+
+        );
+
+        currentProducts =
+        await res.json();
+
+    }
+    catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
 
 function editRecord(id){
 
@@ -488,9 +555,8 @@ function editRecord(id){
 		localDate.toISOString().split("T")[0];
 
 
-    editWorkSelect.setValue(
-        row.work || ""
-    );
+    selectedEditWork =
+	row.work || "";
 
 	document.getElementById(
         "editflowha"
@@ -765,14 +831,39 @@ tbody.insertAdjacentHTML(
 
 <td data-label="Item Used">
 
-<input
-class="tableInput"
-value="${row.item_used}"
-oninput="
-this.value=this.value.toUpperCase();
-itemRows[${index}].item_used=this.value;
-"
->
+<div class="search-dropdown">
+
+    <input
+    type="text"
+    class="tableInput"
+
+    value="${row.item_used || ''}"
+
+    placeholder="Search Product"
+
+    onfocus="
+    renderProductDropdown(${index});
+    document.getElementById(
+    'productDropdown${index}'
+    ).style.display='block';
+    "
+
+    oninput="
+    filterProducts(
+    ${index},
+    this.value
+    )
+    ">
+
+    <div
+
+    id="productDropdown${index}"
+
+    class="dropdown-list">
+
+    </div>
+
+</div>
 
 </td>
 
@@ -915,25 +1006,18 @@ async()=>{
 
         /* WORK REQUIRED */
 
-        const work =
-        document.getElementById(
-            "work"
-        ).value.trim();
+		const work =
+		selectedWork;
 
         if(!work){
 
-            const tsControl =
-            document.querySelector(
-                ".ts-control"
-            );
-
-            if(tsControl){
-
-                tsControl.classList.add(
-                    "inputError"
-                );
-
-            }
+            document
+			.getElementById(
+				"searchWork"
+			)
+			.classList.add(
+				"inputError"
+			);
 
             hasError = true;
 
@@ -993,9 +1077,9 @@ async()=>{
             (row,index)=>{
 
                 const itemInput =
-                row.querySelector(
-                    'td:nth-child(1) input'
-                );
+				row.querySelector(
+				'td:nth-child(1) input'
+				);
 
                 const usageInput =
                 row.querySelector(
@@ -1153,7 +1237,11 @@ async()=>{
 
         /* CLEAR FORM */
 
-        workSelect.clear();
+        selectedWork = '';
+
+		document.getElementById(
+			"searchWork"
+		).value = '';
 
         document.getElementById(
             "flowha"
@@ -1263,8 +1351,7 @@ document.addEventListener("input", function(e) {
 async function loadWorkOptions(){
 
     try{
-		
-		
+
         const res =
         await fetch(
 
@@ -1282,44 +1369,16 @@ async function loadWorkOptions(){
 
         );
 
-        const data =
+        workOptions =
         await res.json();
 
-        workSelect.clearOptions();
-
-        editWorkSelect.clearOptions();
-
-        data.forEach(work=>{
-
-            const option = {
-
-                value:
-                work.work_name,
-
-                text:
-                work.work_name
-
-            };
-
-            workSelect.addOption(
-                option
-            );
-
-            editWorkSelect.addOption(
-                option
-            );
-
-        });
-
-        workSelect.refreshOptions(
-            false
+        renderWorkDropdown(
+            workOptions
         );
 
-        editWorkSelect.refreshOptions(
-            false
+        renderEditWorkDropdown(
+            workOptions
         );
-		
-		
 
     }
     catch(err){
@@ -1329,6 +1388,226 @@ async function loadWorkOptions(){
     }
 
 }
+
+function renderWorkDropdown(data){
+
+    const dropdown =
+    document.getElementById(
+        "workDropdown"
+    );
+
+    dropdown.innerHTML = '';
+
+    data.forEach(work=>{
+
+        dropdown.insertAdjacentHTML(
+
+            'beforeend',
+
+            `
+            <div
+            class="dropdown-item"
+
+            onclick="
+            selectWork(
+            '${work.work_name}'
+            )
+            ">
+
+                ${work.work_name}
+
+            </div>
+            `
+
+        );
+
+    });
+
+}
+
+function renderProductDropdown(
+    index,
+    keyword=''
+){
+
+    const dropdown =
+    document.getElementById(
+        `productDropdown${index}`
+    );
+
+    if(!dropdown) return;
+
+    const filtered =
+
+    currentProducts.filter(
+
+        p=>
+
+        p.product_name
+        .toUpperCase()
+        .includes(
+            keyword.toUpperCase()
+        )
+
+    );
+
+    dropdown.innerHTML =
+
+    filtered.map(product=>`
+
+        <div
+
+        class="dropdown-item"
+
+        onclick="
+        selectProduct(
+        ${index},
+        '${product.product_name}',
+        '${product.product_uom}'
+        )
+        ">
+
+        ${product.product_name}
+
+        </div>
+
+    `).join('');
+
+}
+
+function selectWork(work){
+
+    selectedWork = work;
+
+    document.getElementById(
+        "searchWork"
+    ).value = work;
+
+    document
+    .querySelectorAll(
+        "#workDropdown .dropdown-item"
+    )
+    .forEach(item=>{
+
+        item.classList.remove(
+            "selected"
+        );
+
+        if(
+            item.innerText.trim() === work
+        ){
+
+            item.classList.add(
+                "selected"
+            );
+
+        }
+
+    });
+
+    document.getElementById(
+        "workDropdown"
+    ).style.display = "none";
+
+}
+
+function filterProducts(
+    index,
+    keyword
+){
+
+    renderProductDropdown(
+        index,
+        keyword
+    );
+
+}
+
+
+function selectEditWork(work){
+
+    selectedEditWork = work;
+
+    document.getElementById(
+        "editSearchWork"
+    ).value = work;
+
+    document.getElementById(
+        "editWorkDropdown"
+    ).style.display = "none";
+
+}
+
+function selectProduct(
+    index,
+    productName,
+    uom
+){
+
+    itemRows[index].item_used =
+    productName;
+
+    itemRows[index].uom =
+    uom;
+
+    renderDialogRows();
+
+}
+
+
+document
+.getElementById(
+    "searchWork"
+)
+.addEventListener(
+
+    "input",
+
+    function(){
+
+        const keyword =
+        this.value.toUpperCase();
+
+        const filtered =
+
+        workOptions.filter(
+
+            work =>
+
+            work.work_name
+            .toUpperCase()
+            .includes(keyword)
+
+        );
+
+        renderWorkDropdown(
+            filtered
+        );
+
+    }
+
+);
+
+document
+.getElementById(
+    "searchWork"
+)
+.addEventListener(
+
+    "focus",
+
+    ()=>{
+
+        document
+        .getElementById(
+            "workDropdown"
+        )
+        .style.display =
+        "block";
+
+    }
+
+);
 
 document
 .getElementById(
@@ -1344,7 +1623,7 @@ document
 			/* FLOW HA REQUIRED */
 
             const work =
-            editWorkSelect.getValue();
+			selectedEditWork;
 
             const flowHa =
             document.getElementById(
@@ -1394,7 +1673,7 @@ document
                 ).value,
 
                 work:
-                editWorkSelect.getValue(),
+				selectedEditWork,
 
 				flow_ha:
                 document.getElementById(

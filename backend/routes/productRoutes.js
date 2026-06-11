@@ -16,24 +16,55 @@ require(
 "../controllers/productController"
 );
 
+	router.get(
+	"/item",
+	(req,res,next)=>{
+
+		console.log(
+			"ROUTE HIT /item"
+		);
+
+		next();
+
+	},
+	verifyToken,
+	controller.getProducts
+);
+
 router.get(
-"/item",
-(req,res,next)=>{
+	"/season",
+	verifyToken,
+	controller.getSeasonList
+);
 
-    console.log(
-        "ROUTE HIT /item"
-    );
-
-    next();
-
-},
-verifyToken,
-controller.getProducts
+router.get(
+	"/list",
+	verifyToken,
+	controller.getProductList
 );
 
 router.post(
-"/",
-controller.addProduct
+    "/stockin",
+    verifyToken,
+    controller.stockIn
+);
+
+router.post(
+    "/stockout",
+    verifyToken,
+    controller.stockOut
+);
+
+router.post(
+    "/stockadjust",
+    verifyToken,
+    controller.stockAdjust
+);
+
+router.get(
+    "/export",
+    verifyToken,
+    controller.exportExcel
 );
 
 module.exports =

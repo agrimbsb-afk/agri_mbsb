@@ -46,4 +46,9 @@ router.delete(
     droneController.deleteRecord
 );
 
+router.get(
+	'/products/:work',
+	droneController.getProductsByWork
+);
+
 module.exports = router;

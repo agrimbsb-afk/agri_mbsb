@@ -1,3 +1,6 @@
+<link rel="stylesheet" href="../styles/product/product.css">
+
+
 <div class="page-header">
 
     <div class="page-header-left">
@@ -15,39 +18,68 @@
 
 </div>
 
-<div class="card">
+<div
+class="card" id="productCard">
 
     <div class="topbar">
+	
+		<div class="custom-select">
 
-        <select id="searchProduct">
-            <option value="">
-                All Product
-            </option>
-        </select>
+			<div class="search-dropdown">
 
-        <select id="seasonFilter">
-            <option value="">
-                All Season
-            </option>
-        </select>
+				<input
+				type="text"
+				id="searchProduct"
+				placeholder="Search Product">
 
-        <button
-        id="addBtn"
-        class="btn btn-success">
+				<div
+				id="productDropdown"
+				class="dropdown-list">
+				</div>
 
-            Add Product
+			</div>
+			
+		</div>
 
-        </button>
 
-        <button
-        id="exportBtn"
-        class="btn btn-primary">
+		<div class="custom-select">
+			<div class="search-dropdown season-dropdown">
 
-            Export
+				<input
+				type="text"
+				id="seasonFilter"
+				placeholder="Season"
+				>
 
-        </button>
+				<div
+				id="seasonDropdown"
+				class="dropdown-list">
+				</div>
 
-    </div>
+			</div>
+			
+		</div>
+
+        <div class="action-group">
+
+			<button id="addBtn" class="btn btn-success action-btn tooltip-btn" data-tooltip="Stock In">
+				<i class="fa-solid fa-plus"></i>
+			</button>
+
+			<button id="outBtn" class="btn btn-danger action-btn tooltip-btn" data-tooltip="Stock Out" >
+				<i class="fa-solid fa-minus"></i>
+			</button>
+
+			<button id="adjustBtn" class="btn btn-warning action-btn tooltip-btn" data-tooltip="Stock Adjust">
+				<i class="fa-solid fa-screwdriver-wrench"></i>
+			</button>
+
+		</div>
+		<button id="exportBtn" class="btn btn-primary tooltip-btn" data-tooltip="Excel">
+			<i class="fa-solid fa-file-export"></i>
+			Export
+		</button>
+	</div>
 
     <div class="table-container">
 
@@ -78,7 +110,21 @@
 
             <tbody id="productTable">
 
-            </tbody>
+				<tr>
+
+				<td
+				colspan="8"
+				class="table-loading">
+
+				<i class="fa-solid fa-spinner fa-spin"></i>
+
+				Loading Dashboard...
+
+				</td>
+
+				</tr>
+
+			</tbody>
 
         </table>
 
@@ -86,69 +132,71 @@
 
 </div>
 
-<!-- PRODUCT MODAL -->
+<!-- PRODUCT STOCK IN MODAL -->
 
 <div
 id="productModal"
 class="modal hidden">
 
     <div
-    class="modal-content">
+    class="modal-content modal-large">
 
-        <div
-        class="modal-header">
+        <div class="modal-header">
 
             <h2>
-                Product
+
+                PRODUCT STOCK IN
+
             </h2>
+
+            <button
+            id="closeModalBtn"
+            class="btn btn-danger">
+
+                X
+
+            </button>
 
         </div>
 
-        <div
-        class="edit-form">
+        <div class="modal-body">
 
-            <div class="edit-row">
+            <div class="table-container">
 
-                <label>
-                    Product ID
-                </label>
+                <table
+                id="productInputTable"
+                class="dialog-table">
 
-                <input
-                id="productId">
+                    <thead>
 
-            </div>
+                        <tr>
 
-            <div class="edit-row">
+                            <th>PRODUCT NAME</th>
 
-                <label>
-                    Product Name
-                </label>
+                            <th>PCS/CTN</th>
 
-                <input
-                id="productName">
+                            <th>VOL/PCS</th>
 
-            </div>
+                            <th>UOM</th>
 
-            <div class="edit-row">
+                            <th>CTN</th>
 
-                <label>
-                    PCS / CTN
-                </label>
+                            <th>PCS</th>
 
-                <input
-                type="number"
-                id="pcsPerCtn">
+                            <th>VOL</th>
 
-            </div>
+                            <th>ACTION</th>
 
-            <div class="edit-row">
+                        </tr>
 
-                <label>
-                    UOM
-                </label>
+                    </thead>
 
-                <input
-                id="productUom">
+                    <tbody
+                    id="productInputBody">
+
+                    </tbody>
+
+                </table>
 
             </div>
 
@@ -157,10 +205,228 @@ class="modal hidden">
         <div class="dialog-footer">
 
             <button
-            id="saveProductBtn"
+            id="addRowBtn"
             class="btn btn-success">
 
-                Save
+                + ADD
+
+            </button>
+
+            <button
+            id="saveAllBtn"
+            class="btn btn-primary">
+
+                SAVE ALL
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- PRODUCT STOCK OUT MODAL -->
+
+<div
+id="productOutModal"
+class="modal hidden">
+
+    <div
+    class="modal-content modal-large">
+
+        <div class="modal-header">
+
+            <h2>
+
+                PRODUCT STOCK OUT
+
+            </h2>
+
+            <button
+            id="closeOutModalBtn"
+            class="btn btn-danger">
+
+                X
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="table-container">
+
+                <table
+                id="productOutTable"
+                class="dialog-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>PRODUCT NAME</th>
+
+                            <th>PCS/CTN</th>
+
+                            <th>VOL/PCS</th>
+
+                            <th>UOM</th>
+
+                            <th>CTN</th>
+
+                            <th>PCS</th>
+
+                            <th>VOL</th>
+
+                            <th>ACTION</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody
+                    id="productOutBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="dialog-footer">
+
+            <button
+            id="addOutRowBtn"
+            class="btn btn-success">
+
+                + ADD
+
+            </button>
+
+            <button
+            id="saveOutBtn"
+            class="btn btn-primary">
+
+                Save Out
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- PRODUCT STOCK IN MODAL -->
+
+<div
+id="productAdjustModal"
+class="modal hidden">
+
+    <div
+    class="modal-content modal-large">
+
+        <div class="modal-header">
+
+            <h2>
+
+                ADJUST PRODUCT
+
+            </h2>
+
+            <button
+            id="closeAdjustModalBtn"
+            class="btn btn-danger">
+
+                X
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="table-container">
+
+                <table
+				id="productAdjustTable"
+				class="dialog-table adjust-table">
+
+                    <thead>
+
+						<tr>
+
+							<th rowspan="2">
+								PRODUCT NAME
+							</th>
+
+							<th rowspan="2">
+								PCS/CTN
+							</th>
+
+							<th rowspan="2">
+								VOL/PCS
+							</th>
+
+							<th rowspan="2">
+								UOM
+							</th>
+
+							<th colspan="3">
+								SYSTEM
+							</th>
+
+							<th colspan="3">
+								ADJUST
+							</th>
+
+						</tr>
+
+						<tr>
+
+							<th>CTN</th>
+							<th>PCS</th>
+							<th>VOL</th>
+
+							<th>CTN</th>
+							<th>PCS</th>
+							<th>VOL</th>
+
+						</tr>
+
+					</thead>
+
+                    <tbody
+                    id="productAdjustBody">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="dialog-footer">
+
+            <button
+            id="addAdjustRowBtn"
+            class="btn btn-success">
+
+                + ADD
+
+            </button>
+
+            <button
+            id="saveAdjustBtn"
+            class="btn btn-primary">
+
+                Save Adjust
 
             </button>
 

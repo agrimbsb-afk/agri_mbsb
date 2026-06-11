@@ -74,36 +74,82 @@ async function loadPage(page){
 
 function loadModuleScript(page){
 
-    const oldScript =
+    //
+    // REMOVE OLD MODULES
+    //
 
-    document.getElementById(
-    'moduleScript'
-    );
+    document
+    .querySelectorAll(
+        ".module-script"
+    )
+    .forEach(script=>{
 
-    if(oldScript){
+        script.remove();
 
-        oldScript.remove();
+    });
+
+    //
+    // PRODUCT MODULE
+    //
+
+    if(page === "product"){
+
+        const files = [
+
+            "product-call",
+            "product-in",
+            "product-out",
+            "product-adjust",
+            "product"
+
+        ];
+
+        files.forEach(file=>{
+
+            const script =
+            document.createElement(
+                "script"
+            );
+
+            script.className =
+            "module-script";
+
+            script.src =
+
+            `../js/admin/product/${file}.js?v=${
+                Date.now()
+            }`;
+
+            document.body.appendChild(
+                script
+            );
+
+        });
+
+        return;
 
     }
 
-    const script =
+    //
+    // DEFAULT PAGE
+    //
 
+    const script =
     document.createElement(
-    'script'
+        "script"
     );
 
-    script.id =
-    'moduleScript';
+    script.className =
+    "module-script";
 
     script.src =
 
-    `../js/admin/${page}.js?v=${
+    `../js/admin/${page}/${page}.js?v=${
         Date.now()
     }`;
 
     document.body.appendChild(
-    script
+        script
     );
 
 }
-
