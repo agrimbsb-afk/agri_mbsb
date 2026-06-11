@@ -58,8 +58,8 @@ exports.loadTodayRecords = async (req,res)=>{
 		
 		console.log(today);
 
-        const userName =
-        req.user.userName;
+        const userId =
+        req.user.userId;
 
         const result =
         await pool.query(
@@ -72,7 +72,7 @@ exports.loadTodayRecords = async (req,res)=>{
             `,
             [
                 today,
-                userName
+                userId
             ]
         );
 
@@ -172,13 +172,14 @@ async(req,res)=>{
 };
 
 
-
 /* ==================================
    SAVE DRONE RECORD
 ================================== */
 
 exports.saveDroneRecord = async (req,res)=>{
-	
+
+    const client =
+    await pool.connect();
 
     try{
 
@@ -186,32 +187,35 @@ exports.saveDroneRecord = async (req,res)=>{
 
             date,
             work,
-			flow_ha,
+            flow_ha,
             block,
             work_area,
             area_ha,
-            created_by_name,
+            created_by_Id,
             items
 
         } = req.body;
 
+        const workDisplay =
+
+        flow_ha
+
+        ? `${work} (${flow_ha} L/HA)`
+
+        : work;
+
+        await client.query(
+            'BEGIN'
+        );
+
         for(const item of items){
 
-            console.table({
-                1: date,
-                2: work,
-                3: block,
-                4: work_area,
-                5: area_ha,
-                6: item.item_used,
-                7: item.uom,
-                8: item.usage,
-                9: item.unit,
-                10: created_by_name,
-				11: flow_ha
-            });
+            /* =========================
+               DRONE WORK RECORD
+            ========================= */
 
-            await pool.query(
+            await client.query(
+
                 `
                 INSERT INTO drone_workrecord
                 (
@@ -219,60 +223,161 @@ exports.saveDroneRecord = async (req,res)=>{
                     work,
                     block,
                     work_area,
-                    area_ha,
+
                     item_used,
                     uom,
-                    usage,
+
                     unit,
+
+                    area_ha,
+
                     by_person,
-					flow_ha
+
+                    flow_ha,
+
+                    work_code,
+                    work_ctn,
+                    work_pcs,
+                    work_vol
                 )
                 VALUES
                 (
-                    $1,$2,$3,$4,$5,
-                    $6,$7,$8,$9,$10,$11
+                    $1,$2,$3,$4,
+                    $5,$6,
+                    $7,$8,
+                    $9,
+                    $10,
+                    $11,
+                    $12,$13,$14
                 )
                 `,
+
                 [
+
                     date,
-                    work || '',
+
+                    workDisplay,
+
                     block || '',
+
                     work_area || '',
-                    Number(area_ha) || 0,
+
                     item.item_used || '',
+
                     item.uom || '',
-                    Number(item.usage) || 0,
-                    item.unit || '',
-                    created_by_name || '',
-					Number(flow_ha) || 0,
+
+                    item.unit_ha || '',
+
+                    Number(area_ha) || 0,
+
+                    created_by_Id || '',
+
+                    Number(flow_ha) || 0,
+
+                    item.product_id || '',
+
+                    Number(item.ctn) || 0,
+
+                    Number(item.pcs) || 0,
+
+                    Number(item.vol) || 0
+
                 ]
+
+            );
+
+            /* =========================
+               STOCK TRANSACTIONS
+            ========================= */
+
+            await client.query(
+
+                `
+                INSERT INTO stock_transactions
+                (
+                    transaction_type,
+
+                    product_id,
+
+                    qty_ctn,
+                    qty_pcs,
+                    qty_vol,
+
+                    remarks,
+
+                    by_person
+                )
+                VALUES
+                (
+                    $1,$2,$3,$4,$5,$6,$7
+                )
+                `,
+
+                [
+
+                    'OUT',
+
+                    item.product_id || '',
+
+                    Number(item.ctn) || 0,
+
+                    Number(item.pcs) || 0,
+
+                    Number(item.vol) || 0,
+
+                    `${workDisplay} | ${block || ''}`,
+
+                    created_by_Id || ''
+
+                ]
+
             );
 
         }
 
+        await client.query(
+            'COMMIT'
+        );
+
         res.json({
+
             success:true,
+
             message:"Record Saved"
+
         });
 
     }
     catch(err){
 
+        await client.query(
+            'ROLLBACK'
+        );
+
         console.error(
-            "SAVE DRONE RECORD ERROR:",
+            "SAVE DRONE RECORD ERROR:"
+        );
+
+        console.error(
             err
         );
 
         res.status(500).json({
+
             success:false,
-            message:"Save Failed"
+
+            message: err.message
+
         });
+
+    }
+    finally{
+
+        client.release();
 
     }
 
 };
-
-
 /* ==================================
    GET SELETED DRONE RECORD
 ================================== */

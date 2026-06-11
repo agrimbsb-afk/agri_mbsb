@@ -256,10 +256,6 @@ function renderLoadedRecords(records){
                 <td>
                     ${record.work || ''}
                 </td>
-				
-				<td>
-                    ${record.flow_ha || ''}
-                </td>
 
                 <td>
                     ${record.block || ''}
@@ -278,15 +274,19 @@ function renderLoadedRecords(records){
                 </td>
 
                 <td>
-                    ${record.uom || ''}
-                </td>
-
-                <td>
-                    ${record.usage || 0}
-                </td>
-
-                <td>
                     ${record.unit || ''}
+                </td>
+
+                <td>
+                    ${record.work_ctn || ''}
+                </td>
+				
+				<td>
+                    ${record.work_pcs || ''}
+                </td>
+				
+				<td>
+                    ${record.work_vol || ''}
                 </td>
 
                 <td class="iconBtn action-cell">
@@ -650,14 +650,27 @@ addDialogRow
 
 function addDialogRow(){
 
-    itemRows.push({
+		itemRows.push({
 
-        item_used:'',
-        uom:'',
-        usage:'',
-        unit:''
+		product_id:'',
 
-    });
+		item_used:'',
+
+		uom:'',
+
+		unit_ha:'',
+
+		pcs_per_ctn:0,
+
+		vol_per_pcs:0,
+
+		ctn:0,
+
+		pcs:0,
+
+		vol:0
+
+	});
 
     renderDialogRows();
 
@@ -867,46 +880,35 @@ tbody.insertAdjacentHTML(
 
 </td>
 
-<td data-label="UOM">
+<td data-label="Unit/HA">
 
 <input
 class="tableInput"
-value="${row.uom}"
-oninput="
-this.value=this.value.toUpperCase();
-itemRows[${index}].uom=this.value;
-"
->
-
-</td>
-
-<td data-label="Unit">
-
-<input
-class="tableInput"
-value="${row.unit}"
-oninput="
-this.value=this.value.toUpperCase();
-itemRows[${index}].unit=this.value;
-"
->
-
-</td>
-
-<td data-label="Usage">
-
-<input
-
-class="tableInput"
-
 type="number"
 
-value="${row.usage}"
+value="${row.unit_ha || ''}"
 
-oninput="itemRows[${index}].usage=this.value"
+oninput="
 
->
+itemRows[${index}].unit_ha =
+Number(this.value) || 0;
 
+calculateRow(${index});
+
+">
+
+</td>
+
+<td id="ctn_${index}">
+${row.ctn || 0}
+</td>
+
+<td id="pcs_${index}">
+${row.pcs || 0}
+</td>
+
+<td id="vol_${index}">
+${row.vol || 0}
 </td>
 
 <td data-label="Action">
@@ -1064,67 +1066,52 @@ async()=>{
             hasError = true;
 
         }
+		/* ITEM USED + UNIT/HA REQUIRED */
 
-        /* ITEM USED + USAGE REQUIRED */
+		const rows =
+		document.querySelectorAll(
+			"#dialogTableBody tr"
+		);
 
-        const rows =
-        document.querySelectorAll(
-            "#dialogTableBody tr"
-        );
+		rows.forEach(
 
-        rows.forEach(
+		(row,index)=>{
 
-            (row,index)=>{
-
-                const itemInput =
-				row.querySelector(
+			const itemInput =
+			row.querySelector(
 				'td:nth-child(1) input'
+			);
+
+			const unitInput =
+			row.querySelector(
+				'td:nth-child(2) input'
+			);
+
+			if(
+				!itemRows[index].item_used
+			){
+
+				itemInput.classList.add(
+					"inputError"
 				);
 
-                const usageInput =
-                row.querySelector(
-                    'td:nth-child(4) input'
-                );
+				hasError = true;
 
-                if(
+			}
 
-                    !itemRows[index].item_used ||
+			if(
+				!itemRows[index].unit_ha
+			){
 
-                    itemRows[index]
-                    .item_used
-                    .trim() === ''
+				unitInput.classList.add(
+					"inputError"
+				);
 
-                ){
+				hasError = true;
 
-                    itemInput.classList.add(
-                        "inputError"
-                    );
+			}
 
-                    hasError = true;
-
-                }
-
-                if(
-
-                    itemRows[index].usage === '' ||
-
-                    itemRows[index].usage === null ||
-
-                    itemRows[index].usage === undefined
-
-                ){
-
-                    usageInput.classList.add(
-                        "inputError"
-                    );
-
-                    hasError = true;
-
-                }
-
-            }
-
-        );
+		});
 
         if(hasError){
 
@@ -1163,9 +1150,9 @@ async()=>{
                 "areaha"
             ).value,
 
-            created_by_name:
+            created_by_Id:
             localStorage.getItem(
-                "userName"
+                "userId"
             ),
 
             items:
@@ -1455,23 +1442,21 @@ function renderProductDropdown(
 
     filtered.map(product=>`
 
-        <div
+	<div
+	class="dropdown-item"
 
-        class="dropdown-item"
+	onclick="
+	selectProduct(
+	${index},
+	'${product.product_id}'
+	)
+	">
 
-        onclick="
-        selectProduct(
-        ${index},
-        '${product.product_name}',
-        '${product.product_uom}'
-        )
-        ">
+	${product.product_name}
 
-        ${product.product_name}
+	</div>
 
-        </div>
-
-    `).join('');
+	`).join('');
 
 }
 
@@ -1540,20 +1525,89 @@ function selectEditWork(work){
 
 function selectProduct(
     index,
-    productName,
-    uom
+    productId
 ){
 
+    const product =
+    currentProducts.find(
+        p => p.product_id === productId
+    );
+
+    if(!product) return;
+
+    itemRows[index].product_id =
+    product.product_id;
+
     itemRows[index].item_used =
-    productName;
+    product.product_name;
 
     itemRows[index].uom =
-    uom;
+    product.product_uom;
+
+    itemRows[index].pcs_per_ctn =
+    Number(product.pcs_per_ctn);
+
+    itemRows[index].vol_per_pcs =
+    Number(product.vol_per_pcs);
+
+    calculateRow(index);
 
     renderDialogRows();
 
 }
 
+function calculateRow(index){
+
+    const areaHa =
+    Number(
+        document.getElementById("areaha").value
+    ) || 0;
+
+    const row =
+    itemRows[index];
+
+    const totalUsage =
+    areaHa *
+    (Number(row.unit_ha) || 0);
+
+    const boxSize =
+    row.pcs_per_ctn *
+    row.vol_per_pcs;
+
+    row.ctn =
+    Math.floor(totalUsage / boxSize);
+
+    const balance =
+    totalUsage -
+    (row.ctn * boxSize);
+
+    row.pcs =
+    Math.floor(
+        balance /
+        row.vol_per_pcs
+    );
+
+    row.vol =
+    balance -
+    (row.pcs * row.vol_per_pcs);
+
+    // 更新画面
+    document.getElementById(
+        `ctn_${index}`
+    ).innerText =
+    row.ctn;
+
+    document.getElementById(
+        `pcs_${index}`
+    ).innerText =
+    row.pcs;
+
+    document.getElementById(
+        `vol_${index}`
+    ).innerText =
+    row.vol;
+
+}
 
 document
 .getElementById(
@@ -1790,6 +1844,8 @@ document
 
 );
 
+
+
 /* =========================
    WHATSAPP EXPORT
 ========================= */
@@ -1892,7 +1948,6 @@ PILOT : ${localStorage.getItem("userName")}
 
 `*Date	: ${displayDate}*
 Work	: ${first.work}
-Block	: ${first.block}
 Area	: ${first.work_area}
 HA		: ${first.area_ha}
 Flow	: ${first.flow_ha} L/HA
@@ -1902,16 +1957,39 @@ Item	:
 
 rows.forEach(item=>{
 
+let usageText = '';
+
+if(Number(item.work_ctn) > 0){
+
+    usageText +=
+    `${item.work_ctn} CTN `;
+
+}
+
+if(Number(item.work_pcs) > 0){
+
+    usageText +=
+    `${item.work_pcs} PCS `;
+
+}
+
+if(Number(item.work_vol) > 0){
+
+    usageText +=
+    `${item.work_vol} ${item.uom}`;
+
+}
+
 message +=
 
-`${item.item_used} - ${item.usage} ${item.uom}
+`${item.item_used} - ${usageText.trim()}
 `;
 
  });
 			message +=
                 "\n";
 			message +=
-                "===================================";
+                "✈️✈️✈️✈️✈️✈️✈️✈️✈️✈️✈️✈️";
 			message +=
                 "\n\n";
 
