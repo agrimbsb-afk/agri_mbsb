@@ -1,18 +1,42 @@
 <link rel="stylesheet" href="../styles/product/product.css">
-
+<script src="../js/config.js"></script>
+<script src="../js/pageguard/tokenGuard.js"></script>
+<script src="../js/pageguard/adminGuard.js"></script>
+<script src="../js/pageguard/pageguard.js"></script>
+<script src="./js/dateHelper.js"></script>
 
 <div class="page-header">
 
     <div class="page-header-left">
 
         <div class="system-title">
-            <i class="fa-solid fa-box"></i>
-			Product Management
+			<i class="fa-solid fa-box"></i>
+            Product Management
+
+        </div>
+		<div class="header-top">
+
+            <span id="todayDate"></span>
+
+            <span class="header-divider">|</span>
+
+            <span id="loginUser">
+                NULL
+            </span>
+
         </div>
 
-        <div class="system-subtitle">
-            Stock Inventory Dashboard
-        </div>
+    </div>
+
+    <div class="page-header-right">
+
+        <button
+        id="logoutMainBtn"
+        class="btn btn-danger">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+        </button>
 
     </div>
 
@@ -127,6 +151,8 @@ class="card" id="productCard">
 			</tbody>
 
         </table>
+		
+		<div id="pagination" class="pagination"> </div>
 
     </div>
 

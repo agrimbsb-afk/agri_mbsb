@@ -88,3 +88,32 @@
     overflow:visible !important;
 
 }
+
+@media(max-width:768px){
+
+.topbar{
+
+    display:grid;
+
+    grid-template-columns:
+    1fr 1fr;
+
+    gap:12px;
+
+}
+
+.topbar > *{
+
+    width:100%;
+
+    min-width:0;
+
+}
+
+#addBtn{
+
+    grid-column:1 / -1;
+
+}
+
+}

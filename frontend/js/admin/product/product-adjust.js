@@ -30,9 +30,6 @@ function addAdjustRow(){
     document.createElement("tr");
 
     tr.innerHTML = `
-
-    <tr>
-
 		<td>
 
 			<div class="row-search-wrapper">
@@ -110,8 +107,6 @@ function addAdjustRow(){
 			class="adjust-vol">
 		</td>
 
-	</tr>
-
     `;
 
     tbody.prepend(tr);
@@ -161,7 +156,7 @@ function addAdjustRow(){
 
             const filtered =
 
-            products.filter(
+            (products || []).filter(
 
                 p=>
 
@@ -220,7 +215,7 @@ function addAdjustRow(){
 
             const product =
 
-            products.find(
+            (products || []).find(
 
                 p=>
 
@@ -275,6 +270,40 @@ function addAdjustRow(){
         }
 
     );
+	
+	[
+    row.querySelector(".adjust-ctn"),
+    row.querySelector(".adjust-pcs"),
+    row.querySelector(".adjust-vol")
+	]
+	.forEach(input=>{
+
+		input.addEventListener(
+			"input",
+			()=>{
+
+				row.querySelector(
+					".adjust-ctn"
+				).classList.remove(
+					"inputError"
+				);
+
+				row.querySelector(
+					".adjust-pcs"
+				).classList.remove(
+					"inputError"
+				);
+
+				row.querySelector(
+					".adjust-vol"
+				).classList.remove(
+					"inputError"
+				);
+
+			}
+		);
+
+	});
 
 }
 
@@ -384,30 +413,6 @@ async function saveAdjustProducts(){
 			row.querySelector(
 				".adjust-vol"
 			);
-			
-			[ctnInput, pcsInput, volInput]
-			.forEach(input=>{
-
-				input.addEventListener(
-					"input",
-					()=>{
-
-						ctnInput.classList.remove(
-							"inputError"
-						);
-
-						pcsInput.classList.remove(
-							"inputError"
-						);
-
-						volInput.classList.remove(
-							"inputError"
-						);
-
-					}
-				);
-
-			});
 
 			if(
 
@@ -483,12 +488,11 @@ async function saveAdjustProducts(){
                 method:"POST",
 
                 headers:{
+					
+					...getAuthHeaders(),
 
                     "Content-Type":
-                    "application/json",
-
-                    Authorization:
-                    "Bearer " + token
+                    "application/json"
 
                 },
 
@@ -505,30 +509,36 @@ async function saveAdjustProducts(){
         const result =
         await res.json();
 
-        if(result.success){
+        if(!result.success){
 
-            alert(
-                "Stock Adjust Saved"
-            );
+			alert(
+				result.message ||
+				"Save Failed"
+			);
 
-            document
-            .getElementById(
-                "productAdjustModal"
-            )
-            .classList.add(
-                "hidden"
-            );
+			return;
 
-            document
-            .getElementById(
-                "productAdjustBody"
-            )
-            .innerHTML = "";
+		}
 
-            await loadProducts();
+		alert(
+			"Stock Adjust Saved"
+		);
 
-        }
+		document
+		.getElementById(
+			"productAdjustModal"
+		)
+		.classList.add(
+			"hidden"
+		);
 
+		document
+		.getElementById(
+			"productAdjustBody"
+		)
+		.innerHTML = "";
+
+		await loadProducts();
     }
     catch(err){
 

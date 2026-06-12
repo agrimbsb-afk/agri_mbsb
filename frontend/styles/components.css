@@ -170,7 +170,7 @@ justify-content:center;
 
 align-items:center;
 
-z-index:999;
+z-index:20000;
 
 }
 
@@ -188,6 +188,11 @@ overflow:auto;
 
 box-shadow:
 0 20px 40px rgba(0,0,0,.2);
+
+    position:relative;
+
+    z-index:20001;
+
 
 }
 

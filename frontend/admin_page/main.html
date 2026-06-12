@@ -3,15 +3,10 @@
 
 <head>
 
-<script>
-
-if(localStorage.getItem('userRole') !== 'admin'){
-
-    location.replace('login.html');
-
-}
-
-</script>
+<script src="../js/config.js"></script>
+<script src="../js/pageguard/tokenGuard.js"></script>
+<script src="../js/pageguard/adminGuard.js"></script>
+<script src="../js/pageguard/pageguard.js"></script>
 
 <meta charset="UTF-8">
 
@@ -22,7 +17,10 @@ content="width=device-width,initial-scale=1">
 <title>MBSB ADMIN</title>
 
 <link rel="icon" type="image/png" href="../icon/mbsb_drone.png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> 
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
 <link rel="stylesheet" href="../styles/variables.css">
 <link rel="stylesheet" href="../styles/base.css">
 <link rel="stylesheet" href="../styles/layout.css">
@@ -34,80 +32,80 @@ content="width=device-width,initial-scale=1">
 <body>
 
 <div class="admin-layout">
-<!-- SIDEBAR -->
 
-	<aside class="sidebar">
+    <!-- SIDEBAR -->
 
-		<div class="sidebar-header">
+    <aside class="sidebar">
 
-			<i class="fa-solid fa-bars"></i>
+        <div class="sidebar-header">
 
-		</div>
+            <i class="fa-solid fa-bars"></i>
 
-	   <nav class="sidebar-menu">
+        </div>
 
-		<a
-		href="#product"
-		data-page="product">
+        <nav class="sidebar-menu">
 
-			<i class="fa-solid fa-box"></i>
+            <a
+            href="#product"
+            data-page="product">
 
-			<span>
-			Product
-			</span>
+                <i class="fa-solid fa-box"></i>
 
-		</a>
+                <span>
+                Product
+                </span>
 
-		<a
-		href="#user"
-		data-page="user">
+            </a>
 
-			<i class="fa-solid fa-user"></i>
+            <a
+            href="#user"
+            data-page="user">
 
-			<span>
-			User
-			</span>
+                <i class="fa-solid fa-user"></i>
 
-		</a>
+                <span>
+                User
+                </span>
 
-		<a
-		href="#worker"
-		data-page="worker">
+            </a>
 
-			<i class="fa-solid fa-users"></i>
+            <a
+            href="#worker"
+            data-page="worker">
 
-			<span>
-			Worker
-			</span>
+                <i class="fa-solid fa-users"></i>
 
-		</a>
+                <span>
+                Worker
+                </span>
 
-		<a
-		href="#drone_admin"
-		data-page="drone_admin">
+            </a>
 
-			<i class="fa-solid fa-helicopter"></i>
+            <a
+            href="#drone_admin"
+            data-page="drone_admin">
 
-			<span>
-			Drone
-			</span>
+                <i class="fa-solid fa-helicopter"></i>
 
-		</a>
+                <span>
+                Drone
+                </span>
 
-		<a
-		href="#kong"
-		data-page="kong">
+            </a>
 
-			<i class="fa-solid fa-seedling"></i>
+            <a
+            href="#kong"
+            data-page="kong">
 
-			<span>
-			Kong
-			</span>
+                <i class="fa-solid fa-seedling"></i>
 
-		</a>
+                <span>
+                Kong
+                </span>
 
-	</nav>
+            </a>
 
+        </nav>
 		<div class="sidebar-footer">
 
 			<a href="#" id="logoutBtn">
@@ -120,37 +118,21 @@ content="width=device-width,initial-scale=1">
 
 		</div>
 
-	</aside>
+    </aside>
 
-<!-- MAIN CONTENT -->
+    <!-- MAIN -->
 
-	<div class="main-content">
+    <div class="main-content">
 
-		<div id="mainContainer">
+        <div id="mainContainer">
+        </div>
 
-			<div class="card">
-
-				<div class="system-title">
-
-					MBSB ADMIN
-
-				</div>
-
-				<div class="system-subtitle">
-
-					Select a module from sidebar
-
-				</div>
-
-			</div>
-
-		</div>
-	</div>
+    </div>
 
 </div>
+
 <script src="../js/admin/main.js"></script>
 <script src="../js/admin/sidebar.js"></script>
 
 </body>
-
 </html>

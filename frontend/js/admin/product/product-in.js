@@ -34,8 +34,6 @@ function addProductRow(){
 
 	tr.innerHTML = `
 
-    <tr>
-
         <td>
 
 			<div class="row-search-wrapper">
@@ -113,8 +111,6 @@ function addProductRow(){
 
         </td>
 
-    </tr>
-
     `;
 
 	tbody.prepend(tr);
@@ -189,7 +185,7 @@ function addProductRow(){
 
 			const filtered =
 
-			productMaster.filter(
+			(productMaster || []).filter(
 
 				p=>
 
@@ -249,7 +245,7 @@ function addProductRow(){
 
 			const product =
 
-			productMaster.find(
+			(productMaster || []).find(
 
 				p=>
 
@@ -257,6 +253,12 @@ function addProductRow(){
 				e.target.dataset.id
 
 			);
+			
+			if(!product){
+
+				return;
+
+			}
 
 			input.value =
 			product.product_name;
@@ -282,6 +284,23 @@ function addProductRow(){
 		}
 
 	);
+	
+	const uomInput =
+			row.querySelector(
+				".product_uom"
+			);
+
+			uomInput.addEventListener(
+				"input",
+				e=>{
+
+					e.target.value =
+					e.target.value
+					.toUpperCase()
+					.trimStart();
+
+				}
+			);
 	
 	row.querySelectorAll(
 			"input"
@@ -484,18 +503,7 @@ async function saveAllProducts(){
 			row.querySelector(
 				".product_uom"
 			);
-
-			uomInput.addEventListener(
-				"input",
-				e=>{
-
-					e.target.value =
-					e.target.value
-					.toUpperCase()
-					.trimStart();
-
-				}
-			);
+			
 			
 			const ctnInput =
 			row.querySelector(
@@ -609,11 +617,10 @@ async function saveAllProducts(){
 
 				headers:{
 
+					...getAuthHeaders(),
+					
 					"Content-Type":
-					"application/json",
-
-					Authorization:
-					"Bearer " + token
+					"application/json"
 
 				},
 
@@ -632,33 +639,35 @@ async function saveAllProducts(){
 
 		console.log(result);
 
-		if(result.success){
+		if(!result.success){
 
 			alert(
-				"Stock In Saved"
-			);
-			
-			saveBtn.disabled = false;
-
-			saveBtn.innerHTML =
-			"SAVE ALL";
-
-			document
-			.getElementById(
-				"productModal"
-			)
-			.classList.add(
-				"hidden"
+				result.message ||
+				"Save Failed"
 			);
 
-			document
-			.getElementById(
-				"productInputBody"
-			).innerHTML = "";
-
-			await loadProducts();
+			return;
 
 		}
+		alert(
+			"Stock In Saved"
+		);
+
+		document
+		.getElementById(
+			"productModal"
+		)
+		.classList.add(
+			"hidden"
+		);
+
+		document
+		.getElementById(
+			"productInputBody"
+		)
+		.innerHTML = "";
+
+		await loadProducts();
 	}
 	catch(err){
 

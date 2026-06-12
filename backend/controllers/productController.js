@@ -8,9 +8,14 @@ require('exceljs');
 exports.getProducts =
 async(req,res)=>{
 
-    console.log(
-        "CONTROLLER HIT"
-    );
+    const page =
+    Number(req.query.page || 1);
+
+    const limit =
+    Number(req.query.limit || 20);
+
+    const offset =
+    (page - 1) * limit;
 
     try{
 
@@ -19,17 +24,67 @@ async(req,res)=>{
             product_id
         } = req.query;
 
-        console.log(
-            "SEASON:",
-            season
+        let whereClause =
+        `
+
+        FROM stock_balance_view
+
+        WHERE 1=1
+
+        `;
+
+        let values = [];
+        let idx = 1;
+
+        if(season){
+
+            whereClause +=
+            ` AND season=$${idx}`;
+
+            values.push(
+                season
+            );
+
+            idx++;
+
+        }
+
+        if(product_id){
+
+            whereClause +=
+            ` AND product_id=$${idx}`;
+
+            values.push(
+                product_id
+            );
+
+            idx++;
+
+        }
+
+        //
+        // TOTAL
+        //
+
+        const totalResult =
+        await pool.query(
+
+            `
+            SELECT COUNT(*) total
+            ${whereClause}
+            `,
+
+            values
+
         );
 
-        console.log(
-            "PRODUCT:",
-            product_id
-        );
+        //
+        // DATA
+        //
 
-        let query = `
+        const query =
+
+        `
 
         SELECT
 
@@ -44,55 +99,46 @@ async(req,res)=>{
         qty_pcs,
         qty_vol
 
-        FROM stock_balance_view
+        ${whereClause}
 
-        WHERE 1=1
-
-        `;
-
-        let values = [];
-        let idx = 1;
-
-        if(season){
-
-            query +=
-            ` AND season=$${idx}`;
-
-            values.push(
-                season
-            );
-
-            idx++;
-
-        }
-
-        if(product_id){
-
-            query +=
-            ` AND product_id=$${idx}`;
-
-            values.push(
-                product_id
-            );
-
-            idx++;
-
-        }
-
-        query +=
-        `
         ORDER BY product_id
+
+        LIMIT $${idx}
+        OFFSET $${idx + 1}
+
         `;
+
+        const dataValues =
+
+        [
+            ...values,
+            limit,
+            offset
+        ];
 
         const result =
         await pool.query(
             query,
-            values
+            dataValues
         );
 
-        res.json(
-            result.rows
-        );
+        res.json({
+
+            success:true,
+
+            data:
+            result.rows,
+
+            total:
+            Number(
+                totalResult.rows[0].total
+            ),
+
+            page,
+
+            limit
+
+        });
 
     }
     catch(err){
@@ -104,7 +150,12 @@ async(req,res)=>{
         console.error(err);
 
         res.status(500).json({
-            error: err.message
+
+            success:false,
+
+            error:
+            err.message
+
         });
 
     }

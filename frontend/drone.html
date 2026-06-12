@@ -12,6 +12,12 @@ content="width=device-width,initial-scale=1">
 
 <title>Drone Record </title>
 
+<script src="./js/config.js"></script>
+<script src="../js/pageguard/tokenGuard.js"></script>
+<script src="./js/pageguard/pageguard.js"></script>
+<script src="./js/pageguard/fetchGuard.js"></script>
+<script src="./js/dateHelper.js"></script>
+
 <link rel="icon" type="image/png" href="./icon/mbsb_drone.png">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> 
 <link rel="stylesheet" href="./styles/variables.css">
@@ -31,6 +37,8 @@ content="width=device-width,initial-scale=1">
 		<div class="page-header-left">
 
 			<div class="system-title">
+				 <i class="fa-solid fa-plane"></i>
+				
 				DRONE RECORD
 			</div>
 
@@ -41,6 +49,12 @@ content="width=device-width,initial-scale=1">
 				<span id="loginUser">
 					USER
 				</span>
+				
+				<span class="header-divider">|</span>
+				
+				<span id="todayDate"></span>
+
+           
 
 			</div>
 
@@ -48,11 +62,8 @@ content="width=device-width,initial-scale=1">
 
 		<div class="page-header-right">
 
-			<div id="todayDate"></div>
-
 			<button id="logoutBtn" class="btn btn-danger">
 				<i class="fa-solid fa-right-from-bracket"></i>
-				Logout
 			</button>
 
 		</div>
@@ -84,11 +95,12 @@ content="width=device-width,initial-scale=1">
 			</div>
 
 		</div>
-
+		
+	<div id="flowhaWrapper">
 		<input
 		id="flowha"
 		placeholder="L/HA">
-
+	</div>
 		<input
 		id="block"
 		placeholder="Block">
@@ -140,6 +152,11 @@ content="width=device-width,initial-scale=1">
 			</tbody>
 
 			</table>
+			
+			<div
+				id="pagination"
+				class="pagination">
+			</div>
 		</div>
 
 		<div class="save-bar">
@@ -156,10 +173,7 @@ content="width=device-width,initial-scale=1">
 	</div>
 
 </div>
-<div
-    id="pagination"
-    class="pagination">
-</div>
+
 
 <!-- ADD DIALOG -->
 

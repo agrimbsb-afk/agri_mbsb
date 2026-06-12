@@ -45,57 +45,117 @@ exports.loadTodayRecords = async (req,res)=>{
 
     try{
 
-		const today =
+        const date =
 
-		new Date()
-		.toLocaleDateString(
-			"en-CA",
-			{
-				timeZone:
-				"Asia/Kuala_Lumpur"
-			}
-		);
-		
-		console.log(today);
+        req.params.date ||
+
+        new Date()
+        .toLocaleDateString(
+            "en-CA",
+            {
+                timeZone:
+                "Asia/Kuala_Lumpur"
+            }
+        );
+
+        const page =
+        Number(
+            req.query.page || 1
+        );
+
+        const limit =
+        Number(
+            req.query.limit || 20
+        );
+
+        const offset =
+
+        (page - 1) * limit;
 
         const userId =
         req.user.userId;
 
+        //
+        // TOTAL RECORDS
+        //
+
+        const totalResult =
+        await pool.query(
+
+            `
+            SELECT COUNT(*) total
+            FROM drone_workRecord
+            WHERE date = $1
+            AND by_person = $2
+            `,
+
+            [
+                date,
+                userId
+            ]
+
+        );
+
+        //
+        // PAGE DATA
+        //
+
         const result =
         await pool.query(
+
             `
             SELECT *
             FROM drone_workRecord
             WHERE date = $1
             AND by_person = $2
-            ORDER BY id ASC
+            ORDER BY id DESC
+            LIMIT $3
+            OFFSET $4
             `,
+
             [
-                today,
-                userId
+                date,
+                userId,
+                limit,
+                offset
             ]
+
         );
 
         res.json({
+
             success:true,
-            data:result.rows
+
+            data:result.rows,
+
+            total:Number(
+                totalResult.rows[0].total
+            ),
+
+            page,
+
+            limit
+
         });
 
     }
     catch(err){
 
         console.error(
-            "LOAD TODAY RECORD ERROR:",
+            "LOAD RECORD ERROR:",
             err
         );
 
         res.status(500).json({
+
             success:false
+
         });
 
     }
 
 };
+
 
 exports.getProductsByWork =
 async(req,res)=>{
@@ -256,7 +316,7 @@ exports.saveDroneRecord = async (req,res)=>{
 
                     date,
 
-                    workDisplay,
+                    workDisplay || '',
 
                     block || '',
 
@@ -325,7 +385,7 @@ exports.saveDroneRecord = async (req,res)=>{
 
                     Number(item.vol) || 0,
 
-                    `${workDisplay} | ${block || ''}`,
+                    `${workDisplay}`,
 
                     created_by_Id || ''
 

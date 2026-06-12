@@ -1,20 +1,29 @@
-const API =
 
-location.hostname === '127.0.0.1' ||
-location.hostname === 'localhost'
+const token =
+localStorage.getItem("token");
 
-?
+if(token){
 
-'http://localhost:3000'
+    const role =
+    localStorage.getItem(
+        "userRole"
+    );
 
-:
+    if(role === 'admin'){
 
-'https://agri-mbsb.onrender.com';
+        window.location.replace(
+            'admin_page/main.html'
+        );
 
-console.log(
-'USING API:',
-API
-);
+    }else{
+
+        window.location.replace(
+            'drone.html'
+        );
+
+    }
+
+}
 
 const loginBtn =
 document.getElementById('loginBtn');

@@ -1,31 +1,3 @@
-const API =
-
-location.hostname === 'localhost' ||
-
-location.hostname === '127.0.0.1'
-
-? 'http://localhost:3000'
-
-: 'https://agri-mbsb.onrender.com';
-
-const token =
-localStorage.getItem('token');
-
-const role =
-localStorage.getItem('userRole');
-
-if(!token){
-
-location.href='login.html';
-
-}
-
-if(role !== 'admin'){
-
-location.href='login.html';
-
-}
-
 const mainContainer =
 document.getElementById(
 'mainContainer'
@@ -49,6 +21,8 @@ async function loadPage(page){
         html;
 
         loadModuleScript(page);
+		
+		initPageHeader();
 
     }
 
@@ -153,3 +127,62 @@ function loadModuleScript(page){
     );
 
 }
+
+
+function initPageHeader(){
+
+    const loginUser =
+	document.getElementById(
+		"loginUser"
+	);
+
+	if(loginUser){
+
+		loginUser.textContent =
+
+		localStorage.getItem(
+			"userName"
+		) ||
+
+		"USER";
+
+	}
+	
+	const todayDate =
+    document.getElementById(
+        "todayDate"
+    );
+
+    if(todayDate){
+
+        todayDate.textContent =
+
+        new Date()
+        .toLocaleDateString(
+            "en-GB"
+        );
+
+    }
+
+    const logoutBtn =
+    document.getElementById(
+        "logoutMainBtn"
+    );
+
+    if(logoutBtn){
+
+        logoutBtn.onclick = ()=>{
+
+            localStorage.removeItem(
+                "token"
+            );
+
+            window.location.href =
+            "../login.html";
+
+        };
+
+    }
+
+}
+

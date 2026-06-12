@@ -31,8 +31,6 @@ function addOutRow(){
 
 	tr.innerHTML = `
 
-    <tr>
-
         <td>
 
 			<div class="row-search-wrapper">
@@ -110,8 +108,6 @@ function addOutRow(){
 
         </td>
 
-    </tr>
-
     `;
 
 	tbody.prepend(tr);
@@ -186,7 +182,7 @@ function addOutRow(){
 
 			const filtered =
 
-			productMaster.filter(
+			(productMaster || []).filter(
 
 				p=>
 
@@ -195,6 +191,16 @@ function addOutRow(){
 				.includes(keyword)
 
 			);
+			
+			
+			if(filtered.length === 0){
+
+				dropdown.style.display =
+				"none";
+
+				return;
+
+			}
 
 			filtered.forEach(p=>{
 
@@ -246,7 +252,7 @@ function addOutRow(){
 
 			const product =
 
-			productMaster.find(
+			(productMaster || []).find(
 
 				p=>
 
@@ -254,6 +260,12 @@ function addOutRow(){
 				e.target.dataset.id
 
 			);
+			
+			if(!product){
+
+				return;
+
+			}
 
 			input.value =
 			product.product_name;
@@ -279,6 +291,24 @@ function addOutRow(){
 		}
 
 	);
+	
+	
+			const uomInput =
+			row.querySelector(
+				".product_uom"
+			);
+
+			uomInput.addEventListener(
+				"input",
+				e=>{
+
+					e.target.value =
+					e.target.value
+					.toUpperCase()
+					.trimStart();
+
+				}
+			);
 	
 	row.querySelectorAll(
 			"input"
@@ -479,18 +509,6 @@ async function saveOutProducts(){
 			row.querySelector(
 				".product_uom"
 			);
-
-			uomInput.addEventListener(
-				"input",
-				e=>{
-
-					e.target.value =
-					e.target.value
-					.toUpperCase()
-					.trimStart();
-
-				}
-			);
 			
 			const ctnInput =
 			row.querySelector(
@@ -603,12 +621,11 @@ async function saveOutProducts(){
 				method:"POST",
 
 				headers:{
+					
+					...getAuthHeaders(),
 
 					"Content-Type":
-					"application/json",
-
-					Authorization:
-					"Bearer " + token
+					"application/json"
 
 				},
 
@@ -627,34 +644,39 @@ async function saveOutProducts(){
 
 		console.log(result);
 
-		if(result.success){
+		if(!result.success){
 
 			alert(
-				"Stock Out Saved"
-			);
-			
-			
-			saveOutBtn.disabled = false;
 
-			saveOutBtn.innerHTML =
-			"SAVE OUT";
+				result.message ||
 
-			document
-			.getElementById(
-				"productOutModal"
-			)
-			.classList.add(
-				"hidden"
+				"Save Failed"
+
 			);
 
-			document
-			.getElementById(
-				"productOutBody"
-			).innerHTML = "";
-
-			await loadProducts();
+			return;
 
 		}
+		
+		alert(
+			"Stock Out Saved"
+		);
+
+		document
+		.getElementById(
+			"productOutModal"
+		)
+		.classList.add(
+			"hidden"
+		);
+
+		document
+		.getElementById(
+			"productOutBody"
+		)
+		.innerHTML = "";
+
+		await loadProducts();
 	}
 	catch(err){
 
@@ -670,7 +692,7 @@ async function saveOutProducts(){
         saveBtn.disabled = false;
 
         saveBtn.innerHTML =
-        "SAVE ALL";
+        "SAVE OUT";
 
     }
 		

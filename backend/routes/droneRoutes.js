@@ -29,6 +29,12 @@ router.get(
 );
 
 router.get(
+    "/today/:date",
+    verifyToken,
+    droneController.loadTodayRecords
+);
+
+router.get(
     "/record/:id",
     verifyToken,
     droneController.getRecordById

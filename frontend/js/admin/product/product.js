@@ -137,14 +137,14 @@ function renderTable(data){
             <td class="${Number(p.qty_vol) < 0 ? 'negative-stock' : ''}">${p.qty_vol}</td>
 
             <td>
+				
+				 <button
+                        class="iconBtn editBtn"
+                        onclick="editProduct('${p.product_id}')">
 
-                <button
-                class="btn btn-primary"
-                onclick="editProduct('${p.product_id}')">
+                            <i class="fa-solid fa-pen-to-square"></i>
 
-                    Edit
-
-                </button>
+                 </button>
 
             </td>
 
@@ -155,6 +155,7 @@ function renderTable(data){
     });
 
 }
+
 
 
 async function initProductPage(){

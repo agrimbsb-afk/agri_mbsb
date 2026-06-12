@@ -1,9 +1,9 @@
 window.productReady = false;
 
-let products = [];
-let productMaster = [];
-let selectedProductId = "";
-let selectedSeason = "";
+var products = [];
+var productMaster = [];
+var selectedProductId = "";
+var selectedSeason = "";
 
 function getCurrentSeason(){
 
@@ -33,69 +33,84 @@ function getCurrentSeason(){
 }
 
 
-async function loadProducts(){
-	
-	showLoading();
-	
+
+
+async function loadProducts(page = 1){
+
+    showLoading();
+
     try{
-		/*Season*/
+
         const season =
 
-		selectedSeason
+        selectedSeason ||
 
-		||
+        getCurrentSeason();
 
-		getCurrentSeason();
-		
-		/*Product*/
-		const productId =
-		selectedProductId || "";
+        const productId =
+
+        selectedProductId || "";
 
         const res =
         await fetch(
 
             API +
-			"/api/product/item?" +
+            "/api/product/item?" +
 
-			"season=" +
-			encodeURIComponent(season)
+            "season=" +
+            encodeURIComponent(season)
 
-			+
+            +
 
-			"&product_id=" +
+            "&product_id=" +
 
-			encodeURIComponent(productId),
+            encodeURIComponent(productId)
+
+            +
+
+            "&page=" +
+
+            page
+
+            +
+
+            "&limit=" +
+
+            pageSize,
 
             {
+
                 headers:{
-                    Authorization:
-                    "Bearer " + token
+
+                    ...getAuthHeaders()
+
                 }
+
             }
 
         );
 
-        console.log(
-            "STATUS",
-            res.status
-        );
-
-        products =
+        const result =
         await res.json();
 
-        console.log(products);
-
-        if(!Array.isArray(products)){
-
-            console.error(
-                "API ERROR",
-                products
-            );
+        if(!result.success){
 
             return;
+
         }
 
+        products =
+        result.data;
+
+        totalProducts =
+        result.total;
+
+        currentPage =
+        page;
+
         renderTable(products);
+
+        renderPagination();
 
     }
     catch(err){
@@ -104,9 +119,14 @@ async function loadProducts(){
 
     }
 
-
-
 }
+
+
+
+const container =
+document.getElementById(
+    "pagination"
+);
 
 async function loadSeason(){
 
@@ -260,7 +280,7 @@ async function loadProductFilter(){
 				.style.display =
 				"none";
 
-				loadProducts();
+				loadProducts(1);
 
 				return;
 
@@ -1222,7 +1242,7 @@ async function initProductPage(){
 	
 	window.productReady = true;
 
-    await loadProducts();
+    await loadProducts(1);
 
     loadSeason();
 
@@ -1311,8 +1331,10 @@ async function initProductPage(){
 				)
 				.style.display =
 				"none";
+				
+				currentPage = 1;
 
-				loadProducts();
+				loadProducts(1);
 
 			}
 
@@ -1346,7 +1368,9 @@ async function initProductPage(){
             .style.display =
             "none";
 
-            loadProducts();
+			currentPage = 1;
+			
+            loadProducts(1);
 
         }
 
@@ -1708,7 +1732,7 @@ async function saveAllProducts(){
 				"productInputBody"
 			).innerHTML = "";
 
-			await loadProducts();
+			await loadProducts(1);
 
 		}
 	}
@@ -2022,7 +2046,7 @@ async function saveOutProducts(){
 				"productOutBody"
 			).innerHTML = "";
 
-			await loadProducts();
+			await loadProducts(1);
 
 		}
 	}
@@ -2046,6 +2070,7 @@ async function saveOutProducts(){
 		
 
 }
+
 
 
 initProductPage();

@@ -1,24 +1,4 @@
 
-
-const API =
-
-location.hostname === '127.0.0.1' ||
-location.hostname === 'localhost'
-
-?
-
-'http://localhost:3000'
-
-:
-
-'https://agri-mbsb.onrender.com';
-
-console.log(
-'USING API:',
-API
-);
-
-
 let itemRows = [];
 let currentEditId = null;
 let currentRecords = [];
@@ -26,124 +6,44 @@ let selectedWork = '';
 let selectedEditWork = '';
 let workOptions = [];
 
+let currentPage = 1;
+let totalRecords = 0;
+const pageSize = 5;
+
 const dialog =
 document.getElementById(
 'itemDialog'
 );
 
 document.addEventListener(
-
     "DOMContentLoaded",
-
     async ()=>{
+		
+		initHeader();
 
-        await validateToken();
-		await loadTodayRecords();
+        await loadWorkOptions();
+
+        await loadTodayRecords();
+
+    }
+);
+
+document
+.getElementById(
+    "workDate"
+)
+.addEventListener(
+
+    "change",
+
+    ()=>{
+
+        loadTodayRecords(1);
 
     }
 
 );
 
-/* =========================
-   AUTH CHECK
-========================= */
-
-const token = localStorage.getItem("token");
-
-if(!token){
-
-    alert("Please login first.");
-
-    window.location.href = "login.html";
-
-}
-
-async function validateToken(){
-
-    const token =
-    localStorage.getItem("token");
-
-    if(!token){
-
-        window.location.href =
-        "login.html";
-
-        return false;
-
-    }
-
-    try{
-
-        const res = await fetch(
-
-            API + "/api/auth/validate",
-
-            {
-                headers:{
-                    Authorization:
-                    "Bearer " + token
-                }
-            }
-
-        );
-
-        if(!res.ok){
-
-            throw new Error();
-
-        }
-
-        return true;
-
-    }
-    catch(err){
-
-        localStorage.clear();
-
-        alert(
-            "Session expired. Please login again."
-        );
-
-        window.location.href =
-        "login.html";
-
-        return false;
-
-    }
-
-}
-
-document.addEventListener(
-
-"DOMContentLoaded",
-
-async ()=>{
-
-    const ok =
-    await validateToken();
-
-    if(!ok) return;
-
-    const userName =
-    localStorage.getItem(
-        "userName"
-    );
-
-    if(
-        document.getElementById(
-            "loginUser"
-        )
-    ){
-
-        document.getElementById(
-            "loginUser"
-        ).innerText =
-        userName;
-
-    }
-
-await loadTodayRecords();
-});
 
 document
 .getElementById("logoutBtn")
@@ -167,35 +67,42 @@ document
 });
 
 
-
-
-document.addEventListener(
-"DOMContentLoaded",
-
-async ()=>{
-
-    await loadWorkOptions();
-
-});
-
-
-async function loadTodayRecords(){
+async function loadTodayRecords(page = 1){
 
     try{
 
-        const token =
-        localStorage.getItem("token");
+        const selectedDate =
+
+        document.getElementById(
+            "workDate"
+        )?.value;
+
+        const url =
+
+        selectedDate
+
+        ? API +
+          "/api/drone/today/" +
+          selectedDate +
+          `?page=${page}&limit=${pageSize}`
+
+        : API +
+          "/api/drone/today" +
+          `?page=${page}&limit=${pageSize}`;
 
         const res =
         await fetch(
 
-            API + "/api/drone/today",
+            url,
 
             {
+
                 headers:{
-                    Authorization:
-                    "Bearer " + token
+
+                    ...getAuthHeaders()
+
                 }
+
             }
 
         );
@@ -203,21 +110,26 @@ async function loadTodayRecords(){
         const data =
         await res.json();
 
-        console.log(
-            "TODAY RECORDS:",
-            data
-        );
-
         if(!data.success){
+
             return;
+
         }
 
-		currentRecords =
-		data.data;
+        currentPage =
+        page;
+
+        totalRecords =
+        data.total;
+
+        currentRecords =
+        data.data;
 
         renderLoadedRecords(
             data.data
         );
+
+        renderPagination();
 
     }
     catch(err){
@@ -225,6 +137,119 @@ async function loadTodayRecords(){
         console.error(err);
 
     }
+
+}
+
+function renderPagination(){
+
+    const totalPages =
+
+    Math.ceil(
+        totalRecords /
+        pageSize
+    );
+
+    const container =
+    document.getElementById(
+        "pagination"
+    );
+
+    container.innerHTML = "";
+
+    if(totalPages <= 1){
+        return;
+    }
+
+    const pages = [];
+
+    pages.push(1);
+
+    if(currentPage > 3){
+
+        pages.push("...");
+
+    }
+
+    for(
+
+        let i =
+
+        Math.max(
+            2,
+            currentPage - 1
+        );
+
+        i <=
+
+        Math.min(
+            totalPages - 1,
+            currentPage + 1
+        );
+
+        i++
+
+    ){
+
+        pages.push(i);
+
+    }
+
+    if(
+        currentPage <
+        totalPages - 2
+    ){
+
+        pages.push("...");
+
+    }
+
+    if(totalPages > 1){
+
+        pages.push(
+            totalPages
+        );
+
+    }
+
+    pages.forEach(page=>{
+
+        if(page === "..."){
+
+            container.innerHTML += `
+
+            <span
+            class="page-dots">
+
+                ...
+
+            </span>
+
+            `;
+
+            return;
+
+        }
+
+        container.innerHTML += `
+
+        <button
+
+        class="
+        page-btn
+        ${page === currentPage ? "active" : ""}
+        "
+
+        onclick="
+        loadTodayRecords(${page})
+        ">
+
+            ${page}
+
+        </button>
+
+        `;
+
+    });
 
 }
 
@@ -413,6 +438,11 @@ document
             .toUpperCase()
             .includes(w)
         );
+		
+		const areaHa =
+		document.getElementById(
+			"areaha"
+		).value.trim();
 
         if(
             needFlow &&
@@ -427,13 +457,32 @@ document
                 "inputError"
             );
 
-            alert(
-                `${currentWork} requires L/HA.`
-            );
-
-            return;
-
         }
+		
+		if(needFlow &&
+            !areaHa){
+
+			document
+			.getElementById(
+				"areaha"
+			)
+			.classList.add(
+				"inputError"
+			);
+
+		}
+		
+		if(needFlow && (!flowHa || !areaHa)){
+
+			alert(
+				`${currentWork} requires L/HA and Area (HA).`
+			);
+			
+			return;
+
+		}
+		
+		
 
         document
         .getElementById(
@@ -464,6 +513,7 @@ document
     }
 
 );
+
 document
 .getElementById(
     "searchWork"
@@ -485,6 +535,78 @@ document
     }
 
 );
+
+document
+.getElementById("flowha")
+.addEventListener(
+    "input",
+    e=>{
+
+        e.target.classList.remove(
+            "inputError"
+        );
+
+    }
+);
+
+document
+.getElementById("areaha")
+.addEventListener(
+    "input",
+    e=>{
+
+        e.target.classList.remove(
+            "inputError"
+        );
+
+    }
+);
+
+
+function toggleFlowHa(){
+
+    const requireFlowWorks = [
+
+        "RUMPUT",
+        "BATAS",
+        "ULAT",
+        "SIPUT"
+
+    ];
+
+    const needFlow =
+    requireFlowWorks.some(
+        w =>
+        (selectedWork || "")
+        .toUpperCase()
+        .includes(w)
+    );
+
+    const flowWrapper =
+    document.getElementById(
+        "flowhaWrapper"
+    );
+
+    if(needFlow){
+
+        flowWrapper.style.display =
+        "";
+
+    }
+    else{
+
+        flowWrapper.style.display =
+        "none";
+
+        document
+        .getElementById(
+            "flowha"
+        )
+        .value = "";
+
+    }
+
+}
 
 let currentProducts = [];
 
@@ -545,19 +667,22 @@ function editRecord(id){
 	const localDate =
 		new Date(row.date);
 
-		localDate.setHours(
-			localDate.getHours() + 8
-		);
-
-		document.getElementById(
+	document.getElementById(
 			"editDate"
 		).value =
-		localDate.toISOString().split("T")[0];
-
+		formatMYDateInput(
+			row.date
+		);
 
     selectedEditWork =
 	row.work || "";
 
+	document.getElementById(
+		"editWork"
+	).value =
+	row.work || "";
+	
+	
 	document.getElementById(
         "editflowha"
     ).value =
@@ -1296,44 +1421,99 @@ itemRows;
    DEFAULT DATE = TODAY
 ========================= */
 
-const today = new Date();
-
-const yyyy =
-today.getFullYear();
-
-const mm =
-String(
-today.getMonth() + 1
-).padStart(2,'0');
-
-const dd =
-String(
-today.getDate()
-).padStart(2,'0');
-
 document.getElementById(
-'workDate'
+    "workDate"
 ).value =
+getMYDate();
 
-`${yyyy}-${mm}-${dd}`;
+function getMYDate(){
+
+    return new Date()
+    .toLocaleDateString(
+        "en-CA",
+        {
+            timeZone:
+            "Asia/Kuala_Lumpur"
+        }
+    );
+
+}
+
+document.addEventListener(
+
+    "click",
+
+    e=>{
+
+        document
+        .querySelectorAll(
+            ".dropdown-list"
+        )
+        .forEach(dropdown=>{
+
+            const wrapper =
+            dropdown.closest(
+                ".search-dropdown"
+            );
+
+            if(
+                wrapper &&
+                !wrapper.contains(
+                    e.target
+                )
+            ){
+
+                dropdown.style.display =
+                "none";
+
+            }
+
+        });
+
+    }
+
+);
 
 /* input uppercase*/
 
-document.addEventListener("input", function(e) {
+document.addEventListener(
 
-    if (
-        e.target.tagName === "INPUT" &&
-        e.target.type !== "number"
-    ) {
+    "input",
 
-        const pos = e.target.selectionStart;
+    function(e){
 
-        e.target.value = e.target.value.toUpperCase();
+        if(
+            e.target.tagName !== "INPUT"
+        ) return;
 
-        e.target.setSelectionRange(pos, pos);
+        if(
+            ![
+                "text",
+                "search"
+            ].includes(
+                e.target.type
+            )
+        ) return;
+
+        const pos =
+        e.target.selectionStart;
+
+        e.target.value =
+        e.target.value.toUpperCase();
+
+        try{
+
+            e.target.setSelectionRange(
+                pos,
+                pos
+            );
+
+        }
+        catch(err){}
+
     }
 
-});
+);
 
 async function loadWorkOptions(){
 
@@ -1387,25 +1567,33 @@ function renderWorkDropdown(data){
 
     data.forEach(work=>{
 
-        dropdown.insertAdjacentHTML(
+        const div =
+        document.createElement(
+            "div"
+        );
 
-            'beforeend',
+        div.className =
+        "dropdown-item";
 
-            `
-            <div
-            class="dropdown-item"
+        div.dataset.work =
+        work.work_name;
 
-            onclick="
-            selectWork(
-            '${work.work_name}'
-            )
-            ">
+        div.textContent =
+        work.work_name;
 
-                ${work.work_name}
+        div.addEventListener(
+            "click",
+            ()=>{
 
-            </div>
-            `
+                selectWork(
+                    work.work_name
+                );
 
+            }
+        );
+
+        dropdown.appendChild(
+            div
         );
 
     });
@@ -1464,9 +1652,40 @@ function selectWork(work){
 
     selectedWork = work;
 
+    const searchWork =
     document.getElementById(
         "searchWork"
-    ).value = work;
+    );
+
+    searchWork.value = work;
+
+    //
+    // REMOVE ERROR
+    //
+
+    searchWork.classList.remove(
+        "inputError"
+    );
+
+    //
+    // IF ERROR CLASS ON WRAPPER
+    //
+
+    searchWork
+    .closest(".search-dropdown")
+    ?.classList.remove(
+        "inputError"
+    );
+
+    //
+    // SHOW / HIDE FLOWHA
+    //
+
+    toggleFlowHa();
+
+    //
+    // HIGHLIGHT SELECTED ITEM
+    //
 
     document
     .querySelectorAll(
@@ -1489,6 +1708,10 @@ function selectWork(work){
         }
 
     });
+
+    //
+    // HIDE DROPDOWN
+    //
 
     document.getElementById(
         "workDropdown"
@@ -1553,6 +1776,7 @@ function selectProduct(
     calculateRow(index);
 
     renderDialogRows();
+
 
 }
 
@@ -1936,13 +2160,10 @@ PILOT : ${localStorage.getItem("userName")}
                 const first =
                 rows[0];
 
-                const displayDate =
-                new Date(
-                    first.date
-                )
-                .toLocaleDateString(
-                    "en-GB"
-                );
+				const displayDate =
+				formatMYDate(
+					first.date
+				);
 
                 message +=
 
@@ -2026,5 +2247,39 @@ message +=
         }
 
     }
-
+	
 );
+
+
+
+function initHeader(){
+
+    const loginUser =
+    document.getElementById(
+        "loginUser"
+    );
+
+    if(loginUser){
+
+        loginUser.textContent =
+        localStorage.getItem(
+            "userName"
+        ) || "USER";
+
+    }
+
+    const todayDate =
+    document.getElementById(
+        "todayDate"
+    );
+
+    if(todayDate){
+
+        todayDate.textContent =
+		formatMYDate(
+			getMYNow()
+		);
+
+    }
+
+}

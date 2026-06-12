@@ -1,41 +1,53 @@
-async function loadProducts(){
-	
-	showLoading();
-	
+let currentPage = 1;
+
+const pageSize = 5;
+
+let totalProducts = 0;
+
+
+async function loadProducts(page = 1){
+
+    showLoading();
+
     try{
-		/*Season*/
+
         const season =
 
-		selectedSeason
+        selectedSeason ||
 
-		||
+        getCurrentSeason();
 
-		getCurrentSeason();
-		
-		/*Product*/
-		const productId =
-		selectedProductId || "";
+        const productId =
+
+        selectedProductId || "";
 
         const res =
         await fetch(
 
             API +
-			"/api/product/item?" +
+            "/api/product/item?" +
 
-			"season=" +
-			encodeURIComponent(season)
+            "season=" +
+            encodeURIComponent(season)
 
-			+
+            +
 
-			"&product_id=" +
+            "&product_id=" +
+            encodeURIComponent(productId)
 
-			encodeURIComponent(productId),
+            +
+
+            "&page=" +
+            page
+
+            +
+
+            "&limit=" +
+            pageSize,
 
             {
-                headers:{
-                    Authorization:
-                    "Bearer " + token
-                }
+                headers:
+                getAuthHeaders()
             }
 
         );
@@ -45,22 +57,37 @@ async function loadProducts(){
             res.status
         );
 
-        products =
+        const result =
         await res.json();
 
-        console.log(products);
+        console.log(
+            "API RESULT",
+            result
+        );
 
-        if(!Array.isArray(products)){
+        if(!result.success){
 
             console.error(
                 "API ERROR",
-                products
+                result
             );
 
             return;
+
         }
 
+        products =
+        result.data;
+
+        totalProducts =
+        result.total;
+
+        currentPage =
+        page;
+
         renderTable(products);
+
+        renderPagination();
 
     }
     catch(err){
@@ -69,11 +96,141 @@ async function loadProducts(){
 
     }
 
-
-
 }
 
 
+function renderPagination(){
+
+    const container =
+    document.getElementById(
+        "pagination"
+    );
+
+    container.innerHTML = "";
+
+    const totalPages =
+    Math.ceil(
+        totalProducts / pageSize
+    );
+
+    if(totalPages <= 1){
+        return;
+    }
+
+    /* PREV */
+
+    container.innerHTML += `
+
+    <button
+    ${currentPage === 1 ? "disabled" : ""}
+    onclick="loadProducts(${currentPage - 1})">
+
+        ‹
+
+    </button>
+
+    `;
+
+    const pages = [];
+
+    pages.push(1);
+
+    if(
+        currentPage > 3
+    ){
+        pages.push("...");
+    }
+
+    for(
+        let i =
+        Math.max(
+            2,
+            currentPage - 1
+        );
+
+        i <=
+        Math.min(
+            totalPages - 1,
+            currentPage + 1
+        );
+
+        i++
+    ){
+
+        pages.push(i);
+
+    }
+
+    if(
+        currentPage <
+        totalPages - 2
+    ){
+        pages.push("...");
+    }
+
+    if(
+        totalPages > 1
+    ){
+        pages.push(totalPages);
+    }
+
+    pages.forEach(page=>{
+
+        if(page === "..."){
+
+            container.innerHTML +=
+            `<span class="page-dots">...</span>`;
+
+            return;
+
+        }
+
+        container.innerHTML += `
+
+        <button
+
+        class="
+        ${
+            page === currentPage
+            ? "active"
+            : ""
+        }"
+
+        onclick="
+        loadProducts(${page})
+        ">
+
+        ${page}
+
+        </button>
+
+        `;
+
+    });
+
+    /* NEXT */
+
+    container.innerHTML += `
+
+    <button
+
+    ${
+        currentPage === totalPages
+        ? "disabled"
+        : ""
+    }
+
+    onclick="
+    loadProducts(${currentPage + 1})
+    ">
+
+        ›
+
+    </button>
+
+    `;
+
+}
 async function loadSeason(){
 
     try{
@@ -84,10 +241,8 @@ async function loadSeason(){
         await fetch(
             API + "/api/product/season",
             {
-                headers:{
-                    Authorization:
-                    "Bearer " + token
-                }
+                headers:
+				getAuthHeaders()
             }
         );
 
@@ -172,10 +327,8 @@ async function loadProductFilter(){
             "/api/product/list",
 
             {
-                headers:{
-                    Authorization:
-                    "Bearer " + token
-                }
+                headers:
+				getAuthHeaders()
             }
 
         );
@@ -460,10 +613,8 @@ async function exportExcel(){
         encodeURIComponent(season),
 
         {
-            headers:{
-                Authorization:
-                "Bearer " + token
-            }
+            headers:
+			getAuthHeaders()
         }
 
     );
