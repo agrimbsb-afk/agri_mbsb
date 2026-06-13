@@ -117,3 +117,83 @@
 }
 
 }
+
+@media(max-width:768px){
+
+.dialog-table thead{
+
+    display:none;
+
+}
+
+.dialog-table,
+.dialog-table tbody,
+.dialog-table tr,
+.dialog-table td{
+
+    display:block;
+    width:100%;
+
+}
+
+.dialog-table tr{
+
+    background:#fff;
+
+    border:1px solid #e5e7eb;
+
+    border-radius:12px;
+
+    padding:10px;
+
+    margin-bottom:12px;
+
+}
+
+.dialog-table td{
+
+    padding:6px 0;
+
+    border:none;
+
+}
+
+.dialog-table td::before{
+
+    display:block;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    color:#64748b;
+
+    margin-bottom:4px;
+
+}
+
+.dialog-table td:nth-child(1)::before{
+    content:"Item Used";
+}
+
+.dialog-table td:nth-child(2)::before{
+    content:"Unit/HA";
+}
+
+.dialog-table td:nth-child(3)::before{
+    content:"CTN";
+}
+
+.dialog-table td:nth-child(4)::before{
+    content:"PCS";
+}
+
+.dialog-table td:nth-child(5)::before{
+    content:"VOL";
+}
+
+.dialog-table td:nth-child(6)::before{
+    content:"Action";
+}
+
+}
