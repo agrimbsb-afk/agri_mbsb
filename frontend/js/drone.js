@@ -427,7 +427,8 @@ document
             "RUMPUT",
             "BATAS",
             "ULAT",
-            "SIPUT"
+            "SIPUT",
+			"PRE_PLANTING"
 
         ];
 
@@ -570,7 +571,8 @@ function toggleFlowHa(){
         "RUMPUT",
         "BATAS",
         "ULAT",
-        "SIPUT"
+        "SIPUT",
+		"PRE_PLANTING"
 
     ];
 
@@ -1162,7 +1164,8 @@ async()=>{
             "RUMPUT",
             "BATAS",
             "ULAT",
-            "SIPUT"
+            "SIPUT",
+			"PRE_PLANTING"
 
         ];
 
@@ -1913,7 +1916,8 @@ document
                 "RUMPUT",
                 "BATAS",
                 "ULAT",
-                "SIPUT"
+                "SIPUT",
+				"PRE_PLANTING"
 
             ];
 
