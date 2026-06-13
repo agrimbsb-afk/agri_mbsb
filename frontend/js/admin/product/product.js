@@ -157,7 +157,6 @@ function renderTable(data){
 }
 
 
-
 async function initProductPage(){
 	
 	window.productReady = true;
