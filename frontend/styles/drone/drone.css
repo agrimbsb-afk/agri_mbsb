@@ -89,6 +89,17 @@
 
 }
 
+.tableInput.calcInput{
+
+
+    color:#555 !important;
+
+    font-weight:700 !important;
+
+
+
+}
+
 @media(max-width:768px){
 
 .topbar{

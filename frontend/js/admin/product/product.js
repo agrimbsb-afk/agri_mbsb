@@ -332,4 +332,5 @@ document.addEventListener(
 	
 }
 
-initProductPage();
+//initProductPage();
+window.initProductPage = initProductPage;

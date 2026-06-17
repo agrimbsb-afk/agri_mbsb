@@ -40,6 +40,14 @@ content="width=device-width,initial-scale=1">
 				 <i class="fa-solid fa-plane"></i>
 				
 				DRONE RECORD
+				
+				<button
+					id="logBtn"
+					class="btn btn-primary log-btn">
+
+						<i class="fa-solid fa-file-lines"></i>
+
+				</button>
 			</div>
 
 			<div class="system-subtitle">
@@ -357,6 +365,45 @@ content="width=device-width,initial-scale=1">
 
 </div>
 
+<!-- LOG DIALOG -->
+
+<div
+id="logDialog"
+class="modal hidden">
+
+    <div
+    class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+                MONTHLY WORK SUMMARY
+            </h2>
+
+            <button
+            id="closeLogBtn"
+            class="btn btn-danger">
+
+                X
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div
+            id="logSummary">
+
+                Loading...
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 <script src="./js/drone.js"></script>
 </body>

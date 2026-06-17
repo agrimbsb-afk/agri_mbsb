@@ -4,6 +4,7 @@ let currentEditId = null;
 let currentRecords = [];
 let selectedWork = '';
 let selectedEditWork = '';
+let selectedWorkCode = "";
 let workOptions = [];
 
 let currentPage = 1;
@@ -318,14 +319,7 @@ function renderLoadedRecords(records){
 
                     
 
-                        <button
-                        class="iconBtn editBtn"
-                        onclick="editRecord(${record.id})">
-
-                            <i class="fa-solid fa-pen-to-square"></i>
-
-                        </button>
-
+                   
                         <button
                         class="iconBtn deleteBtn"
                         onclick="deleteRecord(${record.id})">
@@ -346,6 +340,150 @@ function renderLoadedRecords(records){
     });
 
 }
+
+/* for editBtn
+ <button
+                        class="iconBtn editBtn"
+                        onclick="editRecord(${record.id})" >
+
+                            <i class="fa-solid fa-pen-to-square" ></i>
+
+                        </button>
+
+*/
+
+async function loadMonthlyLog(){
+
+    try{
+
+        const res =
+        await fetch(
+
+            API +
+            "/api/drone/monthly",
+
+            {
+                headers:{
+                    Authorization:
+                    "Bearer " +
+                    localStorage.getItem(
+                        "token"
+                    )
+                }
+            }
+
+        );
+
+        const data =
+        await res.json();
+
+        if(!data.success){
+
+            alert("Load Failed");
+            return;
+
+        }
+
+        renderMonthlyLog(
+            data.data,
+            data.totalSalary
+        );
+
+    }
+    catch(err){
+
+        console.error(err);
+
+        alert("Load Failed");
+
+    }
+
+}
+
+function renderMonthlyLog(
+    rows,
+    totalSalary
+){
+
+    let html = `
+
+    <table class="table">
+
+        <thead>
+
+            <tr>
+
+                <th>Work</th>
+                <th>HA</th>
+                <th>Price</th>
+                <th>Amount</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+    `;
+
+    rows.forEach(row=>{
+
+        html += `
+
+        <tr>
+
+            <td>${row.work}</td>
+
+            <td>${row.total_ha}</td>
+
+            <td>RM ${row.work_price}</td>
+
+            <td style="text-align:left"> ${row.amount}</td>
+
+        </tr>
+
+        `;
+
+    });
+
+    html += `
+
+        </tbody>
+
+    </table>
+
+    <div
+    style="
+        margin-top:20px;
+        text-align:right;
+        font-size:22px;
+        font-weight:700;
+    ">
+
+        TOTAL SALARY :
+        RM ${Number(totalSalary).toFixed(2)}
+
+    </div>
+
+    `;
+
+    document
+    .getElementById(
+        "logSummary"
+    )
+    .innerHTML =
+    html;
+
+    document
+    .getElementById(
+        "logDialog"
+    )
+    .classList.remove(
+        "hidden"
+    );
+
+}
+
 
 function renderEditWorkDropdown(data){
 
@@ -368,10 +506,10 @@ function renderEditWorkDropdown(data){
             <div
             class="dropdown-item"
             onclick="
-            selectEditWork(
-            '${work.work_name}'
-            )
-            ">
+			selectWork(
+			'${work.work_name}',
+			'${work.work_code}'
+			)">
                 ${work.work_name}
             </div>
             `
@@ -432,13 +570,14 @@ document
 
         ];
 
-        const needFlow =
-        requireFlowWorks.some(
-            w =>
-            selectedWork
-            .toUpperCase()
-            .includes(w)
-        );
+        const workName =
+		selectedWork
+		.toUpperCase()
+		.replace(/\s*\(.*?\)\s*/g,"")
+		.trim();
+
+		const needFlow =
+		requireFlowWorks.includes(workName);
 		
 		const areaHa =
 		document.getElementById(
@@ -576,13 +715,14 @@ function toggleFlowHa(){
 
     ];
 
-    const needFlow =
-    requireFlowWorks.some(
-        w =>
-        (selectedWork || "")
-        .toUpperCase()
-        .includes(w)
-    );
+    const workName =
+		selectedWork
+		.toUpperCase()
+		.replace(/\s*\(.*?\)\s*/g,"")
+		.trim();
+
+	const needFlow =
+		requireFlowWorks.includes(workName);
 
     const flowWrapper =
     document.getElementById(
@@ -735,6 +875,38 @@ function editRecord(id){
 
 }
 
+const logDialog =
+document.getElementById(
+    "logDialog"
+);
+
+document
+.getElementById(
+    "logBtn"
+)
+.addEventListener(
+
+    "click",
+
+    async ()=>{
+
+        logDialog.classList.remove(
+            "hidden"
+        );
+
+        document
+        .getElementById(
+            "logSummary"
+        )
+        .innerHTML =
+        "Loading...";
+
+        await loadMonthlyLog();
+
+    }
+
+);
+
 /* =========================
    CLOSE DIALOG
 ========================= */
@@ -754,6 +926,24 @@ dialog.classList.add(
 );
 
 }
+
+);
+/*CLOSE LOG DIALOG*/
+document
+.getElementById(
+    "closeLogBtn"
+)
+.addEventListener(
+
+    "click",
+
+    ()=>{
+
+        logDialog.classList.add(
+            "hidden"
+        );
+
+    }
 
 );
 
@@ -1026,16 +1216,49 @@ calculateRow(${index});
 
 </td>
 
-<td id="ctn_${index}">
-${row.ctn || 0}
+<td>
+
+<input
+id="ctn_${index}"
+class="tableInput calcInput"
+type="number"
+value="${row.ctn || 0}"
+
+oninput="
+itemRows[${index}].ctn =
+Number(this.value)||0;
+">
+
 </td>
 
-<td id="pcs_${index}">
-${row.pcs || 0}
+<td>
+
+<input
+id="pcs_${index}"
+class="tableInput calcInput"
+type="number"
+value="${row.pcs || 0}"
+
+oninput="
+itemRows[${index}].pcs =
+Number(this.value)||0;
+">
+
 </td>
 
-<td id="vol_${index}">
-${row.vol || 0}
+<td>
+
+<input
+id="vol_${index}"
+class="tableInput calcInput"
+type="number"
+value="${row.vol || 0}"
+
+oninput="
+itemRows[${index}].vol =
+Number(this.value)||0;
+">
+
 </td>
 
 <td data-label="Action">
@@ -1169,10 +1392,14 @@ async()=>{
 
         ];
 
-        const needFlow =
-        requireFlowWorks.some(
-            w => work.toUpperCase().includes(w)
-        );
+        const workName =
+		selectedWork
+		.toUpperCase()
+		.replace(/\s*\(.*?\)\s*/g,"")
+		.trim();
+
+		const needFlow =
+		requireFlowWorks.includes(workName);
 
         if(
             needFlow &&
@@ -1196,6 +1423,21 @@ async()=>{
         }
 		/* ITEM USED + UNIT/HA REQUIRED */
 
+		const requireUnitHaWorks = [
+
+				"RUMPUT",
+				"BATAS",
+				"ULAT",
+				"SIPUT",
+				"PRE_PLANTING"
+
+			];
+	
+		const needUnitHa =
+		requireUnitHaWorks.includes(
+			(selectedWork || "").toUpperCase()
+		);
+		
 		const rows =
 		document.querySelectorAll(
 			"#dialogTableBody tr"
@@ -1226,8 +1468,11 @@ async()=>{
 				hasError = true;
 
 			}
+		
 
+			
 			if(
+				needUnitHa &&
 				!itemRows[index].unit_ha
 			){
 
@@ -1257,6 +1502,8 @@ async()=>{
             date: workDate,
 
             work: work,
+			
+			work_code: selectedWorkCode,
 
             block:
             document.getElementById(
@@ -1539,6 +1786,8 @@ async function loadWorkOptions(){
 
         );
 
+		
+
         workOptions =
         await res.json();
 
@@ -1589,7 +1838,8 @@ function renderWorkDropdown(data){
             ()=>{
 
                 selectWork(
-                    work.work_name
+                    work.work_name,
+					work.work_code
                 );
 
             }
@@ -1651,28 +1901,28 @@ function renderProductDropdown(
 
 }
 
-function selectWork(work){
+function selectWork(
+    work,
+    work_code
+){
 
-    selectedWork = work;
+    selectedWork =
+    work;
+
+    selectedWorkCode =
+    work_code;
 
     const searchWork =
     document.getElementById(
         "searchWork"
     );
 
-    searchWork.value = work;
-
-    //
-    // REMOVE ERROR
-    //
+    searchWork.value =
+    work;
 
     searchWork.classList.remove(
         "inputError"
     );
-
-    //
-    // IF ERROR CLASS ON WRAPPER
-    //
 
     searchWork
     .closest(".search-dropdown")
@@ -1680,15 +1930,7 @@ function selectWork(work){
         "inputError"
     );
 
-    //
-    // SHOW / HIDE FLOWHA
-    //
-
     toggleFlowHa();
-
-    //
-    // HIGHLIGHT SELECTED ITEM
-    //
 
     document
     .querySelectorAll(
@@ -1712,13 +1954,10 @@ function selectWork(work){
 
     });
 
-    //
-    // HIDE DROPDOWN
-    //
-
     document.getElementById(
         "workDropdown"
-    ).style.display = "none";
+    ).style.display =
+    "none";
 
 }
 
@@ -1787,7 +2026,9 @@ function calculateRow(index){
 
     const areaHa =
     Number(
-        document.getElementById("areaha").value
+        document.getElementById(
+            "areaha"
+        ).value
     ) || 0;
 
     const row =
@@ -1802,7 +2043,9 @@ function calculateRow(index){
     row.vol_per_pcs;
 
     row.ctn =
-    Math.floor(totalUsage / boxSize);
+    Math.floor(
+        totalUsage / boxSize
+    );
 
     const balance =
     totalUsage -
@@ -1818,21 +2061,80 @@ function calculateRow(index){
     balance -
     (row.pcs * row.vol_per_pcs);
 
-    // 更新画面
-    document.getElementById(
-        `ctn_${index}`
-    ).innerText =
-    row.ctn;
+    /* VOL 进位到 50 */
 
-    document.getElementById(
-        `pcs_${index}`
-    ).innerText =
-    row.pcs;
+    if(row.vol > 0){
 
-    document.getElementById(
-        `vol_${index}`
-    ).innerText =
-    row.vol;
+        row.vol =
+        Math.ceil(
+            row.vol / 50
+        ) * 50;
+
+    }
+
+    /* 如果 VOL 满一 PCS */
+
+    while(
+        row.vol >=
+        row.vol_per_pcs
+    ){
+
+        row.vol -=
+        row.vol_per_pcs;
+
+        row.pcs++;
+
+    }
+
+    /* 如果 PCS 满一 CTN */
+
+    while(
+        row.pcs >=
+        row.pcs_per_ctn
+    ){
+
+        row.pcs -=
+        row.pcs_per_ctn;
+
+        row.ctn++;
+
+    }
+
+    const ctnInput =
+		document.getElementById(
+			`ctn_${index}`
+		);
+
+		if(ctnInput){
+
+			ctnInput.value =
+			row.ctn;
+
+		}
+
+		const pcsInput =
+		document.getElementById(
+			`pcs_${index}`
+		);
+
+		if(pcsInput){
+
+			pcsInput.value =
+			row.pcs;
+
+		}
+
+		const volInput =
+		document.getElementById(
+			`vol_${index}`
+		);
+
+		if(volInput){
+
+			volInput.value =
+			row.vol;
+
+		}
 
 }
 
@@ -1921,10 +2223,14 @@ document
 
             ];
 
-            const needFlow =
-            requireFlowWorks.some(
-                w => work.toUpperCase().includes(w)
-            );
+            const workName =
+			selectedWork
+			.toUpperCase()
+			.replace(/\s*\(.*?\)\s*/g,"")
+			.trim();
+
+			const needFlow =
+			requireFlowWorks.includes(workName);
 
             if(
                 needFlow &&
@@ -2182,35 +2488,73 @@ Item	:
 
 rows.forEach(item=>{
 
-let usageText = '';
+    let usageText = '';
 
-if(Number(item.work_ctn) > 0){
+    if(Number(item.work_ctn) > 0){
 
-    usageText +=
-    `${item.work_ctn} CTN `;
+        usageText +=
+        `${item.work_ctn} CTN `;
 
-}
+    }
 
-if(Number(item.work_pcs) > 0){
+    if(Number(item.work_pcs) > 0){
 
-    usageText +=
-    `${item.work_pcs} PCS `;
+        usageText +=
+        `${item.work_pcs} PCS `;
 
-}
+    }
 
-if(Number(item.work_vol) > 0){
+    if(Number(item.work_vol) > 0){
 
-    usageText +=
-    `${item.work_vol} ${item.uom}`;
+        let vol =
+        Number(item.work_vol);
 
-}
+        let uom =
+        (item.uom || '')
+        .toUpperCase();
 
-message +=
+        if(vol >= 1000){
+
+            if(uom === 'ML'){
+
+                vol =
+                vol / 1000;
+
+                uom =
+                'L';
+
+            }
+            else if(uom === 'G'){
+
+                vol =
+                vol / 1000;
+
+                uom =
+                'KG';
+
+            }
+
+        }
+
+        const displayVol =
+
+        Number.isInteger(vol)
+
+        ? vol
+
+        : vol.toFixed(2);
+
+        usageText +=
+        `${displayVol} ${uom}`;
+
+    }
+
+    message +=
 
 `${item.item_used} - ${usageText.trim()}
 `;
 
- });
+});
 			message +=
                 "\n";
 			message +=

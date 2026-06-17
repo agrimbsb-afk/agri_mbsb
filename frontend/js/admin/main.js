@@ -46,25 +46,11 @@ async function loadPage(page){
 
 }
 
-function loadModuleScript(page){
-
-    //
-    // REMOVE OLD MODULES
-    //
+async function loadModuleScript(page){
 
     document
-    .querySelectorAll(
-        ".module-script"
-    )
-    .forEach(script=>{
-
-        script.remove();
-
-    });
-
-    //
-    // PRODUCT MODULE
-    //
+    .querySelectorAll(".module-script")
+    .forEach(script=>script.remove());
 
     if(page === "product"){
 
@@ -78,54 +64,48 @@ function loadModuleScript(page){
 
         ];
 
-        files.forEach(file=>{
+        for(const file of files){
 
-            const script =
-            document.createElement(
-                "script"
-            );
+            await new Promise((resolve,reject)=>{
 
-            script.className =
-            "module-script";
+                const script =
+                document.createElement("script");
 
-            script.src =
+                script.className =
+                "module-script";
 
-            `../js/admin/product/${file}.js?v=${
-                Date.now()
-            }`;
+                script.src =
+                `../js/admin/product/${file}.js?v=${Date.now()}`;
 
-            document.body.appendChild(
-                script
-            );
+                script.onload = resolve;
 
-        });
+                script.onerror = reject;
+
+                document.body.appendChild(script);
+
+            });
+
+        }
+
+        if(typeof initProductPage === "function"){
+
+            await initProductPage();
+
+        }
 
         return;
-
     }
 
-    //
-    // DEFAULT PAGE
-    //
-
     const script =
-    document.createElement(
-        "script"
-    );
+    document.createElement("script");
 
     script.className =
     "module-script";
 
     script.src =
+    `../js/admin/${page}/${page}.js?v=${Date.now()}`;
 
-    `../js/admin/${page}/${page}.js?v=${
-        Date.now()
-    }`;
-
-    document.body.appendChild(
-        script
-    );
-
+    document.body.appendChild(script);
 }
 
 

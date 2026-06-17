@@ -1,5 +1,9 @@
 const pool = require('../config/db');
 
+const {
+    randomUUID
+} = require('crypto');
+
 /* ==================================
    GET DRONE WORK OPTIONS
 ================================== */
@@ -10,7 +14,7 @@ exports.getDroneWorkOptions = async (req,res)=>{
 
         const result = await pool.query(`
             SELECT
-                work_name
+                *
             FROM work_category
             ORDER BY work_name ASC
         `);
@@ -252,17 +256,27 @@ exports.saveDroneRecord = async (req,res)=>{
             work_area,
             area_ha,
             created_by_Id,
-            items
+            items,
+            work_code
 
         } = req.body;
 
+        console.log(req.body);
+
         const workDisplay =
 
-        flow_ha
+            flow_ha
 
-        ? `${work} (${flow_ha} L/HA)`
+            ? `${work} (${flow_ha} L/HA)`
 
-        : work;
+            : work;
+
+        //
+        // SAME JOB ID FOR ALL ITEMS
+        //
+
+        const jobId =
+        randomUUID();
 
         await client.query(
             'BEGIN'
@@ -274,77 +288,94 @@ exports.saveDroneRecord = async (req,res)=>{
                DRONE WORK RECORD
             ========================= */
 
+            const droneResult =
             await client.query(
 
-                `
-                INSERT INTO drone_workrecord
-                (
-                    date,
-                    work,
-                    block,
-                    work_area,
+            `
+            INSERT INTO drone_workrecord
+            (
+                job_id,
 
-                    item_used,
-                    uom,
+                date,
+                work,
+                block,
+                work_area,
 
-                    unit,
+                item_used,
+                uom,
 
-                    area_ha,
+                unit,
 
-                    by_person,
+                area_ha,
 
-                    flow_ha,
+                by_person,
 
-                    work_code,
-                    work_ctn,
-                    work_pcs,
-                    work_vol
-                )
-                VALUES
-                (
-                    $1,$2,$3,$4,
-                    $5,$6,
-                    $7,$8,
-                    $9,
-                    $10,
-                    $11,
-                    $12,$13,$14
-                )
-                `,
+                flow_ha,
 
-                [
+                work_code,
+                work_ctn,
+                work_pcs,
+                work_vol,
 
-                    date,
+                product_code
 
-                    workDisplay || '',
+            )
+            VALUES
+            (
+                $1,
 
-                    block || '',
+                $2,$3,$4,$5,
+                $6,$7,
+                $8,$9,
+                $10,
+                $11,
+                $12,
+                $13,$14,$15,
+                $16
+            )
+            RETURNING id
+            `,
 
-                    work_area || '',
+            [
 
-                    item.item_used || '',
+                jobId,
 
-                    item.uom || '',
+                date,
 
-                    item.unit_ha || '',
+                workDisplay || '',
 
-                    Number(area_ha) || 0,
+                block || '',
 
-                    created_by_Id || '',
+                work_area || '',
 
-                    Number(flow_ha) || 0,
+                item.item_used || '',
 
-                    item.product_id || '',
+                item.uom || '',
 
-                    Number(item.ctn) || 0,
+                item.unit_ha || '',
 
-                    Number(item.pcs) || 0,
+                Number(area_ha) || 0,
 
-                    Number(item.vol) || 0
+                created_by_Id || '',
 
-                ]
+                Number(flow_ha) || 0,
+
+                work_code || '',
+
+                Number(item.ctn) || 0,
+
+                Number(item.pcs) || 0,
+
+                Number(item.vol) || 0,
+
+                item.product_id || ''
+
+            ]
 
             );
+
+            const droneRecordId =
+            droneResult.rows[0].id;
 
             /* =========================
                STOCK TRANSACTIONS
@@ -352,44 +383,65 @@ exports.saveDroneRecord = async (req,res)=>{
 
             await client.query(
 
-                `
-                INSERT INTO stock_transactions
-                (
-                    transaction_type,
+            `
+            INSERT INTO stock_transactions
+            (
+                job_id,
 
-                    product_id,
+                transaction_type,
 
-                    qty_ctn,
-                    qty_pcs,
-                    qty_vol,
+                product_id,
 
-                    remarks,
+                qty_ctn,
+                qty_pcs,
+                qty_vol,
 
-                    by_person
-                )
-                VALUES
-                (
-                    $1,$2,$3,$4,$5,$6,$7
-                )
-                `,
+                remarks,
 
-                [
+                by_person,
 
-                    'OUT',
+                drone_record_id
 
-                    item.product_id || '',
+            )
+            VALUES
+            (
+                $1,
 
-                    Number(item.ctn) || 0,
+                $2,
 
-                    Number(item.pcs) || 0,
+                $3,
 
-                    Number(item.vol) || 0,
+                $4,$5,$6,
 
-                    `${workDisplay}`,
+                $7,
 
-                    created_by_Id || ''
+                $8,
 
-                ]
+                $9
+            )
+            `,
+
+            [
+
+                jobId,
+
+                'OUT',
+
+                item.product_id || '',
+
+                Number(item.ctn) || 0,
+
+                Number(item.pcs) || 0,
+
+                Number(item.vol) || 0,
+
+                workDisplay,
+
+                created_by_Id || '',
+
+                droneRecordId
+
+            ]
 
             );
 
@@ -402,6 +454,8 @@ exports.saveDroneRecord = async (req,res)=>{
         res.json({
 
             success:true,
+
+            job_id:jobId,
 
             message:"Record Saved"
 
@@ -426,7 +480,7 @@ exports.saveDroneRecord = async (req,res)=>{
 
             success:false,
 
-            message: err.message
+            message:err.message
 
         });
 
@@ -497,70 +551,165 @@ exports.getRecordById = async (req,res)=>{
 ================================== */
 exports.updateRecord = async (req,res)=>{
 
+    const client =
+    await pool.connect();
+
     try{
 
-        const { id } = req.params;
+        const { id } =
+        req.params;
 
         const {
 
             date,
             work,
-			flow_ha,
+            flow_ha,
             block,
             work_area,
             area_ha,
             item_used,
             uom,
             usage,
-            unit
+            unit,
+
+            work_ctn,
+            work_pcs,
+            work_vol,
+
+            product_code
 
         } = req.body;
 
-        await pool.query(
+        await client.query(
+            "BEGIN"
+        );
+
+        /* =========================
+           UPDATE DRONE RECORD
+        ========================= */
+
+        await client.query(
 
             `
-            UPDATE drone_workRecord
+            UPDATE drone_workrecord
             SET
 
                 date = $1,
                 work = $2,
-				flow_ha = $3,
+                flow_ha = $3,
                 block = $4,
                 work_area = $5,
                 area_ha = $6,
+
                 item_used = $7,
                 uom = $8,
-                usage = $9,
-                unit = $10
 
-            WHERE id = $11
+                usage = $9,
+                unit = $10,
+
+                work_ctn = $11,
+                work_pcs = $12,
+                work_vol = $13,
+
+                product_code = $14
+
+            WHERE id = $15
             `,
 
             [
+
                 date,
+
                 work,
-				Number(flow_ha) || 0,
+
+                Number(flow_ha) || 0,
+
                 block,
+
                 work_area,
+
                 Number(area_ha) || 0,
+
                 item_used,
+
                 uom,
+
                 Number(usage) || 0,
+
                 unit,
+
+                Number(work_ctn) || 0,
+
+                Number(work_pcs) || 0,
+
+                Number(work_vol) || 0,
+
+                product_code || "",
+
                 id
+
             ]
 
+        );
+
+        /* =========================
+           UPDATE STOCK TRANSACTION
+        ========================= */
+
+        await client.query(
+
+            `
+            UPDATE stock_transactions
+            SET
+
+                product_id = $1,
+
+                qty_ctn = $2,
+                qty_pcs = $3,
+                qty_vol = $4,
+
+                remarks = $5
+
+            WHERE drone_record_id = $6
+            `,
+
+            [
+
+                product_code || "",
+
+                Number(work_ctn) || 0,
+
+                Number(work_pcs) || 0,
+
+                Number(work_vol) || 0,
+
+                work,
+
+                id
+
+            ]
+
+        );
+
+        await client.query(
+            "COMMIT"
         );
 
         res.json({
 
             success:true,
-            message:"Record Updated"
+
+            message:
+            "Record Updated"
 
         });
 
     }
     catch(err){
+
+        await client.query(
+            "ROLLBACK"
+        );
 
         console.error(
             "UPDATE RECORD ERROR:",
@@ -569,7 +718,137 @@ exports.updateRecord = async (req,res)=>{
 
         res.status(500).json({
 
-            success:false
+            success:false,
+
+            message:
+            err.message
+
+        });
+
+    }
+    finally{
+
+        client.release();
+
+    }
+
+};
+
+exports.getMonthlyLog = async (req,res)=>{
+
+    try{
+
+        const userId =
+        req.user.userId;
+
+        const result =
+        await pool.query(
+
+`
+SELECT
+
+    work_code,
+
+    work,
+
+    work_class_name,
+
+    ROUND(
+        SUM(area_ha)::numeric,
+        2
+    ) AS total_ha,
+
+    ROUND(
+        SUM(acre)::numeric,
+        2
+    ) AS acre,
+
+    MAX(work_price) AS work_price,
+
+    ROUND(
+        SUM(amount)::numeric,
+        2
+    ) AS amount
+
+FROM drone_monthly_log_view
+
+WHERE
+
+    by_person = $1
+
+AND
+
+    DATE_TRUNC(
+        'month',
+        date
+    )
+
+    =
+
+    DATE_TRUNC(
+        'month',
+        CURRENT_DATE
+    )
+
+GROUP BY
+
+    work_code,
+    work,
+    work_class_name
+
+ORDER BY
+
+    work
+
+`,
+        [
+            userId
+        ]
+
+        );
+
+        const totalSalary =
+
+        result.rows.reduce(
+
+            (sum,row)=>
+
+            sum +
+
+            Number(
+                row.amount
+            ),
+
+            0
+
+        );
+
+        res.json({
+
+            success:true,
+
+            data:
+            result.rows,
+
+            totalSalary:
+            totalSalary.toFixed(2)
+
+        });
+
+    }
+    catch(err){
+
+        console.error(
+            "MONTHLY LOG ERROR:",
+            err
+        );
+
+        res.status(500).json({
+
+            success:false,
+
+            message:
+            err.message
 
         });
 

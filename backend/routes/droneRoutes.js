@@ -57,4 +57,10 @@ router.get(
 	droneController.getProductsByWork
 );
 
+router.get(
+    "/monthly",
+    verifyToken,
+    droneController.getMonthlyLog
+);
+
 module.exports = router;

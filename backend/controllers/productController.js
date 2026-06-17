@@ -101,7 +101,7 @@ async(req,res)=>{
 
         ${whereClause}
 
-        ORDER BY product_id
+        
 
         LIMIT $${idx}
         OFFSET $${idx + 1}

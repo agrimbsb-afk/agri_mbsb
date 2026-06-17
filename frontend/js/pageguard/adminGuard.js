@@ -8,7 +8,7 @@
     if(!token){
 
         window.location.replace(
-            "../login.html"
+            "/login.html"
         );
 
         return;
@@ -54,7 +54,7 @@
             localStorage.clear();
 
             window.location.replace(
-                "../login.html"
+                "/login.html"
             );
 
         }
