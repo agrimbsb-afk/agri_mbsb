@@ -63,4 +63,10 @@ router.get(
     droneController.getMonthlyLog
 );
 
+router.get(
+	'/work-records',
+	verifyToken,
+	droneController.getMyWorkRecords
+);
+
 module.exports = router;

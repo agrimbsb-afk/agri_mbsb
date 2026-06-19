@@ -177,7 +177,7 @@ function initPageHeader(){
             );
 
             window.location.href =
-            "/login.html";
+            "/";
 
         };
 

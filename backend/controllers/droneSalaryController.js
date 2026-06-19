@@ -158,7 +158,7 @@ async(req,res)=>{
                 'YYYY-MM'
             ) = $2
 			
-			AND work_code !='WB0004'
+			
 
             ORDER BY
 
@@ -281,6 +281,8 @@ async(req,res)=>{
                 date,
                 'YYYY-MM'
             ) = $2
+			
+			AND work_code !='WB0004'
 
             GROUP BY
 

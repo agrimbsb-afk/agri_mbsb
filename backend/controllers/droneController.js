@@ -747,62 +747,86 @@ exports.getMonthlyLog = async (req,res)=>{
 `
 SELECT
 
-    work_code,
+                work,
 
-    work,
+                MAX(work_price) AS work_price,
 
-    work_class_name,
-	
-	ROUND(
-        SUM(work_pcs)::numeric
-    ) AS work_pcs,
+                SUM(
+                    CASE
 
-    ROUND(
-        SUM(area_ha)::numeric,
-        2
-    ) AS total_ha,
+                        WHEN product_category IN (
+                            'BENIH',
+                            'BAJA'
+                        )
 
-    ROUND(
-        SUM(acre)::numeric,
-        2
-    ) AS acre,
+                        THEN COALESCE(
+                            work_pcs,
+                            0
+                        )
 
-    MAX(work_price) AS work_price,
+                        ELSE 0
 
-    ROUND(
-        SUM(amount)::numeric,
-        2
-    ) AS amount
+                    END
 
-FROM drone_monthly_log_view
+                ) AS beg,
 
-WHERE
+                ROUND(
 
-    by_person = $1
+                    SUM(
 
-AND
+                        CASE
 
-    DATE_TRUNC(
-        'month',
-        date
-    )
+                            WHEN product_category='RACUN'
 
-    =
+                            THEN COALESCE(
+                                area_ha,
+                                0
+                            )
 
-    DATE_TRUNC(
-        'month',
-        CURRENT_DATE
-    )
+                            ELSE 0
 
-GROUP BY
+                        END
 
-    work_code,
-    work,
-    work_class_name
+                    )::numeric,
 
-ORDER BY
+                    2
 
-    work
+                ) AS total_ha,
+
+                ROUND(
+                    SUM(amount)::numeric,
+                    2
+                ) AS amount
+
+            FROM drone_monthly_log_view
+
+            WHERE
+
+            by_person = $1
+
+            AND
+
+            DATE_TRUNC(
+				'month',
+				date
+			)
+
+			=
+
+			DATE_TRUNC(
+				'month',
+				CURRENT_DATE
+			)
+			
+			AND work_code !='WB0004'
+
+            GROUP BY
+
+                work
+
+            ORDER BY
+
+                work
 
 `,
         [
@@ -857,6 +881,102 @@ ORDER BY
         });
 
     }
+
+};
+
+exports.getMyWorkRecords =
+async(req,res)=>{
+
+try{
+
+const userId =
+req.user.userId;
+
+const result =
+await pool.query(
+
+`
+SELECT
+
+                TO_CHAR(
+                    date,
+                    'DD-MM-YYYY'
+                ) AS date,
+
+                work,
+				
+				 CASE
+
+					WHEN product_category = 'RACUN'
+
+					THEN 0
+
+					ELSE COALESCE(
+						work_pcs,
+						0
+					)
+
+				END AS work_pcs,
+				
+				area_ha,
+
+                acre,
+				
+				work_price,
+
+                amount
+
+            FROM drone_monthly_log_view
+
+            WHERE
+
+            by_person = $1
+
+            AND
+
+			DATE_TRUNC(
+				'month',
+				date
+			)
+
+			=
+
+			DATE_TRUNC(
+				'month',
+				CURRENT_DATE
+			)
+			
+			
+
+            ORDER BY
+
+            date
+
+`,
+[userId]
+
+);
+
+res.json({
+
+    success:true,
+
+    data:result.rows
+
+});
+
+}
+catch(err){
+
+console.error(err);
+
+res.status(500).json({
+
+    success:false
+
+});
+
+}
 
 };
 

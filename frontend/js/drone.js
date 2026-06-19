@@ -63,7 +63,7 @@ document
     localStorage.clear();
 
     window.location.href =
-    "login.html";
+    "/";
 
 });
 
@@ -384,7 +384,7 @@ async function loadMonthlyLog(){
 
         }
 
-        renderMonthlyLog(
+        renderMonthlySummary(
             data.data,
             data.totalSalary
         );
@@ -400,7 +400,26 @@ async function loadMonthlyLog(){
 
 }
 
-function renderMonthlyLog(
+async function loadWorkRecords(){
+
+    const res =
+    await fetch(
+        API + "/api/drone/work-records",
+        {
+            headers:getAuthHeaders()
+        }
+    );
+
+    const data =
+    await res.json();
+
+    renderWorkRecords(
+        data.data
+    );
+
+}
+
+function renderMonthlySummary(
     rows,
     totalSalary
 ){
@@ -435,7 +454,7 @@ function renderMonthlyLog(
 
             <td>${row.work}</td>
 			
-<td>${row.work_pcs == 0 ? '' : row.work_pcs}</td>
+<td>${row.beg == 0 ? '' : row.beg}</td>
 
 <td>${row.total_ha == 0 ? '' : row.total_ha}</td>
 
@@ -472,21 +491,72 @@ function renderMonthlyLog(
 
     document
     .getElementById(
-        "logSummary"
+        "monthlySummaryContent"
     )
     .innerHTML =
     html;
 
-    document
-    .getElementById(
-        "logDialog"
-    )
-    .classList.remove(
-        "hidden"
-    );
-
 }
 
+
+function renderWorkRecords(rows){
+
+let html = `
+<div class="work-record-wrapper">
+
+    <table class="work-record-table">
+
+<thead>
+
+<tr>
+<th>Date</th>
+<th>Work</th>
+<th>HA</th>
+<th>BEG</th>
+<th>Acre</th>
+<th>Price</th>
+<th>Amount</th>
+</tr>
+
+</thead>
+</div>
+<tbody>
+`;
+
+rows.forEach(row=>{
+
+html += `
+<tr>
+
+<td>${row.date}</td>
+
+<td>${row.work}</td>
+
+<td>${row.area_ha}</td>
+
+<td>${row.work_pcs || ''}</td>
+
+<td>${row.acre}</td>
+
+<td>RM ${row.work_price}</td>
+
+<td>RM ${row.amount}</td>
+
+</tr>
+`;
+
+});
+
+html += `
+</tbody>
+</table>
+`;
+
+document.getElementById(
+"workRecordContent"
+).innerHTML = html;
+
+}
 
 function renderEditWorkDropdown(data){
 
@@ -901,10 +971,15 @@ document
         .getElementById(
             "logSummary"
         )
-        .innerHTML =
-        "Loading...";
+        workRecordContent.innerHTML =
+		"Loading...";
+
+		monthlySummaryContent.innerHTML =
+		"Loading...";
 
         await loadMonthlyLog();
+		
+		await loadWorkRecords();
 
     }
 
@@ -2600,6 +2675,73 @@ rows.forEach(item=>{
     }
 	
 );
+
+const workRecordTab =
+document.getElementById(
+    "workRecordTab"
+);
+
+const monthlySummaryTab =
+document.getElementById(
+    "monthlySummaryTab"
+);
+
+const workRecordContent =
+document.getElementById(
+    "workRecordContent"
+);
+
+const monthlySummaryContent =
+document.getElementById(
+    "monthlySummaryContent"
+);
+
+workRecordTab.addEventListener(
+    "click",
+    ()=>{
+
+        workRecordTab.classList.add(
+            "active"
+        );
+
+        monthlySummaryTab.classList.remove(
+            "active"
+        );
+
+        workRecordContent.classList.remove(
+            "hidden"
+        );
+
+        monthlySummaryContent.classList.add(
+            "hidden"
+        );
+
+    }
+);
+
+monthlySummaryTab.addEventListener(
+    "click",
+    ()=>{
+
+        monthlySummaryTab.classList.add(
+            "active"
+        );
+
+        workRecordTab.classList.remove(
+            "active"
+        );
+
+        monthlySummaryContent.classList.remove(
+            "hidden"
+        );
+
+        workRecordContent.classList.add(
+            "hidden"
+        );
+
+    }
+);
+
 
 
 
