@@ -1,26 +1,254 @@
+<link rel="stylesheet" href="../styles/drone/drone_admin.css">
+
 <div class="page-header">
 
     <div class="page-header-left">
 
         <div class="system-title">
-            <i class="fa-solid fa-helicopter"></i>
-			Drone Work Management
+			<i class="fa-solid fa-helicopter"></i>
+            Pilot Salary Summary
+
+        </div>
+		<div class="header-top">
+
+            <span id="todayDate"></span>
+
+            <span class="header-divider">|</span>
+
+            <span id="loginUser">
+                NULL
+            </span>
+
         </div>
 
-        <div class="system-subtitle">
-            Drone Record  Dashboard
-        </div>
+    </div>
+
+    <div class="page-header-right">
+
+        <button
+        id="logoutMainBtn"
+        class="btn btn-danger">
+
+            <i class="fa-solid fa-right-from-bracket"></i>
+
+        </button>
 
     </div>
 
 </div>
 
-<div class="card">
+
+<div
+class="card" id="searchCard">
 
     <div class="topbar">
+	
+		<div class="custom-select">
 
-    drone
-    </div>        
+				<input
+				type="month"
+				id="searchMonth"
+				placeholder="Search Month">
+			
+		</div>
+
+
+        <div class="action-group">
+
+			<button id="searchBtn" class="btn btn-primary action-btn tooltip-btn" data-tooltip="Search">
+				<i class="fa-solid fa-magnifying-glass"></i>
+			</button>
+
+			<button id="exportBtn" class="btn btn-primary tooltip-btn" data-tooltip="Excel">
+				<i class="fa-solid fa-file-export"></i>
+				Export
+			</button>
+
+		</div>
+		
+	</div>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>User ID</th>
+
+                    <th>Pilot Name</th>
+
+                    <th>Total Job</th>
+
+                    <th>Total Acre</th>
+
+                    <th>Total Amount</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="salarySummaryBody">
+
+				<tr>
+
+				<td
+				colspan="5"
+				class="table-loading">
+
+				<i class="fa-solid fa-spinner fa-spin"></i>
+
+				Loading Dashboard...
+
+				</td>
+
+				</tr>
+
+			</tbody>
+
+        </table>
+
+    </div>
 
 </div>
 
+<div
+id="pilotDetailDialog"
+class="modal hidden">
+
+    <div class="modal-content modal-large">
+
+        <div class="modal-header">
+
+            <h2 id="pilotDialogTitle">
+
+                PILOT DETAIL
+
+            </h2>
+
+            <button
+            id="closePilotDialog"
+            class="btn btn-danger">
+
+                X
+
+            </button>
+		
+        </div>
+
+        <!-- TAB -->
+
+        <div class="salary-tab-header">
+
+            <button
+            class="salary-tab-btn active"
+            data-tab="workTab">
+
+                Work Records
+
+            </button>
+
+            <button
+            class="salary-tab-btn"
+            data-tab="summaryTab">
+
+                Monthly Summary
+
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <!-- WORK RECORD -->
+
+            <div
+            id="workTab"
+            class="salary-tab-content active">
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Date</th>
+                                <th>Work</th>
+								<th>HA</th>
+								<th>BEG</th>
+                                <th>Acre</th>
+								<th>Price</th>
+                                <th>Amount</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody
+                        id="pilotWorkBody">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <!-- MONTHLY SUMMARY -->
+
+            <div
+            id="summaryTab"
+            class="salary-tab-content hidden">
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>Work</th>
+                                <th>BEG</th>
+                                <th>HA</th>
+                                <th>Price</th>
+                                <th>Amount</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody
+                        id="pilotSummaryBody">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="salary-total">
+
+                    TOTAL SALARY :
+
+                    <span
+                    id="pilotTotalSalary">
+
+                        RM 0.00
+
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

@@ -1,4 +1,6 @@
-function openAdjustModal(){
+async function openAdjustModal(){
+
+    await loadStockBalances();
 
     document
     .getElementById(
@@ -156,7 +158,7 @@ function addAdjustRow(){
 
             const filtered =
 
-            (products || []).filter(
+            (productMaster  || []).filter(
 
                 p=>
 
@@ -215,7 +217,7 @@ function addAdjustRow(){
 
             const product =
 
-            (products || []).find(
+            (productMaster  || []).find(
 
                 p=>
 
@@ -247,14 +249,25 @@ function addAdjustRow(){
 
 			// 当前库存
 
+			const balance =
+
+			(stockBalances || []).find(
+
+				x=>
+
+				x.product_id ===
+				product.product_id
+
+			);
+
 			row.querySelector(".system-ctn").value =
-			product.qty_ctn || 0;
+			balance?.qty_ctn || 0;
 
 			row.querySelector(".system-pcs").value =
-			product.qty_pcs || 0;
+			balance?.qty_pcs || 0;
 
 			row.querySelector(".system-vol").value =
-			product.qty_vol || 0;
+			balance?.qty_vol || 0;
 
 			// 默认带入当前库存
 

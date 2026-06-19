@@ -414,6 +414,7 @@ function renderMonthlyLog(
             <tr>
 
                 <th>Work</th>
+				<th>BEG</th>
                 <th>HA</th>
                 <th>Price</th>
                 <th>Amount</th>
@@ -433,8 +434,10 @@ function renderMonthlyLog(
         <tr>
 
             <td>${row.work}</td>
+			
+<td>${row.work_pcs == 0 ? '' : row.work_pcs}</td>
 
-            <td>${row.total_ha}</td>
+<td>${row.total_ha == 0 ? '' : row.total_ha}</td>
 
             <td>RM ${row.work_price}</td>
 

@@ -162,6 +162,87 @@ async(req,res)=>{
 
 };
 
+exports.getAllBalances =
+async(req,res)=>{
+
+    try{
+
+        const { season } =
+        req.query;
+
+        let query =
+
+        `
+        SELECT
+
+            product_id,
+            product_name,
+
+            pcs_per_ctn,
+            vol_per_pcs,
+            product_uom,
+
+            qty_ctn,
+            qty_pcs,
+            qty_vol
+
+        FROM stock_balance_view
+
+        WHERE 1=1
+        `;
+
+        const values = [];
+
+        if(season){
+
+            query +=
+            ` AND season=$1`;
+
+            values.push(
+                season
+            );
+
+        }
+
+        query +=
+        `
+        ORDER BY
+        product_id
+        `;
+
+        const result =
+        await pool.query(
+            query,
+            values
+        );
+
+        res.json({
+
+            success:true,
+
+            data:
+            result.rows
+
+        });
+
+    }
+    catch(err){
+
+        console.error(err);
+
+        res.status(500).json({
+
+            success:false,
+
+            message:
+            err.message
+
+        });
+
+    }
+
+};
+
 exports.getProductList =
 async(req,res)=>{
 

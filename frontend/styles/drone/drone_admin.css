@@ -1,0 +1,107 @@
+.pilot-link{
+
+    color:#183153;
+
+    font-weight:700;
+
+    text-decoration:none;
+
+    cursor:pointer;
+
+}
+
+.pilot-link:hover{
+
+    text-decoration:underline;
+
+}
+
+.salary-total{
+
+    margin-top:25px;
+
+    text-align:right;
+
+    font-size:22px;
+
+    font-weight:800;
+
+    color:#183153;
+
+}
+
+/* =========================
+   SALARY TAB
+========================= */
+
+.salary-tab-header{
+
+    display:flex;
+
+    gap:8px;
+
+    padding:20px 24px 0;
+
+    border-bottom:1px solid #e5e7eb;
+
+}
+
+.salary-tab-btn{
+
+    border:none;
+
+    background:none;
+
+    padding:12px 20px;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    color:#64748b;
+
+    cursor:pointer;
+
+    border-bottom:3px solid transparent;
+
+}
+
+.salary-tab-btn.active{
+
+    color:#183153;
+
+    border-bottom-color:#183153;
+
+}
+
+.salary-tab-content{
+
+    display:block;
+
+}
+
+.salary-tab-content.hidden{
+
+    display:none;
+
+}
+
+.salary-total{
+
+    margin-top:24px;
+
+    text-align:right;
+
+    font-size:20px;
+
+    font-weight:800;
+
+    color:#183153;
+
+}
+
+#pilotTotalSalary{
+
+    font-size:24px;
+
+}

@@ -752,6 +752,10 @@ SELECT
     work,
 
     work_class_name,
+	
+	ROUND(
+        SUM(work_pcs)::numeric
+    ) AS work_pcs,
 
     ROUND(
         SUM(area_ha)::numeric,

@@ -4,6 +4,7 @@ const pageSize = 5;
 
 let totalProducts = 0;
 
+let stockBalances = [];
 
 async function loadProducts(page = 1){
 
@@ -98,6 +99,39 @@ async function loadProducts(page = 1){
 
 }
 
+
+async function loadStockBalances(){
+
+    const season =
+
+    document.getElementById(
+        "seasonFilter"
+    ).value;
+
+    const res =
+    await fetch(
+
+        API +
+        "/api/product/balance/all" +
+        "?season=" +
+        encodeURIComponent(
+            season
+        ),
+
+        {
+            headers:
+            getAuthHeaders()
+        }
+
+    );
+
+    const data =
+    await res.json();
+
+    stockBalances =
+    data.data || [];
+
+}
 
 function renderPagination(){
 

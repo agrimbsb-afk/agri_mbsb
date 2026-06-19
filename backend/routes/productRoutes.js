@@ -67,5 +67,13 @@ router.get(
     controller.exportExcel
 );
 
+router.get(
+    "/balance/all",
+    verifyToken,
+    controller
+    .getAllBalances
+
+);
+
 module.exports =
 router;

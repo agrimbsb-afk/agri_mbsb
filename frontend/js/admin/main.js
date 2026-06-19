@@ -95,6 +95,25 @@ async function loadModuleScript(page){
 
         return;
     }
+	
+	if(page === "drone_admin"){
+
+		const script =
+		document.createElement("script");
+
+		script.className =
+		"module-script";
+
+		script.src =
+		`../js/drone/drone_admin.js?v=${Date.now()}`;
+
+		document.body.appendChild(
+			script
+		);
+
+		return;
+
+	}
 
     const script =
     document.createElement("script");
@@ -158,7 +177,7 @@ function initPageHeader(){
             );
 
             window.location.href =
-            "../login.html";
+            "/login.html";
 
         };
 

@@ -28,6 +28,9 @@ express();
 
 const ExcelJS = require('exceljs');
 
+const droneSalaryRoutes =
+require("./routes/droneSalaryRoutes");
+
 
 // MIDDLEWARE
 
@@ -81,6 +84,11 @@ app.use(
 app.use(
     "/api/list",
     productRoutes
+);
+
+app.use(
+    "/api/drone-salary",
+    droneSalaryRoutes
 );
 
 // START SERVER
