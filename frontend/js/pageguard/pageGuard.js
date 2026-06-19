@@ -12,7 +12,7 @@
         localStorage.clear();
 
         window.location.replace(
-            "login.html"
+            "/"
         );
 
         return;
@@ -53,7 +53,7 @@
         localStorage.clear();
 
         window.location.replace(
-            "login.html"
+            "/"
         );
 
     }

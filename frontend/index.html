@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
+<script src="./js/config.js"></script>
 
 <meta charset="UTF-8">
 
@@ -9,281 +10,58 @@
 name="viewport"
 content="width=device-width,initial-scale=1">
 
-<title>AGRI MBSB</title>
+<title>
 
-<link rel="icon" type="image/png" href="./icon/mbsb_drone.png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"> 
+MBSB LOGIN
+
+</title>
+
 <link rel="stylesheet" href="./styles/variables.css">
 <link rel="stylesheet" href="./styles/base.css">
-<link rel="stylesheet" href="./styles/layout.css">
 <link rel="stylesheet" href="./styles/components.css">
-<link rel="stylesheet" href="./styles/style.css">
+<link rel="stylesheet" href="./styles/login.css">
 
 </head>
 
 <body>
 
-<div class="container">
+<div class="login-card">
 
-	<div class="page-header">
+<h1>
 
-		<div class="page-header-left">
+MBSB DRONE
 
-			<div class="system-title">
-				MBSB KONG RECORD
-			</div>
-		</div>
+</h1>
 
-	</div>
+<input
+id="username"
+type="text"
+placeholder="USER ID">
 
+<input
+id="password"
+type="password"
+placeholder="PASSWORD">
 
-<div class="card">
+<button
+id="loginBtn">
 
-    <!-- TOP BAR -->
+LOGIN
 
-    <div class="topbar">
+</button>
 
-        <button  id="openDialogBtn" class="btn btn-success">
+<div id="errorMsg"></div>
 
-            + ADD
+<p class="copyright">
 
-        </button>
+© 2026 MBSB RECORD SYSTEM
 
-        <input type="month" id="monthFilter">
-
-        <button id="clearFilterBtn" class="btn">CLEAR</button>
-
-        <button id="exportBtn" class="btn btn-primary">EXPORT</button>
-
-    </div>
-
-
-    <div class="table-container">
-
-        <table>
-
-            <thead>
-
-                <tr>
-
-                    <th onclick="sortByDate()"  style="cursor:pointer">DATE ↕</th>
-
-                    <th>WORK</th>
-
-                    <th>BLOCK</th>
-
-                    <th>QTY</th>
-
-                    <th>UNIT</th>
-
-                    <th>UNIT PRICE</th>
-
-                    <th>BY PERSON</th>
-
-                    <th>ACTION</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody id="dashboardBody">
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
-<div id="pagination" class="pagination"></div>
-
-<!-- ADD DIALOG -->
-
-<div id="inputModal" class="modal hidden">
-
-	<div class="modal-content modal-large">
-
-		<div class="modal-header">
-
-			<h2 id="dialogTitle">ADD WORK RECORD</h2>
-
-			<button	id="closeDialogBtn" class="btn btn-danger">X</button>
-
-		</div>
-
-
-		<!-- DIALOG BODY -->
-
-		<div class="modal-body">
-		
-			<div class="table-container">
-			
-			<table id="inputTable" class="dialog-table">
-
-					<thead>
-
-						<tr>
-
-							<th>DATE *</th>
-							<th>WORK *</th>
-							<th>BLOCK</th>
-							<th>QTY</th>
-							<th>UNIT</th>
-							<th>UNIT PRICE</th>
-							<th>TOTAL</th>
-							<th>BY PERSON *</th>
-							<th>ACTION</th>
-
-						</tr>
-
-					</thead>
-
-					<tbody id="inputBody"></tbody>
-
-				</table>
-			
-			</div>
-
-		</div>
-
-		<!-- FOOTER -->
-
-		<div class="dialog-footer">
-
-			<button id="addRowBtn" class="btn btn-success">+ ADD</button>
-
-			<button id="saveAllBtn" class="btn btn-primary">SAVE</button>
-
-		</div>
-
-	</div>
+</p>
 
 </div>
 
+<script src="./js/login.js"></script>
 
-<!-- EDIT DIALOG -->
-
-<div id="editDialog" class="modal hidden">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2>EDIT RECORD</h2>
-			
-			<button id="closeEditTopBtn" class="btn btn-danger">X</button>
-
-        </div>
-
-        <input type="hidden" id="editId">
-
-        <!-- SCROLLABLE BODY -->
-
-        <div class="edit-form">
-
-            <div class="edit-row">
-
-                <label>Date</label>
-
-                <input type="date" id="editDate">
-
-            </div>
-
-            <div class="edit-row">
-
-                <label>Work</label>
-				
-				<input id="editWork" list="workList" placeholder="SELECT WORK" autocomplete="off">
-
-            </div>
-
-            <div class="edit-row">
-
-                <label>Block</label>
-
-                <input type="text" id="editBlock" placeholder="BLOCK">
-
-            </div>
-
-            <div class="edit-row">
-
-                <label>Qty</label>
-
-                <input type="number" id="editQty" placeholder="QTY">
-
-            </div>
-
-            <div class="edit-row">
-
-                <label>Unit</label>
-
-                <input type="text" id="editWorkUnit" style="background:#d2d3d6;cursor:not-allowed;" readonly>
-
-            </div>
-
-            <div class="edit-row">
-
-                <label>Unit Price</label>
-
-                <input type="number" id="editUnitPrice" style="background:#d2d3d6;cursor:not-allowed;" readonly>
-
-            </div>
-
-            <div class="edit-row">
-
-                <label>Total</label>
-
-                <input type="number" id="editTotal" style="background:#d2d3d6;cursor:not-allowed;" readonly>
-
-            </div>
-
-            <div class="edit-row">
-
-                <label>By Person</label>
-
-                <input id="editByPerson" list="staffList" placeholder="SELECT WORKER" autocomplete="off">
-
-
-            </div>
-
-        </div>
-
-        <!-- FIXED BUTTON -->
-
-		<div class="dialog-footer">
-
-			<button id="updateBtn" class="btn btn-primary">UPDATE</button>
-
-			<button id="closeEditBtn" class="btn">CLOSE</button>
-
-		</div>
-
-    </div>
-
-</div>
-
-<!-- SHEETJS -->
-
-<script
-src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js">
-</script>
-
-<script
-src="./js/config.js">
-
-</script>
-
-<script
-src="./js/app.js">
-
-</script>
-
-<datalist
-id="workList">
-</datalist>
-
-<datalist id="staffList">
-
-</datalist>
 </body>
+
 </html>

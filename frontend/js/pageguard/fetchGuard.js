@@ -20,7 +20,7 @@ async(...args)=>{
         );
 
         window.location.replace(
-            "login.html"
+            "/"
         );
     }
 
