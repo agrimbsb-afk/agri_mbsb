@@ -26,13 +26,27 @@ if(token){
 }
 
 const loginBtn =
-document.getElementById('loginBtn');
+document.getElementById(
+'loginBtn'
+);
+
+let isLoggingIn = false;
 
 loginBtn.addEventListener(
 
 'click',
 
 async ()=>{
+
+if(isLoggingIn)
+return;
+
+isLoggingIn = true;
+
+loginBtn.disabled = true;
+
+loginBtn.textContent =
+'LOGGING IN...';
 
 const userId =
 
@@ -50,7 +64,7 @@ try{
 
 const res = await fetch(
 
-`${API}/api/auth/loginUser` ,
+`${API}/api/auth/loginUser`,
 
 {
 
@@ -103,20 +117,25 @@ alert(
 'Login Success'
 );
 
-	if(localStorage.getItem('userRole') !== 'admin'){
+if(
+localStorage.getItem(
+'userRole'
+)!=='admin'
+){
 
-	   window.location.href = 'drone.html';
+window.location.replace(
+'drone.html'
+);
 
-	}else{
-		
-		window.location.href ='admin_page/main.html';
+}else{
 
-	}
-
+window.location.replace(
+'admin_page/main.html'
+);
 
 }
 
-else{
+}else{
 
 alert(
 
@@ -125,6 +144,14 @@ data.message ||
 'Login Failed'
 
 );
+
+isLoggingIn = false;
+
+loginBtn.disabled =
+false;
+
+loginBtn.textContent =
+'LOGIN';
 
 }
 
@@ -137,12 +164,19 @@ alert(
 'Server Error'
 );
 
+isLoggingIn = false;
+
+loginBtn.disabled =
+false;
+
+loginBtn.textContent =
+'LOGIN';
+
 }
 
 }
 
 );
-
 document.getElementById("username")
 .addEventListener("input", function(){
 

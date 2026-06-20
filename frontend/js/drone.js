@@ -1300,7 +1300,7 @@ calculateRow(${index});
 id="ctn_${index}"
 class="tableInput calcInput"
 type="number"
-value="${row.ctn || 0}"
+value="${row.ctn || ''}"
 
 oninput="
 itemRows[${index}].ctn =
@@ -1315,7 +1315,7 @@ Number(this.value)||0;
 id="pcs_${index}"
 class="tableInput calcInput"
 type="number"
-value="${row.pcs || 0}"
+value="${row.pcs || ''}"
 
 oninput="
 itemRows[${index}].pcs =
@@ -1330,7 +1330,7 @@ Number(this.value)||0;
 id="vol_${index}"
 class="tableInput calcInput"
 type="number"
-value="${row.vol || 0}"
+value="${row.vol ||''}"
 
 oninput="
 itemRows[${index}].vol =
