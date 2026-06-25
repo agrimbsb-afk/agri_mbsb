@@ -2535,9 +2535,7 @@ document
 
             let message =
 
-`DRONE RECORD
-
-PILOT : ${localStorage.getItem("userName")}
+`PILOT : ${localStorage.getItem("userName")}
 
 `;
 
@@ -2561,8 +2559,24 @@ Area	: ${first.work_area}
 HA		: ${first.area_ha}
 Flow	: ${first.flow_ha} L/HA
 					
-Item	:
+Usage	:
 `;
+
+
+rows.forEach(rcd=>{
+
+    message +=
+
+`${rcd.item_used.replace(/\s*\([^)]*\)/g, "")} -  ${rcd.unit} ${rcd.uom} /HA
+`;
+
+});
+
+message +=
+
+`
+Item	:
+`
 
 rows.forEach(item=>{
 
@@ -2636,7 +2650,7 @@ rows.forEach(item=>{
 			message +=
                 "\n";
 			message +=
-                "✈️✈️✈️✈️✈️✈️✈️✈️✈️✈️✈️✈️";
+                "==========================";
 			message +=
                 "\n\n";
 

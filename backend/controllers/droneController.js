@@ -112,7 +112,7 @@ exports.loadTodayRecords = async (req,res)=>{
             FROM drone_workRecord
             WHERE date = $1
             AND by_person = $2
-            ORDER BY id DESC
+            ORDER BY created_at, item_used 
             LIMIT $3
             OFFSET $4
             `,
