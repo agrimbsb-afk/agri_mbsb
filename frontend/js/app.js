@@ -349,32 +349,15 @@ document
 
 // ---------- DELETE INPUT ROW ----------
 
-inputBody
-.addEventListener(
+inputBody.addEventListener("click",(e)=>{
 
-'click',
+    const btn = e.target.closest(".deleteBtn");
 
-(e)=>{
+    if(!btn) return;
 
-if(
+    btn.closest("tr").remove();
 
-e.target
-.classList
-.contains(
-'deleteInputRow'
-)
-
-){
-
-e.target
-.closest('tr')
-.remove();
-
-}
-
-}
-
-);
+});
 
 
 
