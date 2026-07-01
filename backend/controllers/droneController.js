@@ -893,35 +893,52 @@ await pool.query(
 `
 SELECT
 
-                TO_CHAR(
-                    date,
-                    'DD-MM-YYYY'
-                ) AS date,
+    date,
 
-                work,
-				
-				 CASE
+    work,
 
-					WHEN product_category = 'RACUN'
+    block,
 
-					THEN 0
+    ROUND(
+        SUM(
+            CASE
+                WHEN product_category = 'RACUN'
+                THEN COALESCE(area_ha,0)
+                ELSE 0
+            END
+        )::numeric,
+        2
+    ) AS ha,
 
-					ELSE COALESCE(
-						work_pcs,
-						0
-					)
+    SUM(
+        CASE
+            WHEN product_category IN ('BENIH','BAJA')
+            THEN COALESCE(work_pcs,0)
+            ELSE 0
+        END
+    ) AS bag,
 
-				END AS work_pcs,
-				
-				area_ha,
+    ROUND(
+        SUM(
+            CASE
+                WHEN product_category='RACUN'
+                THEN COALESCE(acre,0)
+                ELSE 0
+            END
+        )::numeric,
+        2
+    ) AS acre,
 
-                acre,
-				
-				work_price,
+    MAX(work_price) AS unit_price,
 
-                amount
+    ROUND(
+        SUM(amount)::numeric,
+        2
+    ) AS total,
 
-            FROM drone_monthly_log_view
+    by_person 
+
+FROM public.drone_monthly_log_view
 
             WHERE
 
@@ -932,9 +949,18 @@ SELECT
 			TO_CHAR(date,'YYYY-MM') = $2
 			
 
-            ORDER BY
+            GROUP BY
 
-            date
+    date,
+    work,
+    block,
+    by_person
+
+ORDER BY
+
+    by_person,
+	date,
+    work
 
 `,
 [	userId,

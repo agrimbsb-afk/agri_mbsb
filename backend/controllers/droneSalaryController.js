@@ -340,53 +340,82 @@ try{
 
 		SELECT
 
-			dl.by_person,
+    dl.by_person,
 
-			ud."user_Name",
+    ud."user_Name",
 
-			TO_CHAR(
-				dl.date,
-				'DD-MM-YYYY'
-			) AS date,
+    TO_CHAR(
+        dl.date,
+        'DD-MM-YYYY'
+    ) AS date,
 
-			dl.work,
+    dl.work,
 
-			CASE
-				WHEN dl.product_category IN (
-					'BENIH',
-					'BAJA'
-				)
-				THEN COALESCE(
-					dl.work_pcs,
-					0
-				)
-				ELSE 0
-			END AS work_pcs,
+    dl.block,
 
-			dl.area_ha,
+    CASE
+        WHEN dl.product_category = 'RACUN'
+             AND COALESCE(dl.area_ha,0) > 0
+        THEN ROUND(
+            dl.area_ha::numeric,
+            2
+        )
+        ELSE NULL
+    END AS ha,
 
-			dl.acre,
+    CASE
+        WHEN dl.product_category IN (
+            'BENIH',
+            'BAJA'
+        )
+             AND COALESCE(dl.work_pcs,0) > 0
+        THEN dl.work_pcs
+        ELSE NULL
+    END AS bag,
 
-			dl.amount
+    ROUND(
+        COALESCE(
+            dl.acre,
+            0
+        )::numeric,
+        2
+    ) AS acre,
 
-		FROM drone_monthly_log_view dl
+    ROUND(
+        COALESCE(
+            dl.work_price,
+            0
+        )::numeric,
+        2
+    ) AS unit_price,
 
-		LEFT JOIN "user_Details" ud
+    ROUND(
+        COALESCE(
+            dl.amount,
+            0
+        )::numeric,
+        2
+    ) AS total
 
-		ON dl.by_person =
-		   ud."user_Id"
+FROM drone_monthly_log_view dl
 
-		WHERE
+LEFT JOIN "user_Details" ud
+ON dl.by_person = ud."user_Id"
 
-		TO_CHAR(
-			dl.date,
-			'YYYY-MM'
-		) = $1
+WHERE
 
-		ORDER BY
+    TO_CHAR(
+        dl.date,
+        'YYYY-MM'
+    ) = $1
 
-			dl.by_person,
-			dl.date;
+    AND dl.work_code <> 'WB0004'
+
+ORDER BY
+
+    dl.by_person,
+    dl.date,
+    dl.work;
 
         `,
 
@@ -422,7 +451,7 @@ try{
 		summaryMap[name] +=
 
 		Number(
-			row.amount || 0
+			row.total || 0
 		);
 
 	});
@@ -558,6 +587,8 @@ try{
 			total
 
 		]);
+		
+		row.getCell(2).numFmt = '#,##0.00';
 
 		setBorder(
 			row
@@ -573,6 +604,8 @@ try{
 		grandTotal
 
 	]);
+	
+	grandTotalRow.getCell(2).numFmt = '#,##0.00';
 
 	setGray(
 		grandTotalRow
@@ -633,7 +666,7 @@ try{
 
         let totalSalary = 0;
 
-        const titleRow =
+       /* const titleRow =
         sheet.addRow([
 
             `${userId} - ${pilot.userName}`
@@ -656,7 +689,7 @@ try{
 
             size:14
 
-        };
+        };*/
 
         sheet.addRow([]);
 
@@ -665,10 +698,13 @@ try{
 
             "DATE",
             "WORK",
-            "BEG",
+			"BLOCK",
             "HA",
+			"BAG",
             "ACRE",
-            "AMOUNT"
+			"UNIT PRICE",
+            "TOTAL",
+			"BY"
 
         ]);
 
@@ -685,7 +721,7 @@ try{
             totalSalary +=
 
             Number(
-                r.amount || 0
+                r.total || 0
             );
 
             const dataRow =
@@ -694,22 +730,31 @@ try{
                 r.date,
 
                 r.work,
-
-                Number(
-                    r.work_pcs || 0
+				
+				r.block,
+				
+				Number(
+                    r.ha || 0
                 ) || '',
-
-                Number(
-                    r.area_ha || 0
+				
+				Number(
+                    r.bag || 0
                 ) || '',
-
-                Number(
+				
+				Number(
                     r.acre || 0
+                ),
+				
+				Number(
+                    r.unit_price || 0
                 ),
 
                 Number(
-                    r.amount || 0
-                )
+                    r.total || 0
+                ),
+				
+				
+                 r.user_Name
 
             ]);
 
@@ -726,7 +771,9 @@ try{
             '',
             '',
             '',
-            'SALARY',
+			'',
+			'',
+            'TOTAL',
             totalSalary
 
         ]);
@@ -747,23 +794,27 @@ try{
     /* ==========================
        FORMAT
     ========================== */
-	sheet.getColumn(2)
+	sheet.getColumn(4)
 	.numFmt =
 	'#,##0.00';
 	
-    sheet.getColumn(3)
+	sheet.getColumn(5)
     .numFmt =
     '#,##0';
-
-    sheet.getColumn(4)
-    .numFmt =
-    '#,##0.00';
-
-    sheet.getColumn(5)
-    .numFmt =
-    '#,##0.00';
-
+	
     sheet.getColumn(6)
+    .numFmt =
+    '#,##0.00';
+
+    sheet.getColumn(7)
+    .numFmt =
+    '#,##0.00';
+
+    sheet.getColumn(8)
+    .numFmt =
+    '#,##0.00';
+
+    sheet.getColumn(9)
     .numFmt =
     '#,##0.00';
 
@@ -783,7 +834,13 @@ try{
 
 		{ width:12 },
 
-		{ width:15 }
+		{ width:12 },
+
+		{ width:12 },
+
+		{ width:12 },
+
+		{ width:25 }
 
 	];
 
