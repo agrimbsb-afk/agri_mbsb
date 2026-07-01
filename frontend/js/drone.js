@@ -532,11 +532,12 @@ html += `
 
 <td>${row.work}</td>
 
-<td>${row.area_ha}</td>
 
-<td>${row.work_pcs || ''}</td>
+<td>${row.area_ha == 0 ? '' : row.area_ha}</td>
 
-<td>${row.acre}</td>
+<td>${row.beg == 0 ? '' : row.beg}</td>
+
+<td>${row.acre == 0 ? '' : row.acre}</td>
 
 <td>RM ${row.work_price}</td>
 

@@ -908,7 +908,7 @@ SELECT
             END
         )::numeric,
         2
-    ) AS ha,
+    ) AS area_ha,
 
     SUM(
         CASE
@@ -916,7 +916,7 @@ SELECT
             THEN COALESCE(work_pcs,0)
             ELSE 0
         END
-    ) AS bag,
+    ) AS beg,
 
     ROUND(
         SUM(
@@ -929,12 +929,12 @@ SELECT
         2
     ) AS acre,
 
-    MAX(work_price) AS unit_price,
+    MAX(work_price) AS work_price,
 
     ROUND(
         SUM(amount)::numeric,
         2
-    ) AS total,
+    ) AS amount,
 
     by_person 
 
