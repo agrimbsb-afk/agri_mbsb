@@ -58,13 +58,13 @@ router.get(
 );
 
 router.get(
-    "/monthly",
+    "/monthly/:month",
     verifyToken,
     droneController.getMonthlyLog
 );
 
 router.get(
-	'/work-records',
+	"/work-records/:month",
 	verifyToken,
 	droneController.getMyWorkRecords
 );
@@ -74,5 +74,6 @@ router.get(
     verifyToken,
     droneController.loadWhatsappRecords
 );
+
 
 module.exports = router;

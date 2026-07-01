@@ -374,22 +374,42 @@ class="modal hidden">
     <div
     class="modal-content">
 
-        <div class="modal-header">
+<div class="modal-header log-header">
 
-            <h2>
-                MONTHLY WORK SUMMARY
-            </h2>
+    <div class="modal-title">
 
-            <button
-            id="closeLogBtn"
-            class="btn btn-danger">
+        <i class="fa-solid fa-chart-column"></i>
 
-                X
+        <span>MONTHLY WORK SUMMARY</span>
 
-            </button>
+    </div>
 
-        </div>
-		<div class="modal-body">
+    <button
+        id="closeLogBtn"
+        class="btn btn-danger">
+
+        <i class="fa-solid fa-xmark"></i>
+
+    </button>
+
+</div>
+
+<div class="modal-toolbar">
+
+    <input
+        type="month"
+        id="searchMonth">
+
+    <button
+        id="searchBtn"
+        class="btn btn-primary">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+    </button>
+
+</div>
+	<div class="modal-body">
 
 			<div class="tab-header">
 

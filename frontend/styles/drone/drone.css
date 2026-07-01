@@ -254,3 +254,158 @@
 }
 
 }
+
+.modal-header{
+
+    padding:22px 28px;
+
+    border-bottom:1px solid #e5eaf3;
+
+}
+
+/* Header */
+
+#logDialog .log-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:22px 28px 14px;
+
+    border:none;
+
+}
+
+#logDialog .modal-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+    font-size:28px;
+
+    font-weight:700;
+
+    color:#24324a;
+
+}
+
+#logDialog #closeLogBtn{
+
+    width:48px;
+
+    height:48px;
+
+}
+
+/* Search */
+
+#logDialog .modal-toolbar{
+
+    display:flex;
+
+    gap:12px;
+
+    padding:0 28px 22px;
+
+    border-bottom:1px solid #e5eaf3;
+
+}
+
+#logDialog #searchMonth{
+
+    width:220px;
+
+}
+
+#logDialog #searchBtn{
+
+    width:48px;
+    height:48px;
+
+    padding:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+#logDialog #searchBtn i{
+
+    font-size:20px;
+
+    line-height:1;
+
+    margin:0;
+
+}
+
+#logDialog #closeLogBtn{
+
+    width:48px;
+    height:48px;
+
+    padding:0;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    line-height:0;
+
+}
+
+#logDialog #closeLogBtn i{
+
+    font-size:20px;
+
+    line-height:1;
+
+    margin:0;
+
+}
+
+
+@media(max-width:768px){
+
+    #logDialog .log-header{
+
+        padding:18px 18px 14px;
+
+    }
+
+    #logDialog .modal-title{
+
+        font-size:20px;
+
+    }
+
+    #logDialog .modal-toolbar{
+
+        display:grid;
+
+        grid-template-columns:1fr 48px;
+
+        gap:10px;
+
+        padding:0 18px 18px;
+
+    }
+
+    #logDialog #searchMonth{
+
+        width:100%;
+
+    }
+
+}

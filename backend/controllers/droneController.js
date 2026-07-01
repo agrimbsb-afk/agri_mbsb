@@ -740,6 +740,8 @@ exports.getMonthlyLog = async (req,res)=>{
 
         const userId =
         req.user.userId;
+		
+		const month = req.params.month;
 
         const result =
         await pool.query(
@@ -805,18 +807,8 @@ SELECT
             by_person = $1
 
             AND
-
-            DATE_TRUNC(
-				'month',
-				date
-			)
-
-			=
-
-			DATE_TRUNC(
-				'month',
-				CURRENT_DATE
-			)
+    
+			TO_CHAR(date,'YYYY-MM') = $2
 			
 			AND work_code !='WB0004'
 
@@ -830,7 +822,8 @@ SELECT
 
 `,
         [
-            userId
+            userId,
+			month
         ]
 
         );
@@ -892,6 +885,8 @@ try{
 const userId =
 req.user.userId;
 
+const month = req.params.month;
+
 const result =
 await pool.query(
 
@@ -934,18 +929,7 @@ SELECT
 
             AND
 
-			DATE_TRUNC(
-				'month',
-				date
-			)
-
-			=
-
-			DATE_TRUNC(
-				'month',
-				CURRENT_DATE
-			)
-			
+			TO_CHAR(date,'YYYY-MM') = $2
 			
 
             ORDER BY
@@ -953,7 +937,9 @@ SELECT
             date
 
 `,
-[userId]
+[	userId,
+    month
+	]
 
 );
 

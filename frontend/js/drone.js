@@ -352,7 +352,7 @@ function renderLoadedRecords(records){
 
 */
 
-async function loadMonthlyLog(){
+async function loadMonthlyLog(month){
 
     try{
 
@@ -360,7 +360,7 @@ async function loadMonthlyLog(){
         await fetch(
 
             API +
-            "/api/drone/monthly",
+            "/api/drone/monthly/" + month,
 
             {
                 headers:{
@@ -400,11 +400,11 @@ async function loadMonthlyLog(){
 
 }
 
-async function loadWorkRecords(){
+async function loadWorkRecords(month){
 
     const res =
     await fetch(
-        API + "/api/drone/work-records",
+        API + "/api/drone/work-records/" + month,
         {
             headers:getAuthHeaders()
         }
@@ -977,9 +977,22 @@ document
 		monthlySummaryContent.innerHTML =
 		"Loading...";
 
-        await loadMonthlyLog();
-		
-		await loadWorkRecords();
+        const month =
+		new Date()
+		.toLocaleDateString(
+			"en-CA",
+			{
+				timeZone:"Asia/Kuala_Lumpur"
+			}
+		)
+		.substring(0,7);
+
+		document.getElementById(
+			"searchMonth"
+		).value = month;
+
+		await loadMonthlyLog(month);
+		await loadWorkRecords(month);
 
     }
 
@@ -1025,6 +1038,45 @@ document
 
 );
 
+
+document
+.getElementById("searchBtn")
+.addEventListener(
+
+    "click",
+
+    async ()=>{
+
+        const month =
+        document.getElementById(
+            "searchMonth"
+        ).value;
+
+        await loadMonthlyLog(month);
+
+        await loadWorkRecords(month);
+
+    }
+
+);
+
+document
+.getElementById("searchMonth")
+.addEventListener(
+
+    "change",
+
+    async ()=>{
+
+        const month = this.value;
+
+        await loadMonthlyLog(month);
+
+        await loadWorkRecords(month);
+
+    }
+
+);
 
 
 /* =========================
