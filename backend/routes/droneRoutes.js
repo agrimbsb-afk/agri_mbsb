@@ -69,4 +69,10 @@ router.get(
 	droneController.getMyWorkRecords
 );
 
+router.get(
+    "/whatsapp",
+    verifyToken,
+    droneController.loadWhatsappRecords
+);
+
 module.exports = router;

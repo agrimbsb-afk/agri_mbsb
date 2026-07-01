@@ -2101,6 +2101,8 @@ function selectProduct(
 }
 
 function calculateRow(index){
+	
+	
 
     const areaHa =
     Number(
@@ -2109,6 +2111,8 @@ function calculateRow(index){
         ).value
     ) || 0;
 
+
+	
     const row =
     itemRows[index];
 
@@ -2119,6 +2123,7 @@ function calculateRow(index){
     const boxSize =
     row.pcs_per_ctn *
     row.vol_per_pcs;
+	
 
     row.ctn =
     Math.floor(
@@ -2129,26 +2134,49 @@ function calculateRow(index){
     totalUsage -
     (row.ctn * boxSize);
 
+
     row.pcs =
     Math.floor(
         balance /
         row.vol_per_pcs
     );
 
+
     row.vol =
     balance -
     (row.pcs * row.vol_per_pcs);
 
-    /* VOL 进位到 50 */
 
-    if(row.vol > 0){
 
-        row.vol =
-        Math.ceil(
-            row.vol / 50
-        ) * 50;
+		/* VOL 进位 */
 
-    }
+		if (
+			row.uom &&
+			row.uom.toUpperCase() === "BEG"
+		) {
+
+			// BEG：只要有剩余，就多算 1 PCS
+			if (row.vol > 0) {
+
+				row.pcs++;
+				row.vol = 0;
+
+			}
+
+		}
+		else {
+
+			// ML/G：VOL 进位到 50
+			if (row.vol > 0) {
+
+				row.vol =
+				Math.ceil(
+					row.vol / 50
+				) * 50;
+
+			}
+
+		}
 
     /* 如果 VOL 满一 PCS */
 
@@ -2471,12 +2499,47 @@ document
     "click",
 
     async ()=>{
-		
-		console.log(
-			currentRecords
-		);
 
         try{
+
+            const res = await fetch(
+
+                API +
+                "/api/drone/whatsapp",
+
+                {
+                    headers:{
+                        Authorization:
+                        "Bearer " +
+                        localStorage.getItem(
+                            "token"
+                        )
+                    }
+                }
+
+            );
+
+            const result =
+            await res.json();
+
+            if(
+                !result.success
+            ){
+
+                alert(
+                    "Load records failed."
+                );
+
+                return;
+
+            }
+
+            const currentRecords =
+            result.data;
+
+            console.log(
+                currentRecords
+            );
 
             if(
                 !currentRecords ||
@@ -2509,15 +2572,15 @@ document
 
                     "|" +
 
-                    record.work_area+
+                    record.work_area +
 
                     "|" +
-					
-					record.flow_ha+
+
+                    record.flow_ha +
 
                     "|" +
-					
-					record.area_ha;
+
+                    record.area_ha;
 
                 if(
                     !groups[key]
@@ -2546,132 +2609,134 @@ document
                 const first =
                 rows[0];
 
-				const displayDate =
-				formatMYDate(
-					first.date
-				);
+                const displayDate =
+                formatMYDate(
+                    first.date
+                );
 
                 message +=
 
-`*Date	: ${displayDate}*
-Work	: ${first.work}
-Area	: ${first.work_area}
-HA		: ${first.area_ha}
-Flow	: ${first.flow_ha} L/HA
-					
-Usage	:
+`*Date\t: ${displayDate}*
+Work\t: ${first.work}
+Area\t: ${first.work_area}
+HA\t\t: ${first.area_ha}
+Flow\t: ${first.flow_ha} L/HA
+
+Usage\t:
 `;
 
+                rows.forEach(rcd=>{
 
-rows.forEach(rcd=>{
+                    message +=
 
-    message +=
-
-`${rcd.item_used.replace(/\s*\([^)]*\)/g, "")} -  ${rcd.unit} ${rcd.uom} /HA
+`${rcd.item_used.replace(/\s*\([^)]*\)/g, "")} - ${rcd.unit} ${rcd.uom}/HA
 `;
 
-});
+                });
 
-message +=
+                message +=
 
 `
-Item	:
-`
+Item\t:
+`;
 
-rows.forEach(item=>{
+                rows.forEach(item=>{
 
-    let usageText = '';
+                    let usageText = '';
 
-    if(Number(item.work_ctn) > 0){
+                    if(Number(item.work_ctn) > 0){
 
-        usageText +=
-        `${item.work_ctn} CTN `;
+                        usageText +=
+                        `${item.work_ctn} CTN `;
 
-    }
+                    }
 
-    if(Number(item.work_pcs) > 0){
+                    if(Number(item.work_pcs) > 0){
 
-        usageText +=
-        `${item.work_pcs} PCS `;
+                        usageText +=
+                        `${item.work_pcs} PCS `;
 
-    }
+                    }
 
-    if(Number(item.work_vol) > 0){
+                    if(Number(item.work_vol) > 0){
 
-        let vol =
-        Number(item.work_vol);
+                        let vol =
+                        Number(item.work_vol);
 
-        let uom =
-        (item.uom || '')
-        .toUpperCase();
+                        let uom =
+                        (item.uom || '')
+                        .toUpperCase();
 
-        if(vol >= 1000){
+                        if(vol >= 1000){
 
-            if(uom === 'ML'){
+                            if(uom === 'ML'){
 
-                vol =
-                vol / 1000;
+                                vol =
+                                vol / 1000;
 
-                uom =
-                'L';
+                                uom =
+                                'L';
 
-            }
-            else if(uom === 'G'){
+                            }
+                            else if(uom === 'G'){
 
-                vol =
-                vol / 1000;
+                                vol =
+                                vol / 1000;
 
-                uom =
-                'KG';
+                                uom =
+                                'KG';
 
-            }
+                            }
 
-        }
+                        }
 
-        const displayVol =
+                        const displayVol =
 
-        Number.isInteger(vol)
+                        Number.isInteger(vol)
 
-        ? vol
+                        ? vol
 
-        : vol.toFixed(2);
+                        : vol.toFixed(2);
 
-        usageText +=
-        `${displayVol} ${uom}`;
+                        usageText +=
+                        `${displayVol} ${uom}`;
 
-    }
+                    }
 
-    message +=
+                    message +=
 
 `${item.item_used} - ${usageText.trim()}
 `;
 
-});
-			message +=
-                "\n";
-			message +=
-                "==========================";
-			message +=
-                "\n\n";
+                });
+
+                message +=
+                    "\n";
+
+                message +=
+                    "==========================";
+
+                message +=
+                    "\n\n";
 
             });
 
             await navigator.clipboard.writeText(
-				message
-			);
+                message
+            );
 
-			const whatsappUrl =
+            const whatsappUrl =
 
-				"https://wa.me/?text=" +
+                "https://wa.me/?text=" +
 
-				encodeURIComponent(
-					message
-				);
+                encodeURIComponent(
+                    message
+                );
 
-			window.open(
-				whatsappUrl,
-				"_blank"
-			);
+            window.open(
+                whatsappUrl,
+                "_blank"
+            );
 
         }
         catch(err){
@@ -2687,9 +2752,8 @@ rows.forEach(item=>{
         }
 
     }
-	
-);
 
+);
 const workRecordTab =
 document.getElementById(
     "workRecordTab"

@@ -92,19 +92,13 @@ app.use(
 );
 
 // START SERVER
+console.log("PORT =", process.env.PORT);
 
-app.listen(
-
-process.env.PORT,
-
-()=>{
-
-console.log(
-
-`Server Running ${process.env.PORT}`
-
+const server = app.listen(
+    process.env.PORT,
+    () => {
+        console.log(`Server Running ${process.env.PORT}`);
+    }
 );
 
-}
-
-);
+console.log(server.listening);

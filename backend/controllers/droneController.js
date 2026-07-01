@@ -1021,3 +1021,130 @@ exports.deleteRecord = async (req,res)=>{
     }
 
 };
+
+
+exports.loadWhatsappRecords = async (req, res) => {
+
+    const client = await pool.connect();
+
+    try {
+
+        const date =
+            req.params.date ||
+            new Date().toLocaleDateString(
+                "en-CA",
+                {
+                    timeZone: "Asia/Kuala_Lumpur"
+                }
+            );
+
+        const userId = req.user.userId;
+
+        await client.query("BEGIN");
+
+        // 取得目前最小的 post_group
+        const minResult = await client.query(
+
+            `
+            SELECT COALESCE(MIN(post_group), 0) AS min_group
+            FROM drone_workRecord
+            WHERE date = $1
+            AND by_person = $2
+            `,
+
+            [
+                date,
+                userId
+            ]
+
+        );
+
+        const minGroup = Number(
+            minResult.rows[0].min_group
+        );
+
+        // 查询这一批要发送的记录
+        const result = await client.query(
+
+            `
+            SELECT *
+            FROM drone_workRecord
+            WHERE date = $1
+            AND by_person = $2
+            AND post_group = $3
+            ORDER BY created_at, item_used
+            `,
+
+            [
+                date,
+                userId,
+                minGroup
+            ]
+
+        );
+
+        // 取得这一批的 job_id
+        const jobIds = [
+
+            ...new Set(
+
+                result.rows
+                    .map(r => r.job_id)
+                    .filter(Boolean)
+
+            )
+
+        ];
+
+        // 更新这一批 post_group + 1
+        if (jobIds.length > 0) {
+
+            await client.query(
+
+                `
+                UPDATE drone_workRecord
+                SET post_group = post_group + 1
+                WHERE job_id = ANY($1)
+                `,
+
+                [jobIds]
+
+            );
+
+        }
+
+        await client.query("COMMIT");
+
+        res.json({
+
+            success: true,
+
+            data: result.rows
+
+        });
+
+    }
+    catch (err) {
+
+        await client.query("ROLLBACK");
+
+        console.error(
+            "LOAD WHATSAPP RECORD ERROR:",
+            err
+        );
+
+        res.status(500).json({
+
+            success: false,
+            message: err.message
+
+        });
+
+    }
+    finally {
+
+        client.release();
+
+    }
+
+};
