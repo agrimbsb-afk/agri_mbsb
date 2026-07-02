@@ -2774,22 +2774,11 @@ Item\t:
 
             });
 
-            await navigator.clipboard.writeText(
-                message
-            );
+const whatsappUrl =
+    "https://wa.me/?text=" +
+    encodeURIComponent(message);
 
-            const whatsappUrl =
-
-                "https://wa.me/?text=" +
-
-                encodeURIComponent(
-                    message
-                );
-
-            window.open(
-                whatsappUrl,
-                "_blank"
-            );
+window.location.href = whatsappUrl;
 
         }
         catch(err){
